@@ -1,0 +1,32 @@
+{
+    "name": "abetter/toolkit",
+    "description": "ABetter blade toolkit",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Johan Sjoland",
+            "email": "hello@abetter.app"
+        }
+    ],
+    "require": {
+		"leafo/scssphp": "^0.7",
+		"mrclay/jsmin-php": "^2.3"
+	},
+	"autoload": {
+		"psr-4": {
+			"ABetter\\Toolkit\\": "src/"
+		},
+		"files": [
+	        "src/helpers.php"
+	    ]
+	},
+	"extra": {
+        "laravel": {
+            "providers": [
+                "ABetter\\Toolkit\\ServiceProvider",
+				"ABetter\\Toolkit\\BladeServiceProvider"
+            ],
+			"aliases": {}
+        }
+    }
+}
