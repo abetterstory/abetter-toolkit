@@ -19,7 +19,7 @@ class BladeDirectives {
 		$class = (preg_match('/(?<=(class))(\s\w*)/',$source,$matches)) ? trim($matches[0]) : '';
 		$service = (($namespace) ? '\\'.$namespace.'\\' : '') . $class;
 		if (is_file($file)) require_once($file);
-		return app($service);
+		return new $service($vars);
 	}
 
 	// Style

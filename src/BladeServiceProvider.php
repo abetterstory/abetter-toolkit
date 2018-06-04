@@ -29,7 +29,7 @@ class BladeServiceProvider extends ServiceProvider {
 		Blade::directive('inject',function($expression){
 			$expressions = explode(',',preg_replace("/[\(\)\\\"\']/",'',$expression));
 			$variable = trim($expressions[0]);
-			$service = trim($expressions[1]);
+			$service = (!empty($expressions[1])) ? trim($expressions[1]) : $variable;
 			if (class_exists($service)) {
 				return "<?php \${$variable} = app('{$service}'); ?>";
 			}
