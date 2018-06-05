@@ -15,10 +15,7 @@
 	"autoload": {
 		"psr-4": {
 			"ABetter\\Toolkit\\": "src/"
-		},
-		"files": [
-	        "src/helpers.php"
-	    ]
+		}
 	},
 	"extra": {
         "laravel": {
