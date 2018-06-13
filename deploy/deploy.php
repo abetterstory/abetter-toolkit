@@ -58,6 +58,26 @@ task('hello', function () {
 
 // ---
 
+task('install:delete', function () {
+	$stage = get('stage');
+	$path = get('deploy_path');
+	$server = get('server');
+	$dir = "{$server}:{$path}";
+	$time = date("Ymd_His");
+	cd('{{ deploy_path }}');
+	// --
+	$confirm = "Are you sure you want to DELETE all files except .env in %s? : \n{$dir}";
+	$ask = str_replace('%s',ucwords($stage),$confirm);
+	askConfirmation($ask);
+	// ---
+	writeln("delete prepare ------------------------------------------------");
+	$cp = run("cp .env ../tmp/{$time}.env"); writeln("cp .env ../tmp/{$time}.env: $cp");
+	$rm = run('rm -rf *'); writeln("rm -rf *: $rm");
+	$rm = run('rm -rf .env*'); writeln("rm -rf .env*: $rm");
+	$rm = run('rm -rf .git*'); writeln("rm -rf .git*: $rm");
+	writeln("delete done ------------------------------------------------");
+});
+
 task('install', function () {
 	$stage = get('stage');
 	$repository = get('repository');
@@ -75,13 +95,14 @@ task('install', function () {
 	$git = run("git checkout origin/{$branch}"); writeln("git checkout origin/{$branch}: $git");
 	$git = run('git reset --hard'); writeln("git reset --hard: $git");
 	$git = run('git status'); writeln("git status: $git");
+	$cp = run('cp .env.example .env'); writeln("cp .env.example .env: $cp");
+	run('mkdir -p bootstrap/cache');
+	run('mkdir -p storage');
 	$chmod = run('chmod -R 777 bootstrap/cache'); writeln("chmod -R 777 bootstrap/cache: $chmod");
 	$chmod = run('chmod -R 777 storage'); writeln("chmod -R 777 storage: $chmod");
-	$cp = run('cp vendor/abetter/wordpress/wp-config.php resources/wordpress/core/wp-config.php'); writeln("cp vendor/abetter/wordpress/wp-config.php resources/wordpress/core/wp-config.php: $cp");
-	$cp = run('cp .env.example .env'); writeln("cp .env.example .env: $cp");
-	$artisan = run('php artisan key:generate'); writeln("php artisan key:generate: $artisan");
 	$composer = run('composer install -n --no-dev'); writeln("composer install -n --no-dev: $composer");
 	$composer = run('composer update -n --no-dev'); writeln("composer update -n --no-dev: $composer");
+	$artisan = run('php artisan key:generate'); writeln("php artisan key:generate: $artisan");
 	writeln("install done ------------------------------------------------");
 });
 
@@ -102,6 +123,10 @@ task('deploy', function () {
 	$git = run("git checkout --force origin/{$branch}"); writeln("git checkout --force origin/{$branch}: $git");
 	$git = run('git reset --hard'); writeln("git reset --hard: $git");
 	$git = run('git status'); writeln("git status: $git");
+	run('mkdir -p bootstrap/cache');
+	run('mkdir -p storage');
+	$chmod = run('chmod -R 777 bootstrap/cache'); writeln("chmod -R 777 bootstrap/cache: $chmod");
+	$chmod = run('chmod -R 777 storage'); writeln("chmod -R 777 storage: $chmod");
 	$composer = run('composer install -n --no-dev'); writeln("composer install -n --no-dev: $composer");
 	$composer = run('composer update -n --no-dev'); writeln("composer update -n --no-dev: $composer");
 	$artisan = run('php artisan cache:clear'); writeln("php artisan cache:clear: $artisan");
@@ -109,8 +134,6 @@ task('deploy', function () {
 	$artisan = run('php artisan view:clear'); writeln("php artisan view:clear: $artisan");
 	$artisan = run('php artisan config:clear'); writeln("php artisan config:clear: $artisan");
 	$rm = run('rm -rf storage/framework/sessions/*'); writeln("rm -rf storage/framework/sessions/*: $rm");
-	$chmod = run('chmod -R 777 bootstrap/cache'); writeln("chmod -R 777 bootstrap/cache: $chmod");
-	$chmod = run('chmod -R 777 storage'); writeln("chmod -R 777 storage: $chmod");
 	writeln("deploy done ------------------------------------------------");
 });
 
