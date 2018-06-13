@@ -1,9 +1,9 @@
-# labs-abetter-toolkit
+# LABS-ABetter-Toolkit v1.0.4
 
-ABetter blade toolkit for Laravel 5+
+ABetter Blade toolkit for Laravel 5+
 
 ## Install
-> composer require abetter/toolkit
+- composer require abetter/toolkit
 
 ## Register Middleware
 - Add to $middleware in app/Kernel.php
