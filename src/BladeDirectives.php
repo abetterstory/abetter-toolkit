@@ -26,12 +26,13 @@ class BladeDirectives {
 
 	public static function style($name,$vars,$link=FALSE) {
 		if (in_array($name,self::$styles)) return "<!--style:{$name}-->";
+		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		$source = self::getSource($name,$vars);
 		$scss = new Compiler();
 		$scss->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
 		$css = $scss->compile($source);
 		if ($link) {
-			$path = '/dev/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
+			$path = '/_dev/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			file_put_contents($file,$css);
@@ -47,10 +48,11 @@ class BladeDirectives {
 
 	public static function script($name,$vars,$link=FALSE) {
 		if (in_array($name,self::$scripts)) return "<!--script:{$name}-->";
+		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		$source = self::getSource($name,$vars);
 		$js = JSMin::minify($source);
 		if ($link) {
-			$path = '/dev/components/'.$name;
+			$path = '/_dev/components/'.$name;
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			file_put_contents($file,$js);
@@ -68,9 +70,11 @@ class BladeDirectives {
 		$exp = explode(',',$exp);
 		$exp[0] = trim($exp[0],'\'');
 		$exp[1] = (isset($exp[1])) ? $exp[1] : '[]';
-		$exp[2] = (isset($exp[2])) ? TRUE : FALSE;
+		$exp[2] = (isset($exp[2])) ? $exp[2] : NULL;
 		if (in_array(strtolower($exp[1]),['end','true','1'])) {
 			$exp[1] = '[]'; $exp[2] = TRUE;
+		} else if (in_array(strtolower($exp[1]),['false','0'])) {
+			$exp[1] = '[]'; $exp[2] = FALSE;
 		}
 		return $exp;
 	}
