@@ -27,10 +27,19 @@ class BladeDirectives {
 	public static function style($name,$vars) {
 		if (in_array($name,self::$styles)) return "<!--style:{$name}-->";
 		$source = self::getSource($name,$vars);
+		$dev = FALSE;
 		$scss = new Compiler();
 		$scss->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
 		$css = $scss->compile($source);
-		$style = "<style>{$css}</style>";
+		if ($dev) {
+			$path = '/dev/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
+			$file = public_path().$path;
+			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
+			file_put_contents($file,$css);
+			$style = "<link href=\"{$path}\" rel=\"stylesheet\" type=\"text/css\">";
+		} else {
+			$style = "<style>{$css}</style>";
+		}
 		self::$styles[] = $name;
 		return $style;
 	}
@@ -40,8 +49,17 @@ class BladeDirectives {
 	public static function script($name,$vars) {
 		if (in_array($name,self::$scripts)) return "<!--script:{$name}-->";
 		$source = self::getSource($name,$vars);
+		$dev = FALSE;
 		$js = JSMin::minify($source);
-		$script = "<script>{$js}</script>";
+		if ($dev) {
+			$path = '/dev/components/'.$name;
+			$file = public_path().$path;
+			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
+			file_put_contents($file,$js);
+			$script = "<script src=\"{$path}\" type=\"text/javascript\"></script>";
+		} else {
+			$script = "<script>{$js}</script>";
+		}
 		self::$scripts[] = $name;
 		return $script;
 	}

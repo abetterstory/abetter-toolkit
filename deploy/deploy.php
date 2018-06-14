@@ -101,7 +101,6 @@ task('install', function () {
 	$chmod = run('chmod -R 777 bootstrap/cache'); writeln("chmod -R 777 bootstrap/cache: $chmod");
 	$chmod = run('chmod -R 777 storage'); writeln("chmod -R 777 storage: $chmod");
 	$composer = run('composer install -n --no-dev'); writeln("composer install -n --no-dev: $composer");
-	$composer = run('composer update -n --no-dev'); writeln("composer update -n --no-dev: $composer");
 	$artisan = run('php artisan key:generate'); writeln("php artisan key:generate: $artisan");
 	writeln("install done ------------------------------------------------");
 });
@@ -125,15 +124,14 @@ task('deploy', function () {
 	$git = run('git status'); writeln("git status: $git");
 	run('mkdir -p bootstrap/cache');
 	run('mkdir -p storage');
-	$chmod = run('chmod -R 777 bootstrap/cache'); writeln("chmod -R 777 bootstrap/cache: $chmod");
-	$chmod = run('chmod -R 777 storage'); writeln("chmod -R 777 storage: $chmod");
 	$composer = run('composer install -n --no-dev'); writeln("composer install -n --no-dev: $composer");
-	$composer = run('composer update -n --no-dev'); writeln("composer update -n --no-dev: $composer");
 	$artisan = run('php artisan cache:clear'); writeln("php artisan cache:clear: $artisan");
 	$artisan = run('php artisan route:clear'); writeln("php artisan route:clear: $artisan");
 	$artisan = run('php artisan view:clear'); writeln("php artisan view:clear: $artisan");
 	$artisan = run('php artisan config:clear'); writeln("php artisan config:clear: $artisan");
 	$rm = run('rm -rf storage/framework/sessions/*'); writeln("rm -rf storage/framework/sessions/*: $rm");
+	$chmod = run('chmod -R 777 bootstrap/cache'); writeln("chmod -R 777 bootstrap/cache: $chmod");
+	$chmod = run('chmod -R 777 storage'); writeln("chmod -R 777 storage: $chmod");
 	writeln("deploy done ------------------------------------------------");
 });
 

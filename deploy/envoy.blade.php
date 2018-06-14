@@ -47,6 +47,6 @@ if (!$current) throw new Exception('Connection data for '.$env.' is not defined 
 	{{ $br }}
 	git status
 	{{ $br }}
-	composer install -n --no-dev --no-scripts
+	composer install -n --no-dev
 	{{ $br }}
 @endtask
