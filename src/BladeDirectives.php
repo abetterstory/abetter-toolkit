@@ -24,14 +24,13 @@ class BladeDirectives {
 
 	// Style
 
-	public static function style($name,$vars) {
+	public static function style($name,$vars,$link=FALSE) {
 		if (in_array($name,self::$styles)) return "<!--style:{$name}-->";
 		$source = self::getSource($name,$vars);
-		$dev = FALSE;
 		$scss = new Compiler();
 		$scss->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
 		$css = $scss->compile($source);
-		if ($dev) {
+		if ($link) {
 			$path = '/dev/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
@@ -46,12 +45,11 @@ class BladeDirectives {
 
 	// Script
 
-	public static function script($name,$vars) {
+	public static function script($name,$vars,$link=FALSE) {
 		if (in_array($name,self::$scripts)) return "<!--script:{$name}-->";
 		$source = self::getSource($name,$vars);
-		$dev = FALSE;
 		$js = JSMin::minify($source);
-		if ($dev) {
+		if ($link) {
 			$path = '/dev/components/'.$name;
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);

@@ -30,9 +30,7 @@ class BladeServiceProvider extends ServiceProvider {
 			$expressions = explode(',',preg_replace("/[\(\)\\\"\']/",'',$expression));
 			$variable = trim($expressions[0]);
 			$service = (!empty($expressions[1])) ? trim($expressions[1]) : $variable;
-			if (class_exists($service)) {
-				return "<?php \${$variable} = app('{$service}'); ?>";
-			}
+			if (class_exists($service)) return "<?php \${$variable} = app('{$service}'); ?>";
 			return "<?php \${$variable} = \ABetter\Toolkit\BladeDirectives::inject('{$service}',get_defined_vars()); ?>";
 		});
 
@@ -40,9 +38,7 @@ class BladeServiceProvider extends ServiceProvider {
 		Blade::directive('component', function($expression){
 			list($path,$vars,$end) = BladeDirectives::parseExpression($expression);
 			if (!\View::exists($path)) $path .= '.'.array_last(explode('.',$path)); // Test if folder
-			if ($end) {
-				return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?><?php echo \$__env->renderComponent(); ?>";
-			}
+			if ($end) return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?><?php echo \$__env->renderComponent(); ?>";
 			return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?>";
 			/*
 			list($template,$vars) = BladeDirectives::parseExpression($expression);
@@ -56,14 +52,15 @@ class BladeServiceProvider extends ServiceProvider {
 
         // Style
         Blade::directive('style', function($expression){
-			list($file,$vars) = BladeDirectives::parseExpression($expression);
-			$expression = preg_replace('/\'/',"",$expression);
+			list($file,$vars,$link) = BladeDirectives::parseExpression($expression);
+			if ($link) return "<?php echo \ABetter\Toolkit\BladeDirectives::style('{$file}',array_merge(get_defined_vars(),$vars),TRUE); ?>";
 			return "<?php echo \ABetter\Toolkit\BladeDirectives::style('{$file}',array_merge(get_defined_vars(),$vars)); ?>";
         });
 
 		// Script
         Blade::directive('script', function($expression){
-			list($file,$vars) = BladeDirectives::parseExpression($expression);
+			list($file,$vars,$link) = BladeDirectives::parseExpression($expression);
+			if ($link) return "<?php echo \ABetter\Toolkit\BladeDirectives::script('{$file}',array_merge(get_defined_vars(),$vars),TRUE); ?>";
 			return "<?php echo \ABetter\Toolkit\BladeDirectives::script('{$file}',array_merge(get_defined_vars(),$vars)); ?>";
         });
 
