@@ -24,8 +24,9 @@ class BladeDirectives {
 
 	// Style
 
-	public static function style($name,$vars,$link=FALSE) {
+	public static function style($name,$vars=[],$link=FALSE) {
 		if (in_array($name,self::$styles)) return "<!--style:{$name}-->";
+		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		$source = self::getSource($name,$vars);
 		$paths = [dirname(self::getSourceFile($name,$vars)),resource_path('styles'),resource_path('css')];
 		$scss = new Compiler();
@@ -33,7 +34,7 @@ class BladeDirectives {
 		$scss->setImportPaths($paths);
 		$css = $scss->compile($source);
 		if ($link) {
-			$path = '/dev/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
+			$path = '/styles/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			file_put_contents($file,$css);
@@ -53,7 +54,7 @@ class BladeDirectives {
 		$source = self::getSource($name,$vars);
 		$js = JSMin::minify($source);
 		if ($link) {
-			$path = '/_dev/components/'.$name;
+			$path = '/scripts/components/'.$name;
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			file_put_contents($file,$js);
@@ -81,18 +82,19 @@ class BladeDirectives {
 
 	// ---
 
-	protected static function getSourceFile($name,$vars) {
+	protected static function getSourceFile($name,$vars=[]) {
+		if (!$vars) return base_path().'/'.$name;
 		$view = (isset($vars['view']->path)) ? $vars['view']->path : '';
 		$path = ((!preg_match('/\//',$name) && $view) ? dirname($view) : resource_path('views')) . '/';
 		return $path.trim($name,'/');
 	}
 
-	protected static function getSource($name,$vars) {
+	protected static function getSource($name,$vars=[]) {
 		$file = self::getSourceFile($name,$vars);
 		return (is_file($file)) ? trim(file_get_contents($file)) : '';
 	}
 
-	protected static function getClassFile($name,$vars) {
+	protected static function getClassFile($name,$vars=[]) {
 		$view = (isset($vars['view']->path)) ? $vars['view']->path : '';
 		$path = ((!preg_match('/\//',$name) && $view) ? dirname($view) : resource_path('views')) . '/';
 		$file = $path.trim($name,'/');
