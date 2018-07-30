@@ -26,13 +26,14 @@ class BladeDirectives {
 
 	public static function style($name,$vars,$link=FALSE) {
 		if (in_array($name,self::$styles)) return "<!--style:{$name}-->";
-		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		$source = self::getSource($name,$vars);
+		$paths = [dirname(self::getSourceFile($name,$vars)),resource_path('styles'),resource_path('css')];
 		$scss = new Compiler();
 		$scss->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
+		$scss->setImportPaths($paths);
 		$css = $scss->compile($source);
 		if ($link) {
-			$path = '/_dev/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
+			$path = '/dev/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			file_put_contents($file,$css);
