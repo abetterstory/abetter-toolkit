@@ -66,16 +66,15 @@ class BladeDirectives {
 
 	// Helpers
 
-	public static function parseExpression($exp) {
-		$exp = explode(',',$exp);
-		$exp[0] = trim($exp[0],'\'');
-		$exp[1] = (isset($exp[1])) ? $exp[1] : '[]';
-		$exp[2] = (isset($exp[2])) ? $exp[2] : NULL;
-		if (in_array(strtolower($exp[1]),['end','true','1'])) {
-			$exp[1] = '[]'; $exp[2] = TRUE;
-		} else if (in_array(strtolower($exp[1]),['false','0'])) {
-			$exp[1] = '[]'; $exp[2] = FALSE;
-		}
+	public static function parseExpression($parse) {
+		$id = trim(strtok($parse,','));
+		$vars = trim(str_replace($id,'',$parse),',');
+		$end = trim(preg_match('/, ?(end|true|1)$/i',$parse));
+		if ($end) $vars = trim(substr($vars,0,strrpos($vars,',')));
+		$exp = array();
+		$exp[0] = trim($id,'\'');
+		$exp[1] = ($vars) ? $vars : '[]';
+		$exp[2] = ($end) ? TRUE : FALSE;
 		return $exp;
 	}
 

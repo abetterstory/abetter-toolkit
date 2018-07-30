@@ -68,7 +68,7 @@ task('install:delete', function () {
 	// --
 	$confirm = "Are you sure you want to DELETE all files except .env in %s? : \n{$dir}";
 	$ask = str_replace('%s',ucwords($stage),$confirm);
-	askConfirmation($ask);
+	if (!askConfirmation($ask)) return false;
 	// ---
 	writeln("delete prepare ------------------------------------------------");
 	$cp = run("cp .env ../tmp/{$time}.env"); writeln("cp .env ../tmp/{$time}.env: $cp");
@@ -85,7 +85,7 @@ task('install', function () {
 	$confirm = "Are you sure you want to clone repository into %s?";
 	if (in_array($stage,['production','stage'])) {
 		$ask = str_replace('%s',ucwords($stage),$confirm);
-		askConfirmation($ask);
+		if (!askConfirmation($ask)) return false;
 	}
 	writeln("install prepare ------------------------------------------------");
 	cd('{{ deploy_path }}');
@@ -107,13 +107,26 @@ task('install', function () {
 
 // ---
 
+task('push', function () {
+	$branch = get('branch');
+	$confirm = "Are you sure you want to commit and push changes to branch %b?";
+	$ask = str_replace('%b',ucwords($branch),$confirm);
+	if (!askConfirmation($ask)) return false;
+	if (!$message = ask('Enter commit message:')) return false;
+	$git = runLocally('git add -A'); writeln("git add -A: $git");
+	$git = runLocally("git commit -m \"{$message}\""); writeln("git commit -m \"{$message}\": $git");
+	$git = runLocally('git push'); writeln("git push: $git");
+});
+
+// ---
+
 task('deploy', function () {
 	$stage = get('stage');
 	$branch = get('branch');
 	$confirm = "Are you sure you want to deploy to %s?";
 	if (in_array($stage,['production','stage'])) {
 		$ask = str_replace('%s',ucwords($stage),$confirm);
-		askConfirmation($ask);
+		if (!askConfirmation($ask)) return false;
 	}
 	writeln("deploy prepare ------------------------------------------------");
 	cd('{{ deploy_path }}');
@@ -143,7 +156,7 @@ task('db:pull', function () {
 	$confirm = "Are you sure you want to replace %d database with %s?";
 	if (in_array($stage,['production','stage'])) {
 		$ask = str_replace(['%d','%s'],[ucwords($destination),ucwords($stage)],$confirm);
-		askConfirmation($ask);
+		if (!askConfirmation($ask)) return false;
 	}
 	$time = date("Ymd_His");
 	$filename = "{$stage}-{$time}";
@@ -190,7 +203,7 @@ task('db:push', function () {
 	$confirm = "Are you sure you want to replace %s database with %o?";
 	if (in_array($stage,['production','stage'])) {
 		$ask = str_replace(['%o','%s'],[ucwords($origin),ucwords($stage)],$confirm);
-		askConfirmation($ask);
+		if (!askConfirmation($ask)) return false;
 	}
 	$time = date("Ymd_His");
 	$local['user'] = env('DB_USERNAME');
@@ -241,7 +254,7 @@ task('media:pull', function () {
 	$confirm = "Are you sure you want to download %s media to %d?";
 	if (in_array($stage,['production','stage'])) {
 		$ask = str_replace(['%d','%s'],[ucwords($destination),ucwords($stage)],$confirm);
-		askConfirmation($ask);
+		if (!askConfirmation($ask)) return false;
 	}
 	// ---
 	writeln("rsync prepare ------------------------------------------------");
@@ -265,7 +278,7 @@ task('media:push', function () {
 	$confirm = "Are you sure you want to upload %o media to %s?";
 	if (in_array($stage,['production','stage'])) {
 		$ask = str_replace(['%o','%s'],[ucwords($origin),ucwords($stage)],$confirm);
-		askConfirmation($ask);
+		if (!askConfirmation($ask)) return false;
 	}
 	// ---
 	writeln("rsync prepare ------------------------------------------------");
