@@ -23,7 +23,9 @@
                 "ABetter\\Toolkit\\ServiceProvider",
 				"ABetter\\Toolkit\\BladeServiceProvider"
             ],
-			"aliases": {}
+			"aliases": {
+				"ABetterToolkitController": "ABetter\\Toolkit\\Controller"
+			}
         }
     }
 }
