@@ -23,6 +23,8 @@ class BladeServiceProvider extends ServiceProvider {
 			$view_data->name = $view->getName();
 			$view_data->path = $view->getPath();
 			view()->share('view', $view_data);
+			view()->addLocation(base_path().'/vendor/abetter/toolkit/views');
+			view()->addLocation(base_path().'/vendor/abetter/wordpress/views');
 		});
 
 		// Inject (extends laravel inject directive)
