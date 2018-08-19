@@ -66,6 +66,20 @@ class BladeServiceProvider extends ServiceProvider {
 			return "<?php echo \ABetter\Toolkit\BladeDirectives::script('{$file}',array_merge(get_defined_vars(),$vars)); ?>";
         });
 
+		// Lipsum
+        Blade::directive('lipsum', function($expression){
+			list($type,$opt) = BladeDirectives::parseExpression($expression);
+			if ($opt) return "<?php echo _lipsum('{$type}',{$opt}); ?>";
+			return "<?php echo _lipsum('{$type}'); ?>";
+        });
+
+		// Pixsum
+        Blade::directive('pixsum', function($expression){
+			list($type,$opt) = BladeDirectives::parseExpression($expression);
+			if ($opt) return "<?php echo _pixsum('{$type}',{$opt}); ?>";
+			return "<?php echo _pixsum('{$type}'); ?>";
+        });
+
     }
 
     /**
