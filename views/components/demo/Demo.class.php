@@ -1,23 +1,27 @@
 <?php
 
-namespace ABetter\Toolkit;
+namespace App\View\Components;
 
-use ABetter\Toolkit\Component;
+use \ABetter\Toolkit\Component as BaseComponent;
 
-class Demo extends Component {
-
+class Demo extends BaseComponent {
 
 	// --- Variables
 
-	public $text = "Demo component text here!";
+	public $title;
+	public $lead;
+	public $body;
+	public $image;
 
 	// --- Parse
 
 	public function parse() {
 
-		$this->text = str_replace('here',"parsed",$this->text);
+		$this->title = _lipsum('headline','Demo');
+		$this->lead = _lipsum('lead','Demo');
+		$this->body = _lipsum('body','Demo');
+		$this->image = _pixsum('photo:tech');
 
 	}
-
 
 }
