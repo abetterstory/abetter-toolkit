@@ -5,17 +5,13 @@
 	<div class="row uk-section">
 		<div class="column uk-container">
 
-			<h2>{{ $Demo->title }}</h2>
+			<h1>{{ $Demo->title }}</h1>
 
 			<p class="lead">{{ $Demo->lead }}</p>
 
-			<figure>
-				<img src="{{ $Demo->image }}" />
-			</figure>
+			<img src="{{ $Demo->image }}" />
 
-			<article>
-				{!! $Demo->body !!}
-			</article>
+			{!! $Demo->body !!}
 
 		</div>
 	</div>
