@@ -10,6 +10,8 @@ class BladeDirectives {
 	protected static $styles = [];
 	protected static $scripts = [];
 
+	protected static $imports_path = '';
+
 	// inject
 
 	public static function inject($name,$vars) {
@@ -52,6 +54,7 @@ class BladeDirectives {
 		if (in_array($name,self::$scripts)) return "<!--script:{$name}-->";
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		$source = self::getSource($name,$vars);
+		$source = self::parseImports($source,$vars);
 		$js = JSMin::minify($source);
 		if ($link) {
 			$path = '/scripts/components/'.$name;
@@ -107,6 +110,24 @@ class BladeDirectives {
 	protected static function getClass($name,$vars) {
 		$file = self::getClassFile($name,$vars);
 		return (is_file($file)) ? trim(file_get_contents($file)) : '';
+	}
+
+	// ---
+
+	protected static function parseImports($source,$vars) {
+		self::$imports_path = (isset($vars['view']->path)) ? $vars['view']->path : '';
+		$source = preg_replace_callback('/\@import\(([^\)]+)\);?/',function($matches){
+			$file = trim($matches[1],'\'\"');
+			if (preg_match('/^\~/',$file)) {
+				$file = base_path().'/node_modules/'.trim($file,'~');
+			} elseif (preg_match('/^\//',$file)) {
+				$file = base_path().$file;
+			} else {
+				$file = ((!empty(self::$imports_path)) ? dirname(self::$imports_path) : base_path()).'/'.$file;
+			}
+			return (is_file($file)) ? file_get_contents($file) : "";
+        },$source);
+		return $source;
 	}
 
 	// Special
