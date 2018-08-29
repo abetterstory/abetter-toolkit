@@ -80,6 +80,12 @@ class BladeServiceProvider extends ServiceProvider {
 			return "<?php echo _pixsum('{$type}'); ?>";
         });
 
+		// LAB
+		Blade::directive('lab', function($expression){
+			$path = 'lab.lab';
+			return "<?php \$__env->startComponent('{$path}'); ?><?php echo \$__env->renderComponent(); ?>";
+		});
+
     }
 
     /**
