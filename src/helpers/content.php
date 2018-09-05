@@ -12,3 +12,15 @@ if (!function_exists('_excerpt')) {
 	}
 
 }
+
+if (!function_exists('_render')) {
+
+	function _render($str="") {
+		ob_start();
+		eval('?>'.\Blade::compileString($str));
+		$return = ob_get_contents();
+		ob_end_clean();
+		return trim($return);
+	}
+
+}

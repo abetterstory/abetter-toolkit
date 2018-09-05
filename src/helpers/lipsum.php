@@ -18,6 +18,7 @@ if (!function_exists('_lipsum')) {
 			$opt = ['type' => $opts[0]];
 			if (preg_match('/\:(real)/',$input)) $opt['format'] = 'real';
 			if (preg_match('/\:(p|a|li|span|h1|h2|h3|h4|h5|h6)/',$input,$match)) $opt['tag'] = $match[1];
+			if (preg_match('/\.(lead)/',$input,$match)) $opt['class'] = $match[1];
 			if (preg_match('/\:([0-9]+)/',$input,$match)) $opt['repeat'] = $match[1];
 		} else if (is_numeric($opt)) {
 			$input = (int) $opt;
@@ -39,6 +40,7 @@ if (!function_exists('_lipsum')) {
 			'min' => NULL,
 			'max' => NULL,
 			'tag' => NULL,
+			'class' => NULL,
 			'attr' => NULL,
 			'prefix' => NULL,
 			'return' => "",
@@ -55,6 +57,7 @@ if (!function_exists('_lipsum')) {
 
 		if (empty($opt['repeat'])) $opt['repeat'] = 1;
 		if (empty($opt['attr'])) $opt['attr'] = 'lipsum';
+		if (!empty($opt['class'])) $opt['attr'] .= " class=\"{$opt['class']}\"";
 
 		// ---
 
