@@ -1,0 +1,138 @@
+
+#lab {
+	box-sizing: border-box;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	line-height: 1.2;
+	-webkit-font-smoothing: antialiased;
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+	a {
+		text-decoration: none;
+		cursor: pointer;
+	}
+	figure {
+		display: block;
+		margin: 0;
+		padding: 0;
+	}
+}
+
+// ---
+
+#lab {
+
+	display: block;
+
+	.lab-panel {
+		display: block;
+		position: fixed;
+		z-index: 10000;
+		width: 100%;
+		overflow: hidden;
+		overflow-y: auto;
+	}
+
+	.lab-panel.lab-editor {
+		z-index: 10010;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		width: auto;
+		height: 100vh;
+	}
+
+	.lab-panel.lab-navigator {
+		z-index: 10020;
+		left: 0;
+		top: 0;
+		bottom: 0;
+	}
+
+	.lab-panel.lab-inspector {
+		z-index: 10030;
+		right: 0;
+		top: 0;
+		bottom: 0;
+	}
+
+	.lab-panel.lab-bar {
+		z-index: 10040;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 40px;
+	}
+
+}
+
+// ---
+
+body {
+
+	#lab .lab-panel.lab-editor,
+	#lab .lab-panel.lab-navigator,
+	#lab .lab-panel.lab-inspector {
+		display: none;
+	}
+
+	&.lab-editor {
+		#lab .lab-panel.lab-editor {
+			display: block;
+		}
+	}
+
+	&.lab-navigator {
+		#lab .lab-panel.lab-navigator {
+			display: block;
+		}
+		#lab .lab-panel.lab-editor {
+			left: 320px;
+		}
+	}
+
+	&.lab-inspector {
+		#lab .lab-panel.lab-inspector {
+			display: block;
+		}
+		#lab .lab-panel.lab-editor {
+			right: 320px;
+		}
+	}
+
+	&.lab-bar {
+		margin-bottom: 40px;
+		#lab .lab-panel.lab-navigator {
+			bottom: 40px;
+		}
+		#lab .lab-panel.lab-inspector {
+			bottom: 40px;
+		}
+		#lab .lab-panel.lab-editor {
+			bottom: 40px;
+		}
+	}
+
+	@media (min-width: 380px) {
+		&.lab-navigator {
+			margin-left: 320px !important;
+			#lab .lab-panel.lab-navigator {
+				width: 320px;
+			}
+		}
+		&.lab-inspector {
+			margin-right: 320px !important;
+			#lab .lab-panel.lab-inspector {
+				width: 320px;
+			}
+		}
+		&.lab-bar {
+			margin-bottom: 40px !important;
+		}
+	}
+
+}
