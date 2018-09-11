@@ -6,4 +6,4 @@
 |--------------------------------------------------------------------------
 */
 
-Route::any('api/browsersync/{event?}/{path}', '\ABetterToolkitController@handle')->where('path','.*');
+Route::any('browsersync/{event?}/{path}', '\ABetterToolkitController@handle')->where('path','.*');

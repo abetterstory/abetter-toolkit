@@ -11,6 +11,14 @@ if (!function_exists('_is_current')) {
 
 }
 
+if (!function_exists('_is_front')) {
+
+	function _is_front($url, $return='front') {
+		return ($url == '/') ? $return : '';
+	}
+
+}
+
 if (!function_exists('_relative')) {
 
 	function _relative($url) {

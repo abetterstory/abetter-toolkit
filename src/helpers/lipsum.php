@@ -283,3 +283,98 @@ if (!function_exists('_pixsum')) {
 	}
 
 }
+
+
+// Logosum
+
+if (!function_exists('_logosum')) {
+
+	function _logosum($opt=NULL,$opt2=NULL) {
+
+		if (is_string($opt)) {
+			$input = $opt;
+			$opts = explode(':',$input);
+			$opt = ['text' => $opts[0]];
+			if (isset($opts[1])) $opt['color'] = $opts[1];
+			if (isset($opts[2])) $opt['background'] = $opts[2];
+		}
+
+		// ---
+
+		$opt = array_replace([
+			'text' => "Logotype",
+			'color' => NULL,
+			'border' => NULL,
+			'background' => NULL,
+			'width' => 400,
+			'height' => 180,
+			'font' => 'monospace',
+			'transform' => 'uppercase',
+			'weight' => 'bold',
+			'size' => 80,
+			'spacing' => 20,
+			'line' => 20,
+			'pad' => 80,
+			'return' => "",
+		],(array)$opt);
+
+		// ---
+
+		if (empty($opt['color'])) $opt['color'] = '#333';
+		if (empty($opt['border'])) $opt['border'] = $opt['color'];
+		if (empty($opt['background'])) $opt['background'] = 'transparent';
+
+		$opt['pad'] = $opt['size'];
+
+		if (strlen($opt['text']) > 4) $opt['width'] = strlen($opt['text']) * $opt['pad'] + $opt['pad'];
+
+		// ---
+
+		$template = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 [width] [height]">
+		<defs>
+			<style>
+				rect { width: 100%; height: 100%; fill: [background]; stroke: [border]; stroke-width: [line]px; }
+			    text { fill: [color]; font-family: [font]; font-size: [size]px; font-weight: [weight]; letter-spacing: [spacing]px; text-transform: [transform]; alignment-baseline: middle; }
+			</style>
+		</defs>
+		<rect />
+		<text x="50%" y="53%" text-anchor="middle">[text]</text>
+		</svg>';
+
+		// ---
+
+		$opt['return'] = str_replace([
+			'[width]',
+			'[height]',
+			'[background]',
+			'[border]',
+			'[line]',
+			'[color]',
+			'[font]',
+			'[size]',
+			'[weight]',
+			'[spacing]',
+			'[transform]',
+			'[text]',
+		],[
+			$opt['width'],
+			$opt['height'],
+			$opt['background'],
+			$opt['border'],
+			$opt['line'],
+			$opt['color'],
+			$opt['font'],
+			$opt['size'],
+			$opt['weight'],
+			$opt['spacing'],
+			$opt['transform'],
+			$opt['text'],
+		],$template);
+
+		// ---
+
+		return (string) $opt['return'];
+
+	}
+
+}
