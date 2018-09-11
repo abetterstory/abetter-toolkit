@@ -82,6 +82,7 @@ class BladeServiceProvider extends ServiceProvider {
 
 		// LAB
 		Blade::directive('lab', function($expression){
+			if (!BladeDirectives::canViewLab()) return "";
 			$path = 'lab.lab';
 			return "<?php \$__env->startComponent('{$path}'); ?><?php echo \$__env->renderComponent(); ?>";
 		});

@@ -85,6 +85,12 @@ class BladeDirectives {
 		return $exp;
 	}
 
+	public static function canViewLab($can=TRUE) {
+		$can = (in_array(env('APP_ENV'),['stage','production'])) ? FALSE : $can;
+		$can = (function_exists('get_current_user_id') && !get_current_user_id()) ? FALSE : $can;
+		return $can;
+	}
+
 	// ---
 
 	protected static function getSourceFile($name,$vars=[]) {
