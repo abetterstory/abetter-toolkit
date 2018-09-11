@@ -90,7 +90,7 @@ class BladeDirectives {
 	protected static function getSourceFile($name,$vars=[]) {
 		if (!$vars) return base_path().'/'.$name;
 		$view = (isset($vars['view']->path)) ? $vars['view']->path : '';
-		$path = ((!preg_match('/\//',$name) && $view) ? dirname($view) : resource_path('views')) . '/';
+		$path = ((!preg_match('/^\//',$name) && $view) ? dirname($view) : resource_path('views')) . '/';
 		return $path.trim($name,'/');
 	}
 
@@ -101,7 +101,7 @@ class BladeDirectives {
 
 	protected static function getClassFile($name,$vars=[]) {
 		$view = (isset($vars['view']->path)) ? $vars['view']->path : '';
-		$path = ((!preg_match('/\//',$name) && $view) ? dirname($view) : resource_path('views')) . '/';
+		$path = ((!preg_match('/^\//',$name) && $view) ? dirname($view) : resource_path('views')) . '/';
 		$file = $path.trim($name,'/');
 		if (is_file($file)) return $file;
 		if (is_file($file.'.php')) return $file.'.php';
