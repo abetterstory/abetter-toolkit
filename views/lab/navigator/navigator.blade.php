@@ -1,7 +1,7 @@
 <?php
 
 class Navigator extends ABetter\Toolkit\Component {
-	public function parse() {
+	public function build() {
 
 		$this->web_label = "Wordpress Content";
 		$this->web_admin_new = "Add new";

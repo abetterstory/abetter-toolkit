@@ -6,7 +6,7 @@ use \ABetter\Toolkit\Component as BaseComponent;
 
 class Lab extends BaseComponent {
 
-	public function parse() {
+	public function build() {
 
 
 

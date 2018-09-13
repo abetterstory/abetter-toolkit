@@ -14,12 +14,12 @@ class Component {
 
 	public function __construct(array $defined_vars = []) {
 		$this->scope = (object) $defined_vars;
-		$this->parse();
+		$this->build();
 	}
 
-	// --- Parse
+	// --- Build
 
-	public function parse() {
+	public function build() {
 		//
 	}
 
