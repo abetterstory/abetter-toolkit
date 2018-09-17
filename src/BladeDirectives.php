@@ -3,6 +3,7 @@
 namespace ABetter\Toolkit;
 
 use Leafo\ScssPhp\Compiler;
+use Patchwork\JSqueeze;
 use JSMin\JSMin;
 
 class BladeDirectives {
@@ -57,7 +58,7 @@ class BladeDirectives {
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		$source = self::getSource($name,$vars);
 		$source = self::parseScriptIncludes($source,$vars);
-		$JSqueeze = new \Patchwork\JSqueeze();
+		$JSqueeze = new JSqueeze();
 		$js = $JSqueeze->squeeze($source,TRUE,TRUE,FALSE);
 		//$js = JSMin::minify($source);
 		if ($link) {
