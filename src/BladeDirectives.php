@@ -57,7 +57,9 @@ class BladeDirectives {
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		$source = self::getSource($name,$vars);
 		$source = self::parseScriptIncludes($source,$vars);
-		$js = JSMin::minify($source);
+		$JSqueeze = new \Patchwork\JSqueeze();
+		$js = $JSqueeze->squeeze($source,TRUE,TRUE,FALSE);
+		//$js = JSMin::minify($source);
 		if ($link) {
 			$path = '/scripts/components/'.$name;
 			$file = public_path().$path;
