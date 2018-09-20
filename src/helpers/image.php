@@ -1,8 +1,21 @@
 <?php
 
+if (!function_exists('_image')) {
+
+	function _image($file,$style='x',$ext=NULL) {
+		if (($wp = env('WP_UPLOADS')) && preg_match('|'.$wp.'|',$file)) $file = str_replace($wp,'/uploads/',$file);
+		$url = '/image/'.$style._relative($file);
+		if ($ext === TRUE) return $url;
+		$ext = ($ext) ? $ext : 'jpg';
+		$url = dirname($url).'/'.pathinfo($url,PATHINFO_FILENAME).'.'.$ext;
+		return $url;
+	}
+
+}
+
 if (!function_exists('_imageMagick')) {
 
-	function _imageMagick($source,$target,$style) {
+	function _imageMagick($source,$target,$style,$format=NULL) {
 		if (!is_file($source)) return FALSE;
 		File::makeDirectory(dirname($target),0777,TRUE,TRUE);
 		$ext = strtolower(pathinfo($target, PATHINFO_EXTENSION));
@@ -34,6 +47,11 @@ if (!function_exists('_imagickResize')) {
 		$source_h = $imagick->getImageHeight();
 		$target_w = floor($style['w']);
 		$target_h = floor($style['h']);
+		// ---
+		if (empty($target_w) && empty($target_h)) {
+			$target_w = $source_w;
+			$target_h = $source_h;
+		}
 		// ---
 		if ($target_w > $target_h) {
 			$resize_w = $target_w;
@@ -218,4 +236,28 @@ function _headers($type,$created,$expire,$etag=NULL,$cors=FALSE) {
 		@header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, X-Requested-With');
 	}
 	return TRUE;
+}
+
+function _imageFileSearch($file) {
+	$return = NULL;
+	$ext = pathinfo($file,PATHINFO_EXTENSION);
+	$name = pathinfo($file,PATHINFO_FILENAME);
+	if ($conv = pathinfo($name,PATHINFO_EXTENSION)) {
+		$ext = $conv;
+		$name = pathinfo($name,PATHINFO_FILENAME);
+	}
+	$dir = dirname(public_path().$file);
+	if (!is_dir($dir)) {
+		// Try WP_UPLOADS
+		if (preg_match('/^\/uploads\//',$file)) {
+			$dir = dirname(public_path().str_replace('/uploads/',env('WP_UPLOADS'),$file));
+		}
+		if (!is_dir($dir)) return FALSE;
+	}
+	foreach (scandir($dir) AS $f) {
+		if ($return || in_array($f,['.','..'])) continue;
+		if ($f == "{$name}.{$ext}") $return = $f;
+		if (pathinfo($f,PATHINFO_FILENAME) == $name) $return = $f;
+	}
+	return ($return) ? realpath($dir.DIRECTORY_SEPARATOR.$return) : FALSE;
 }

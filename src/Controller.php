@@ -34,12 +34,9 @@ class Controller extends BaseController {
 
 	public function handleImage($style,$file,$opt=NULL) {
 		$file = '/'.trim($file,'/');
-		if (!is_file(public_path().$file) && preg_match('/^\/uploads\//',$file)) {
-			$file = str_replace('/uploads/','/wp/wp-content/uploads/',$file);
-		}
 		$opt = array_replace([
 			'style' => $style,
-			'source' => public_path().$file,
+			'source' => _imageFileSearch($file),
 			'target' => preg_replace('/\.([^\.]+)$/',".{$style}.$1",storage_path('cache').$file),
 			'is_source' => NULL,
 			'is_target' => NULL,
