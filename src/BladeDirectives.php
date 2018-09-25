@@ -89,8 +89,9 @@ class BladeDirectives {
 	}
 
 	public static function canViewLab($can=TRUE) {
+		$env = (boolean) env('APP_LAB');
 		$can = (in_array(env('APP_ENV'),['stage','production'])) ? FALSE : $can;
-		$can = (function_exists('get_current_user_id') && !get_current_user_id()) ? FALSE : $can;
+		$can = (function_exists('get_current_user_id') && !get_current_user_id()) ? $env : $can;
 		return $can;
 	}
 
