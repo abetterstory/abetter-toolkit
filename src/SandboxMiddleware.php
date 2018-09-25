@@ -26,12 +26,12 @@ class SandboxMiddleware {
 		$i = new \DirectoryIterator($path);
         foreach ($i AS $f) {
             if ($f->isFile()) {
-                unlink($f->getRealPath());
+                @unlink($f->getRealPath());
             } else if (!$f->isDot() && $f->isDir()) {
                 $this->deleteFiles($f->getRealPath());
             }
         }
-        if ($rmdir) rmdir($path);
+        if ($rmdir) @rmdir($path);
 	}
 
 }
