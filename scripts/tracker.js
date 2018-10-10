@@ -13,8 +13,8 @@
 	window.track = function(action, category, label, debug) {
 		if (!category) category = 'event';
 		if (!label) label = window.location.pathname;
-		if ('ga' in window) ga('send', 'event', category, action, label);
 		if (debug || window.trackdebug) console.log('track',action+':'+category+':'+label);
+		if ('gtag' in window) gtag('event', action, { 'event_category': category, 'event_label': label });
 	}
 
 	window.log = function(action, category, log, debug) {
