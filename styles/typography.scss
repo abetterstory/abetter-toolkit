@@ -1,0 +1,157 @@
+
+body {
+	font-family: $font-body;
+	font-weight: normal;
+	font-size: $global-font-size * 0.9;
+	@media (min-width: $breakpoint-tiny) { font-size: $global-font-size; }
+}
+
+h1 {
+	font-family: $font-headline;
+	font-weight: bold;
+	font-size: $global-xxlarge-font-size * 0.8;
+	@media (min-width: $breakpoint-small) { font-size: $global-xxlarge-font-size; }
+	line-height: 1.1;
+	margin-left: -1px;
+	margin-top: 0rem;
+	margin-bottom: 0rem;
+}
+
+h2 {
+	font-family: $font-headline;
+	font-weight: bold;
+	font-size: $global-xlarge-font-size * 0.8;
+	@media (min-width: $breakpoint-small) { font-size: $global-xlarge-font-size; }
+	line-height: 1.2;
+	margin-left: -1px;
+	margin-top: 2rem;
+	margin-bottom: 0rem;
+	&:first-child {
+		margin-top: 0rem;
+	}
+}
+
+h3,h4 {
+	font-family: $font-headline;
+	font-weight: bold;
+	font-size: $global-large-font-size * 0.8;
+	@media (min-width: $breakpoint-small) { font-size: $global-large-font-size; }
+	line-height: 1.4;
+	margin-top: 2rem;
+	margin-bottom: 0rem;
+	&:first-child {
+		margin-top: 0rem;
+	}
+}
+
+h5,h6 {
+	font-family: $font-body;
+	font-weight: bold;
+	font-size: $global-medium-font-size * 0.9;
+	@media (min-width: $breakpoint-small) { font-size: $global-medium-font-size; }
+	line-height: 1.4;
+	margin-top: 2rem;
+	margin-bottom: 0rem;
+	&:first-child {
+		margin-top: 0rem;
+	}
+}
+
+p {
+	font-family: $font-body;
+	font-weight: normal;
+	font-size: $global-font-size * 0.9;
+	@media (min-width: $breakpoint-tiny) { font-size: $global-font-size; }
+	line-height: 1.5;
+	margin-bottom: 0rem;
+	margin-top: 1rem;
+	&:first-child {
+		margin-top: 0rem;
+	}
+}
+
+p + p {
+	margin-top: 0rem;
+	text-indent: 2rem;
+}
+
+p:empty,
+p[empty],
+p.empty,
+p:empty + p,
+p[empty] + p,
+p.empty + p {
+	text-indent: 0rem;
+}
+
+.lead {
+	font-family: $font-body;
+	font-weight: normal;
+	font-size: $global-large-font-size * 0.8;
+	@media (min-width: $breakpoint-tiny) { font-size: $global-large-font-size; }
+	line-height: 1.4;
+	margin-top: 1.5rem;
+	&:first-child {
+		margin-top: 0rem;
+	}
+}
+
+.lead + .lead {
+	margin-top: 0rem;
+}
+
+p.lead + p:not(.empty) {
+	margin-top: 1rem;
+}
+
+p.lead + p:before {
+	padding-left: 0rem;
+}
+
+.tagline,
+.byline {
+	display: block;
+	font-family: $font-headline;
+	font-weight: normal;
+	font-size: $global-small-font-size * 0.9;
+	@media (min-width: $breakpoint-tiny) { font-size: $global-small-font-size; }
+	line-height: 1.5;
+	color: $global-muted-color;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	margin-bottom: 1rem;
+	margin-top: 1.0rem;
+	&:first-child {
+		margin-top: 0rem;
+	}
+}
+
+h1 + img,
+h2 + img,
+h3 + img,
+h4 + img,
+h5 + img,
+h6 + img,
+p + img {
+	margin-top: 1.5rem;
+}
+
+img + p {
+	margin-top: 1.5rem;
+}
+
+ul,ol {
+	display: block;
+	padding: 0;
+	margin-top: 1.5rem;
+	li {
+		list-style-position: inside;
+	}
+}
+
+
+nowrap,
+[nowrap],
+.nowrap {
+	white-space: nowrap;
+}

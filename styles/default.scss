@@ -1,0 +1,41 @@
+
+// Reset
+/*
+*,
+*:before,
+*:after {
+    //box-sizing: border-box;
+}
+*/
+
+// ---
+
+* {
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+	height: 100%;
+	overflow-x: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+[ontouchstart],
+[no-tap],
+.no-tap {
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+// ---
+
+.uk-section {
+	padding-top: 20px;
+	@media (min-width: 640px) { padding-top: 40px; }
+}

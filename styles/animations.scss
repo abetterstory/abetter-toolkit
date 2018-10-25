@@ -1,0 +1,51 @@
+/* App / Animations */
+
+@keyframes fadeIn {
+	0% { opacity: 0; visibility: hidden; }
+	100% { opacity: 1; visibility: visible; }
+}
+
+@keyframes fadeOut {
+	0% { opacity: 1; visibility: visible; }
+	100% { opacity: 0; visibility: hidden; }
+}
+
+@keyframes slideOutLeft {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+}
+
+@keyframes slideOutLeft2 {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(-200%); }
+}
+
+@keyframes slideOutRight {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes slideOutRight2 {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(200%); }
+}
+
+@keyframes slideInLeft {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0%); }
+}
+
+@keyframes slideInLeft2 {
+    0% { transform: translateX(200%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes slideInRight {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0%); }
+}
+
+@keyframes slideInRight2 {
+    0% { transform: translateX(-200%); }
+    100% { transform: translateX(-100%); }
+}

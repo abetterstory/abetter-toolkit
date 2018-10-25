@@ -1,0 +1,52 @@
+
+// Color
+
+$color-primary: #AE8A00 !default;
+
+// Font
+
+$font-headline: 'Helvetica Neue', Helvetica, Arial, sans-serif !default;
+$font-body: 'Courier New', Courier, Lucida, Console, monospace !default;
+
+// Transitions
+
+$ease-quart: cubic-bezier(0.77, 0, 0.175, 1);
+$ease-in-quart: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+$ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+
+$ease-expo: cubic-bezier(1, 0, 0, 1);
+$ease-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+$ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+
+$ease: $ease-quart;
+$ease-in: $ease-in-quart;
+$ease-out: $ease-out-quart;
+
+// ---
+
+// UIKit
+
+$breakpoint-tiny: 480px !default;  // Phone landscape
+$breakpoint-small: 640px !default;  // Phone landscape
+$breakpoint-medium: 960px !default;  // Tablet Landscape
+$breakpoint-large: 1200px !default; // Desktop
+$breakpoint-xlarge: 1600px !default; // Large Screens
+
+$global-font-family: $font-body !default;
+$global-font-size: 16px !default;
+$global-line-height: 1.5 !default; // 24px
+$global-xxlarge-font-size: 2.625rem !default; // 42px
+$global-xlarge-font-size: 2rem !default; // 2rem !default; // 32px
+$global-large-font-size: 1.5rem !default;   // 24px
+$global-medium-font-size: 1.25rem !default;  // 20px
+$global-small-font-size: 0.75rem !default; // 0.875rem !default; // 14px
+$global-color: #333 !default; // #666 !default;
+$global-emphasis-color: #333 !default;
+$global-muted-color: #aaa !default; // #999
+$global-link-color: $color-primary !default;
+$global-link-hover-color: $global-color !default;
+
+$base-selection-background: $color-primary !default;
+$base-selection-color: #fff !default; // $global-inverse-color !default;
+
+$container-max-width: 820px !default; // 1200px
