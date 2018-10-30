@@ -51,29 +51,53 @@ if ($s = env('DP_PRODUCTION_SERVER')) {
 
 // -------------------------------------
 
+function writeLine($message="",$output="",$style="info") {
+	writeln(date("\[H:i:s\] ")."<$style>".$message.(($output)?": ".$output:"")."</$style>");
+}
+
+function writeRun($command,$message="") {
+	writeLine(($message)?$message:$command,run($command));
+}
+
+function writeRunLocally($command,$message="") {
+	writeLine(($message)?$message:$command,runLocally($command));
+}
+
+// -------------------------------------
+
 // Tasks
 
 task('hello', function () {
-	writeln('{{ server }}');
 	$stage = get('stage');
+	writeLine('{{ server }}');
 	cd('{{ deploy_path }}');
-	$hostname = run('hostname'); writeln("server: $hostname");
-	$whoami = run('whoami'); writeln("user: $whoami");
-	$pwd = run('pwd'); writeln("path: $pwd");
-    writeln('Hello world, ready to go @ '.ucwords($stage));
+	writeRun("hostname");
+	writeRun("whoami","username");
+	writeRun("pwd","destination");
+    writeLine("Hello world, ready to go @ ".ucwords($stage));
+	writeLine("Available tasks:");
+	writeln("> dep build local");
+	writeln("> dep prepare $stage");
+	writeln("> dep deploy $stage");
+	writeln("> dep db:import $stage");
+	writeln("> dep db:pull $stage");
+	writeln("> dep db:push $stage");
+	writeln("> dep media:pull $stage");
+	writeln("> dep media:push $stage");
 });
 
 // Tasks / Build
 
 task('build', function () {
-	writeln("build prepare ------------------------------------------------");
+	writeLine("Build prepare");
 	runLocally("rm -rf ./storage/cache/*");
 	runLocally("rm -rf ./storage/clockwork/*");
 	runLocally("rm -rf ./storage/logs/*");
 	runLocally("rm -rf ./public/scripts/*");
 	runLocally("rm -rf ./public/styles/*");
-	writeln("npm run production: ".runLocally("npm run production"));
-	writeln("build done ------------------------------------------------");
+	writeLine("Building...");
+	writeRunLocally("npm run production");
+	writeLine("Build done!");
 });
 
 // Tasks / Prepare
@@ -90,11 +114,11 @@ task('prepare', function () {
 	$ask = str_replace('%s',ucwords($stage),$confirm);
 	if (!askConfirmation($ask)) return false;
 	// ---
-	writeln("delete prepare ------------------------------------------------");
-	run("cp .env ../tmp/{$time}.env"); writeln("cp .env ../tmp/{$time}.env");
-	run("rm -rf *"); writeln("rm -rf *");
-	run("rm -rf .git*"); writeln("rm -rf .git*");
-	writeln("delete done ------------------------------------------------");
+	writeLine("Prepare task");
+	writeRun("cp .env ../tmp/{$time}.env","backup .env => ../tmp/{$time}.env");
+	run("rm -rf *");
+	run("rm -rf .git*");
+	writeLine("Prepare done!");
 });
 
 // Tasks / Deploy
@@ -106,28 +130,27 @@ task('deploy', function () {
 		$ask = str_replace('%s',ucwords($stage),$confirm);
 		if (!askConfirmation($ask)) return false;
 	}
-	writeln("deploy prepare ------------------------------------------------");
 	cd("{{ deploy_path }}");
-	writeln("pwd: ".run("pwd"));
+	writeRun("pwd","Deploy prepare destination");
 	// ---
-	writeln("rsync prepare ------------------------------------------------");
 	$dirs = ['app','bootstrap','config','database','resources','routes','storage','tests','vendor','public','artisan','composer.json','composer.lock','server.php'];
 	foreach ($dirs AS $dir) {
 		$dest = dirname($dir);
-		writeln("rsync: {$dir} ".runLocally("rsync -vr --links --quiet ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}"));
+		writeRunLocally("rsync -vr --links --quiet ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}","rsync: {$dir}");
 	}
-	writeln("rsync done ------------------------------------------------");
-	run('mkdir -p bootstrap/cache');
-	run('mkdir -p storage');
-	run('chmod -R 777 bootstrap/cache');
-	run('chmod -R 777 storage');
-	writeln("composer install -n --no-dev: ".run('composer install -n --no-dev'));
-	writeln("php artisan cache:clear: ".run('php artisan cache:clear'));
-	writeln("php artisan route:clear: ".run('php artisan route:clear'));
-	writeln("php artisan view:clear: ".run('php artisan view:clear'));
-	writeln("php artisan config:clear: ".run('php artisan config:clear'));
-	run('rm -rf storage/framework/sessions/*'); writeln("rm -rf storage/framework/sessions/*");
-	writeln("deploy done ------------------------------------------------");
+	// ---
+	writeLine("Updating composer/laravel");
+	writeRun("composer install -n --no-dev");
+	writeRun("php artisan cache:clear");
+	writeRun("php artisan route:clear");
+	writeRun("php artisan view:clear");
+	writeRun("php artisan config:clear");
+	writeRun("rm -rf storage/framework/sessions/*");
+	writeRun("mkdir -p bootstrap/cache");
+	writeRun("mkdir -p storage");
+	writeRun("chmod -R 777 bootstrap/cache");
+	writeRun("chmod -R 777 storage");
+	writeLine("Deploy done!");
 });
 
 // Tasks / Database
@@ -145,19 +168,20 @@ task('db:import', function () {
 	$local['pass'] = env('DB_PASSWORD');
 	$local['db'] = env('DB_DATABASE');
 	// ---
-	writeln("import prepare ------------------------------------------------");
-	// ---
-	runLocally('mkdir -p tmp'); runLocally('chmod 777 tmp');
-	runLocally('mkdir -p backup/db'); runLocally('chmod 777 backup/db');
+	writeLine("Import prepare");
+	runLocally('mkdir -p tmp');
+	runLocally('mkdir -p backup/db');
+	runLocally('chmod 777 tmp');
+	runLocally('chmod 777 backup/db');
 	// ---
 	runLocally("mysqldump --user={$local['user']} --password={$local['pass']} {$local['db']} > backup/db/{$local['db']}_{$time}.sql");
 	runLocally("gzip backup/db/{$local['db']}_{$time}.sql");
-	writeln("mysqldump local:{$local['db']} > backup/db/{$local['db']}_{$time}.sql");
+	writeLine("mysqldump local:{$local['db']} > backup/db/{$local['db']}_{$time}.sql");
 	// ---
 	runLocally("mysql --user={$local['user']} --password={$local['pass']} {$local['db']} < {$import_path}{$import}");
-	writeln("mysql local:{$local['db']} < {$import_path}{$import}");
+	writeLine("mysql local:{$local['db']} < {$import_path}{$import}");
 	// ---
-	writeln("import done ------------------------------------------------");
+	writeLine("Import done");
 });
 
 task('db:pull', function () {
@@ -175,9 +199,13 @@ task('db:pull', function () {
 	$local['db'] = env('DB_DATABASE');
 	// ---
 	cd('{{ deploy_path }}');
-	run('mkdir -p tmp'); run('chmod 777 tmp');
-	runLocally('mkdir -p tmp'); runLocally('chmod 777 tmp');
-	runLocally('mkdir -p backup/db'); runLocally('chmod 777 backup/db');
+	writeLine("Prepare target & destination");
+	run('mkdir -p tmp');
+	run('chmod 777 tmp');
+	runLocally('mkdir -p tmp');
+	runLocally('mkdir -p backup/db');
+	runLocally('chmod 777 tmp');
+	runLocally('chmod 777 backup/db');
 	download('{{ deploy_path }}/.env', "tmp/{$stage}.env");
 	// ---
 	$tmpenv = new \Dotenv\Dotenv(__ROOT__.'/tmp',"{$stage}.env");
@@ -185,24 +213,23 @@ task('db:pull', function () {
 	$remote['user'] = env('DB_USERNAME');
 	$remote['pass'] = env('DB_PASSWORD');
 	$remote['db'] = env('DB_DATABASE');
-	writeln("prepare hosts ------------------------------------------------");
 	// ---
 	run("mysqldump --user={$remote['user']} --password={$remote['pass']} {$remote['db']} > tmp/{$filename}.sql");
 	run("gzip tmp/{$filename}.sql");
 	download("{{ deploy_path }}/tmp/{$filename}.sql.gz", "tmp/{$filename}.sql.gz");
 	run("rm -rf tmp/{$filename}.sql.gz");
-	writeln("mysqldump remote:{$remote['db']} > tmp/{$filename}.sql");
+	writeLine("mysqldump remote:{$remote['db']} > tmp/{$filename}.sql");
 	// ---
 	runLocally("mysqldump --user={$local['user']} --password={$local['pass']} {$local['db']} > backup/db/{$local['db']}_{$time}.sql");
 	runLocally("gzip backup/db/{$local['db']}_{$time}.sql");
-	writeln("mysqldump local:{$local['db']} > backup/db/{$local['db']}_{$time}.sql");
+	writeLine("mysqldump local:{$local['db']} > backup/db/{$local['db']}_{$time}.sql");
 	// ---
 	runLocally("gunzip tmp/{$filename}.sql.gz");
 	runLocally("mysql --user={$local['user']} --password={$local['pass']} {$local['db']} < tmp/{$filename}.sql");
-	writeln("mysql local:{$local['db']} < tmp/{$filename}.sql");
+	writeLine("mysql local:{$local['db']} < tmp/{$filename}.sql");
 	// ---
 	runLocally('rm -rf tmp/*.env tmp/*.sql tmp/*.sql.gz');
-	writeln("cleanup hosts ------------------------------------------------");
+	writeLine("Pull database done!");
 });
 
 task('db:push', function () {
@@ -219,9 +246,12 @@ task('db:push', function () {
 	$local['db'] = env('DB_DATABASE');
 	// ---
 	cd('{{ deploy_path }}');
-	run('mkdir -p tmp'); run('chmod 777 tmp');
-	run('mkdir -p backup/db'); run('chmod 777 backup/db');
-	runLocally('mkdir -p tmp'); runLocally('chmod 777 tmp');
+	run('mkdir -p tmp');
+	run('mkdir -p backup/db');
+	run('chmod 777 tmp');
+	run('chmod 777 backup/db');
+	runLocally('mkdir -p tmp');
+	runLocally('chmod 777 tmp');
 	download('{{ deploy_path }}/.env', "tmp/{$stage}.env");
 	// ---
 	$tmpenv = new \Dotenv\Dotenv(__ROOT__.'/tmp',"{$stage}.env");
@@ -229,24 +259,24 @@ task('db:push', function () {
 	$remote['user'] = env('DB_USERNAME');
 	$remote['pass'] = env('DB_PASSWORD');
 	$remote['db'] = env('DB_DATABASE');
-	writeln("prepare hosts ------------------------------------------------");
+	writeLine("prepare target & destination");
 	// ---
 	run("mysqldump --user={$remote['user']} --password={$remote['pass']} {$remote['db']} > backup/db/{$remote['db']}_{$time}.sql");
 	run("gzip backup/db/{$remote['db']}_{$time}.sql");
-	writeln("mysqldump remote:{$remote['db']} > backup/db/{$remote['db']}_{$time}.sql");
+	writeLine("mysqldump remote:{$remote['db']} > backup/db/{$remote['db']}_{$time}.sql");
 	// ---
 	runLocally("mysqldump --user={$local['user']} --password={$local['pass']} {$local['db']} > tmp/local_{$time}.sql");
 	runLocally("gzip tmp/local_{$time}.sql");
 	upload("tmp/local_{$time}.sql.gz", "{{ deploy_path }}/tmp/local_{$time}.sql.gz");
 	run("gunzip tmp/local_{$time}.sql.gz");
-	writeln("mysqldump local:{$local['db']} > tmp/local_{$time}.sql");
+	writeLine("mysqldump local:{$local['db']} > tmp/local_{$time}.sql");
 	// ---
 	run("mysql --user={$remote['user']} --password={$remote['pass']} {$remote['db']} < tmp/local_{$time}.sql");
-	writeln("mysql remote:{$remote['db']} < tmp/local_{$time}.sql");
+	writeLine("mysql remote:{$remote['db']} < tmp/local_{$time}.sql");
 	// ---
 	runLocally('rm -rf tmp/*.env tmp/*.sql tmp/*.sql.gz');
 	run('rm -rf tmp/*.sql tmp/*.sql.gz');
-	writeln("cleanup hosts ------------------------------------------------");
+	writeLine("Push database done!");
 });
 
 // Tasks / Media
@@ -264,13 +294,12 @@ task('media:pull', function () {
 		if (!askConfirmation($ask)) return false;
 	}
 	// ---
-	writeln("rsync prepare ------------------------------------------------");
+	writeLine("Pull prepare");
 	foreach ($dirs AS $dir) {
 		$dest = dirname($dir);
-		$rsync = runLocally("rsync -vr {{ server }}:{{ deploy_path }}/{$dir} {$dest}");
-		writeln("rsync: {$dir} $rsync");
+		writeRunLocally("rsync -vr --quiet {{ server }}:{{ deploy_path }}/{$dir} {$dest}","rsync: {$dir}");
 	}
-	writeln("rsync done ------------------------------------------------");
+	writeLine("Pull media done!");
 });
 
 task('media:push', function () {
@@ -286,13 +315,12 @@ task('media:push', function () {
 		if (!askConfirmation($ask)) return false;
 	}
 	// ---
-	writeln("rsync prepare ------------------------------------------------");
+	writeLine("Push prepare");
 	foreach ($dirs AS $dir) {
 		$dest = dirname($dir);
-		$rsync = runLocally("rsync -vr ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}");
-		writeln("rsync: {$dir} $rsync");
+		writeRunLocally("rsync -vr --quiet ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}","rsync: {$dir}");
 	}
-	writeln("rsync done ------------------------------------------------");
+	writeLine("Push media done!");
 });
 
 // ---
