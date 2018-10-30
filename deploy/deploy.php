@@ -2,9 +2,12 @@
 
 namespace Deployer;
 
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
+
 require 'recipe/laravel.php';
-require __DIR__.'/vendor/autoload.php';
-$dotenv = new \Dotenv\Dotenv(__DIR__);
+require __ROOT__.'/vendor/autoload.php';
+$dotenv = new \Dotenv\Dotenv(__ROOT__);
 $dotenv->load();
 
 // Project
@@ -17,6 +20,10 @@ set('repository', getenv('DP_REPOSITORY'));
 set('branch', getenv('DP_BRANCH'));
 set('git_recursive', false); // Ignore submodules
 set('git_tty', true); // Known host & passphrase
+set('import_path', __ROOT__.'/vendor/abetter/wordpress/database/');
+
+//argument('import', InputArgument::OPTIONAL, 'Import file.');
+option('import', null, InputOption::VALUE_OPTIONAL, 'Import file.');
 
 // Setup
 set('shared_files', [
@@ -56,9 +63,243 @@ task('hello', function () {
     writeln('Hello world, ready to go @ '.ucwords($stage));
 });
 
+// Tasks / Build
+
+task('build', function () {
+	writeln("build prepare ------------------------------------------------");
+	runLocally("rm -rf ./storage/cache/*");
+	runLocally("rm -rf ./storage/clockwork/*");
+	runLocally("rm -rf ./storage/logs/*");
+	runLocally("rm -rf ./public/scripts/*");
+	runLocally("rm -rf ./public/styles/*");
+	writeln("npm run production: ".runLocally("npm run production"));
+	writeln("build done ------------------------------------------------");
+});
+
+// Tasks / Prepare
+
+task('prepare', function () {
+	$stage = get('stage');
+	$path = get('deploy_path');
+	$server = get('server');
+	$dir = "{$server}:{$path}";
+	$time = date("Ymd_His");
+	cd("{{ deploy_path }}");
+	// --
+	$confirm = "Are you sure you want to DELETE all files except .env in %s? : \n{$dir}";
+	$ask = str_replace('%s',ucwords($stage),$confirm);
+	if (!askConfirmation($ask)) return false;
+	// ---
+	writeln("delete prepare ------------------------------------------------");
+	run("cp .env ../tmp/{$time}.env"); writeln("cp .env ../tmp/{$time}.env");
+	run("rm -rf *"); writeln("rm -rf *");
+	run("rm -rf .git*"); writeln("rm -rf .git*");
+	writeln("delete done ------------------------------------------------");
+});
+
+// Tasks / Deploy
+
+task('deploy', function () {
+	$stage = get('stage');
+	$confirm = "Are you sure you want to deploy with rsync to %s?";
+	if (in_array($stage,['production','stage'])) {
+		$ask = str_replace('%s',ucwords($stage),$confirm);
+		if (!askConfirmation($ask)) return false;
+	}
+	writeln("deploy prepare ------------------------------------------------");
+	cd("{{ deploy_path }}");
+	writeln("pwd: ".run("pwd"));
+	// ---
+	writeln("rsync prepare ------------------------------------------------");
+	$dirs = ['app','bootstrap','config','database','resources','routes','storage','tests','vendor','public','artisan','composer.json','composer.lock','server.php'];
+	foreach ($dirs AS $dir) {
+		$dest = dirname($dir);
+		writeln("rsync: {$dir} ".runLocally("rsync -vr --links --quiet ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}"));
+	}
+	writeln("rsync done ------------------------------------------------");
+	run('mkdir -p bootstrap/cache');
+	run('mkdir -p storage');
+	run('chmod -R 777 bootstrap/cache');
+	run('chmod -R 777 storage');
+	writeln("composer install -n --no-dev: ".run('composer install -n --no-dev'));
+	writeln("php artisan cache:clear: ".run('php artisan cache:clear'));
+	writeln("php artisan route:clear: ".run('php artisan route:clear'));
+	writeln("php artisan view:clear: ".run('php artisan view:clear'));
+	writeln("php artisan config:clear: ".run('php artisan config:clear'));
+	run('rm -rf storage/framework/sessions/*'); writeln("rm -rf storage/framework/sessions/*");
+	writeln("deploy done ------------------------------------------------");
+});
+
+// Tasks / Database
+
+task('db:import', function () {
+	$import = (input()->hasOption('import')) ? input()->getOption('import') : null;
+	$import_path = get('import_path');
+	$destination = 'local';
+	$confirm = "Are you sure you want to replace %d database with %f";
+	$ask = str_replace(['%d','%f'],[ucwords($destination),$import],$confirm);
+	if (!askConfirmation($ask)) return false;
+	$time = date("Ymd_His");
+	$filename = "{$stage}-{$time}";
+	$local['user'] = env('DB_USERNAME');
+	$local['pass'] = env('DB_PASSWORD');
+	$local['db'] = env('DB_DATABASE');
+	// ---
+	writeln("import prepare ------------------------------------------------");
+	// ---
+	runLocally('mkdir -p tmp'); runLocally('chmod 777 tmp');
+	runLocally('mkdir -p backup/db'); runLocally('chmod 777 backup/db');
+	// ---
+	runLocally("mysqldump --user={$local['user']} --password={$local['pass']} {$local['db']} > backup/db/{$local['db']}_{$time}.sql");
+	runLocally("gzip backup/db/{$local['db']}_{$time}.sql");
+	writeln("mysqldump local:{$local['db']} > backup/db/{$local['db']}_{$time}.sql");
+	// ---
+	runLocally("mysql --user={$local['user']} --password={$local['pass']} {$local['db']} < {$import_path}{$import}");
+	writeln("mysql local:{$local['db']} < {$import_path}{$import}");
+	// ---
+	writeln("import done ------------------------------------------------");
+});
+
+task('db:pull', function () {
+	$destination = 'local';
+	$stage = get('stage');
+	$confirm = "Are you sure you want to replace %d database with %s?";
+	if (in_array($stage,['production','stage'])) {
+		$ask = str_replace(['%d','%s'],[ucwords($destination),ucwords($stage)],$confirm);
+		if (!askConfirmation($ask)) return false;
+	}
+	$time = date("Ymd_His");
+	$filename = "{$stage}-{$time}";
+	$local['user'] = env('DB_USERNAME');
+	$local['pass'] = env('DB_PASSWORD');
+	$local['db'] = env('DB_DATABASE');
+	// ---
+	cd('{{ deploy_path }}');
+	run('mkdir -p tmp'); run('chmod 777 tmp');
+	runLocally('mkdir -p tmp'); runLocally('chmod 777 tmp');
+	runLocally('mkdir -p backup/db'); runLocally('chmod 777 backup/db');
+	download('{{ deploy_path }}/.env', "tmp/{$stage}.env");
+	// ---
+	$tmpenv = new \Dotenv\Dotenv(__ROOT__.'/tmp',"{$stage}.env");
+	$tmpenv->overload();
+	$remote['user'] = env('DB_USERNAME');
+	$remote['pass'] = env('DB_PASSWORD');
+	$remote['db'] = env('DB_DATABASE');
+	writeln("prepare hosts ------------------------------------------------");
+	// ---
+	run("mysqldump --user={$remote['user']} --password={$remote['pass']} {$remote['db']} > tmp/{$filename}.sql");
+	run("gzip tmp/{$filename}.sql");
+	download("{{ deploy_path }}/tmp/{$filename}.sql.gz", "tmp/{$filename}.sql.gz");
+	run("rm -rf tmp/{$filename}.sql.gz");
+	writeln("mysqldump remote:{$remote['db']} > tmp/{$filename}.sql");
+	// ---
+	runLocally("mysqldump --user={$local['user']} --password={$local['pass']} {$local['db']} > backup/db/{$local['db']}_{$time}.sql");
+	runLocally("gzip backup/db/{$local['db']}_{$time}.sql");
+	writeln("mysqldump local:{$local['db']} > backup/db/{$local['db']}_{$time}.sql");
+	// ---
+	runLocally("gunzip tmp/{$filename}.sql.gz");
+	runLocally("mysql --user={$local['user']} --password={$local['pass']} {$local['db']} < tmp/{$filename}.sql");
+	writeln("mysql local:{$local['db']} < tmp/{$filename}.sql");
+	// ---
+	runLocally('rm -rf tmp/*.env tmp/*.sql tmp/*.sql.gz');
+	writeln("cleanup hosts ------------------------------------------------");
+});
+
+task('db:push', function () {
+	$origin = 'local';
+	$stage = get('stage');
+	$confirm = "Are you sure you want to replace %s database with %o?";
+	if (in_array($stage,['production','stage'])) {
+		$ask = str_replace(['%o','%s'],[ucwords($origin),ucwords($stage)],$confirm);
+		if (!askConfirmation($ask)) return false;
+	}
+	$time = date("Ymd_His");
+	$local['user'] = env('DB_USERNAME');
+	$local['pass'] = env('DB_PASSWORD');
+	$local['db'] = env('DB_DATABASE');
+	// ---
+	cd('{{ deploy_path }}');
+	run('mkdir -p tmp'); run('chmod 777 tmp');
+	run('mkdir -p backup/db'); run('chmod 777 backup/db');
+	runLocally('mkdir -p tmp'); runLocally('chmod 777 tmp');
+	download('{{ deploy_path }}/.env', "tmp/{$stage}.env");
+	// ---
+	$tmpenv = new \Dotenv\Dotenv(__ROOT__.'/tmp',"{$stage}.env");
+	$tmpenv->overload();
+	$remote['user'] = env('DB_USERNAME');
+	$remote['pass'] = env('DB_PASSWORD');
+	$remote['db'] = env('DB_DATABASE');
+	writeln("prepare hosts ------------------------------------------------");
+	// ---
+	run("mysqldump --user={$remote['user']} --password={$remote['pass']} {$remote['db']} > backup/db/{$remote['db']}_{$time}.sql");
+	run("gzip backup/db/{$remote['db']}_{$time}.sql");
+	writeln("mysqldump remote:{$remote['db']} > backup/db/{$remote['db']}_{$time}.sql");
+	// ---
+	runLocally("mysqldump --user={$local['user']} --password={$local['pass']} {$local['db']} > tmp/local_{$time}.sql");
+	runLocally("gzip tmp/local_{$time}.sql");
+	upload("tmp/local_{$time}.sql.gz", "{{ deploy_path }}/tmp/local_{$time}.sql.gz");
+	run("gunzip tmp/local_{$time}.sql.gz");
+	writeln("mysqldump local:{$local['db']} > tmp/local_{$time}.sql");
+	// ---
+	run("mysql --user={$remote['user']} --password={$remote['pass']} {$remote['db']} < tmp/local_{$time}.sql");
+	writeln("mysql remote:{$remote['db']} < tmp/local_{$time}.sql");
+	// ---
+	runLocally('rm -rf tmp/*.env tmp/*.sql tmp/*.sql.gz');
+	run('rm -rf tmp/*.sql tmp/*.sql.gz');
+	writeln("cleanup hosts ------------------------------------------------");
+});
+
+// Tasks / Media
+
+task('media:pull', function () {
+	$dirs = [
+		'storage/app/public',
+		'storage/wordpress/uploads'
+	];
+	$destination = 'local';
+	$stage = get('stage');
+	$confirm = "Are you sure you want to download %s media to %d?";
+	if (in_array($stage,['production','stage'])) {
+		$ask = str_replace(['%d','%s'],[ucwords($destination),ucwords($stage)],$confirm);
+		if (!askConfirmation($ask)) return false;
+	}
+	// ---
+	writeln("rsync prepare ------------------------------------------------");
+	foreach ($dirs AS $dir) {
+		$dest = dirname($dir);
+		$rsync = runLocally("rsync -vr {{ server }}:{{ deploy_path }}/{$dir} {$dest}");
+		writeln("rsync: {$dir} $rsync");
+	}
+	writeln("rsync done ------------------------------------------------");
+});
+
+task('media:push', function () {
+	$dirs = [
+		'storage/app/public',
+		'storage/wordpress/uploads'
+	];
+	$origin = 'local';
+	$stage = get('stage');
+	$confirm = "Are you sure you want to upload %o media to %s?";
+	if (in_array($stage,['production','stage'])) {
+		$ask = str_replace(['%o','%s'],[ucwords($origin),ucwords($stage)],$confirm);
+		if (!askConfirmation($ask)) return false;
+	}
+	// ---
+	writeln("rsync prepare ------------------------------------------------");
+	foreach ($dirs AS $dir) {
+		$dest = dirname($dir);
+		$rsync = runLocally("rsync -vr ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}");
+		writeln("rsync: {$dir} $rsync");
+	}
+	writeln("rsync done ------------------------------------------------");
+});
+
 // ---
 
-task('install:delete', function () {
+// ---
+
+task('old:install:delete', function () {
 	$stage = get('stage');
 	$path = get('deploy_path');
 	$server = get('server');
@@ -78,7 +319,7 @@ task('install:delete', function () {
 	writeln("delete done ------------------------------------------------");
 });
 
-task('install', function () {
+task('old:install', function () {
 	$stage = get('stage');
 	$repository = get('repository');
 	$branch = get('branch');
@@ -105,9 +346,7 @@ task('install', function () {
 	writeln("install done ------------------------------------------------");
 });
 
-// ---
-
-task('push', function () {
+task('old:push', function () {
 	$branch = get('branch');
 	$confirm = "Are you sure you want to commit and push changes to branch %b?";
 	$ask = str_replace('%b',ucwords($branch),$confirm);
@@ -118,9 +357,7 @@ task('push', function () {
 	$git = runLocally('git push'); writeln("git push: $git");
 });
 
-// ---
-
-task('deploy', function () {
+task('old:deploy', function () {
 	$stage = get('stage');
 	$branch = get('branch');
 	$confirm = "Are you sure you want to deploy to %s?";
@@ -146,148 +383,6 @@ task('deploy', function () {
 	$chmod = run('chmod -R 777 bootstrap/cache'); writeln("chmod -R 777 bootstrap/cache: $chmod");
 	$chmod = run('chmod -R 777 storage'); writeln("chmod -R 777 storage: $chmod");
 	writeln("deploy done ------------------------------------------------");
-});
-
-// ---
-
-task('db:pull', function () {
-	$destination = 'local';
-	$stage = get('stage');
-	$confirm = "Are you sure you want to replace %d database with %s?";
-	if (in_array($stage,['production','stage'])) {
-		$ask = str_replace(['%d','%s'],[ucwords($destination),ucwords($stage)],$confirm);
-		if (!askConfirmation($ask)) return false;
-	}
-	$time = date("Ymd_His");
-	$filename = "{$stage}-{$time}";
-	$local['user'] = env('DB_USERNAME');
-	$local['pass'] = env('DB_PASSWORD');
-	$local['db'] = env('DB_DATABASE');
-	// ---
-	cd('{{ deploy_path }}');
-	run('mkdir -p tmp'); run('chmod 777 tmp');
-	runLocally('mkdir -p tmp'); runLocally('chmod 777 tmp');
-	runLocally('mkdir -p backup/db'); runLocally('chmod 777 backup/db');
-	download('{{ deploy_path }}/.env', "tmp/{$stage}.env");
-	// ---
-	$tmpenv = new \Dotenv\Dotenv(__DIR__.'/tmp',"{$stage}.env");
-	$tmpenv->overload();
-	$remote['user'] = env('DB_USERNAME');
-	$remote['pass'] = env('DB_PASSWORD');
-	$remote['db'] = env('DB_DATABASE');
-	writeln("prepare hosts ------------------------------------------------");
-	// ---
-	run("mysqldump --user={$remote['user']} --password={$remote['pass']} {$remote['db']} > tmp/{$filename}.sql");
-	run("gzip tmp/{$filename}.sql");
-	download("{{ deploy_path }}/tmp/{$filename}.sql.gz", "tmp/{$filename}.sql.gz");
-	run("rm -rf tmp/{$filename}.sql.gz");
-	writeln("mysqldump remote:{$remote['db']} > tmp/{$filename}.sql");
-	// ---
-	runLocally("mysqldump --user={$local['user']} --password={$local['pass']} {$local['db']} > backup/db/{$local['db']}_{$time}.sql");
-	runLocally("gzip backup/db/{$local['db']}_{$time}.sql");
-	writeln("mysqldump local:{$local['db']} > backup/db/{$local['db']}_{$time}.sql");
-	// ---
-	runLocally("gunzip tmp/{$filename}.sql.gz");
-	runLocally("mysql --user={$local['user']} --password={$local['pass']} {$local['db']} < tmp/{$filename}.sql");
-	writeln("mysql local:{$local['db']} < tmp/{$filename}.sql");
-	// ---
-	runLocally('rm -rf tmp/*.env tmp/*.sql tmp/*.sql.gz');
-	writeln("cleanup hosts ------------------------------------------------");
-});
-
-// ---
-
-task('db:push', function () {
-	$origin = 'local';
-	$stage = get('stage');
-	$confirm = "Are you sure you want to replace %s database with %o?";
-	if (in_array($stage,['production','stage'])) {
-		$ask = str_replace(['%o','%s'],[ucwords($origin),ucwords($stage)],$confirm);
-		if (!askConfirmation($ask)) return false;
-	}
-	$time = date("Ymd_His");
-	$local['user'] = env('DB_USERNAME');
-	$local['pass'] = env('DB_PASSWORD');
-	$local['db'] = env('DB_DATABASE');
-	// ---
-	cd('{{ deploy_path }}');
-	run('mkdir -p tmp'); run('chmod 777 tmp');
-	run('mkdir -p backup/db'); run('chmod 777 backup/db');
-	runLocally('mkdir -p tmp'); runLocally('chmod 777 tmp');
-	download('{{ deploy_path }}/.env', "tmp/{$stage}.env");
-	// ---
-	$tmpenv = new \Dotenv\Dotenv(__DIR__.'/tmp',"{$stage}.env");
-	$tmpenv->overload();
-	$remote['user'] = env('DB_USERNAME');
-	$remote['pass'] = env('DB_PASSWORD');
-	$remote['db'] = env('DB_DATABASE');
-	writeln("prepare hosts ------------------------------------------------");
-	// ---
-	run("mysqldump --user={$remote['user']} --password={$remote['pass']} {$remote['db']} > backup/db/{$remote['db']}_{$time}.sql");
-	run("gzip backup/db/{$remote['db']}_{$time}.sql");
-	writeln("mysqldump remote:{$remote['db']} > backup/db/{$remote['db']}_{$time}.sql");
-	// ---
-	runLocally("mysqldump --user={$local['user']} --password={$local['pass']} {$local['db']} > tmp/local_{$time}.sql");
-	runLocally("gzip tmp/local_{$time}.sql");
-	upload("tmp/local_{$time}.sql.gz", "{{ deploy_path }}/tmp/local_{$time}.sql.gz");
-	run("gunzip tmp/local_{$time}.sql.gz");
-	writeln("mysqldump local:{$local['db']} > tmp/local_{$time}.sql");
-	// ---
-	run("mysql --user={$remote['user']} --password={$remote['pass']} {$remote['db']} < tmp/local_{$time}.sql");
-	writeln("mysql remote:{$remote['db']} < tmp/local_{$time}.sql");
-	// ---
-	runLocally('rm -rf tmp/*.env tmp/*.sql tmp/*.sql.gz');
-	run('rm -rf tmp/*.sql tmp/*.sql.gz');
-	writeln("cleanup hosts ------------------------------------------------");
-});
-
-
-// ---
-
-task('media:pull', function () {
-	$dirs = [
-		'storage/app/public',
-		'storage/wordpress/uploads'
-	];
-	$destination = 'local';
-	$stage = get('stage');
-	$confirm = "Are you sure you want to download %s media to %d?";
-	if (in_array($stage,['production','stage'])) {
-		$ask = str_replace(['%d','%s'],[ucwords($destination),ucwords($stage)],$confirm);
-		if (!askConfirmation($ask)) return false;
-	}
-	// ---
-	writeln("rsync prepare ------------------------------------------------");
-	foreach ($dirs AS $dir) {
-		$dest = dirname($dir);
-		$rsync = runLocally("rsync -vr {{ server }}:{{ deploy_path }}/{$dir} {$dest}");
-		writeln("rsync: {$dir} $rsync");
-	}
-	writeln("rsync done ------------------------------------------------");
-});
-
-// ---
-
-task('media:push', function () {
-	$dirs = [
-		'storage/app/public',
-		'storage/wordpress/uploads'
-	];
-	$origin = 'local';
-	$stage = get('stage');
-	$confirm = "Are you sure you want to upload %o media to %s?";
-	if (in_array($stage,['production','stage'])) {
-		$ask = str_replace(['%o','%s'],[ucwords($origin),ucwords($stage)],$confirm);
-		if (!askConfirmation($ask)) return false;
-	}
-	// ---
-	writeln("rsync prepare ------------------------------------------------");
-	foreach ($dirs AS $dir) {
-		$dest = dirname($dir);
-		$rsync = runLocally("rsync -vr ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}");
-		writeln("rsync: {$dir} $rsync");
-	}
-	writeln("rsync done ------------------------------------------------");
 });
 
 // ---
