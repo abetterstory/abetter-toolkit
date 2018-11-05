@@ -67,6 +67,7 @@ class Controller extends BaseController {
 		],$opt['content']);
 		// ---
 		@file_put_contents($opt['target'],$opt['content']);
+		@chmod($opt['target'],0755);
 		return _echoFile($opt['target'],'1 month');
 	}
 

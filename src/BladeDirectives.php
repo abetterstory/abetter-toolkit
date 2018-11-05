@@ -42,7 +42,8 @@ class BladeDirectives {
 			$path = '/styles/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
-			file_put_contents($file,$css);
+			@file_put_contents($file,$css);
+			@chmod($file,0755);
 			$style = "<link href=\"{$path}\" rel=\"stylesheet\" type=\"text/css\">";
 		} else {
 			$style = "<style>{$css}</style>";
@@ -65,7 +66,8 @@ class BladeDirectives {
 			$path = '/scripts/components/'.$name;
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
-			file_put_contents($file,$js);
+			@file_put_contents($file,$js);
+			@chmod($file,0755);
 			$script = "<script src=\"{$path}\" type=\"text/javascript\"></script>";
 		} else {
 			$script = "<script>{$js}</script>";
