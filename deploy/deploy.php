@@ -100,9 +100,13 @@ task('setup', function () {
 	runLocally("mkdir -p resources/wordpress");
 	runLocally("mkdir -p public/scripts/components");
 	runLocally("mkdir -p public/styles/components");
+	runLocally("chmod -R 777 storage");
+	runLocally("chmod -R 777 bootstrap/cache");
+	runLocally("chmod -R 777 public/scripts");
+	runLocally("chmod -R 777 public/styles");
 	runLocally("cp .env.example .env");
-	writeRunLocally("composer install");
-	writeRunLocally("npm install");
+	writeRunLocally("composer install","composer install");
+	writeRunLocally("npm install","npm install");
 	writeLine("Local setup done!");
 });
 
