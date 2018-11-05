@@ -172,8 +172,8 @@ task('deploy', function () {
 	writeRun("rm -rf storage/framework/sessions/*");
 	writeRun("mkdir -p bootstrap/cache");
 	writeRun("mkdir -p storage");
-	writeRun("chmod -R 777 bootstrap/cache");
-	writeRun("chmod -R 777 storage");
+	writeRun("chmod -R 777 bootstrap/cache || true");
+	writeRun("chmod -R 777 storage || true");
 	writeLine("Deploy done!");
 });
 
