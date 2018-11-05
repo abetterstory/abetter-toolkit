@@ -7,8 +7,9 @@ use Symfony\Component\Console\Input\InputArgument;
 
 require 'recipe/laravel.php';
 require __ROOT__.'/vendor/autoload.php';
+
 $dotenv = new \Dotenv\Dotenv(__ROOT__);
-$dotenv->load();
+if (is_file(__ROOT__.'/.env')) $dotenv->load();
 
 // Project
 set('application', getenv('APP_NAME'));
@@ -84,6 +85,25 @@ task('hello', function () {
 	writeln("> dep db:push $stage");
 	writeln("> dep media:pull $stage");
 	writeln("> dep media:push $stage");
+});
+
+// Tasks / Setup
+
+task('setup', function () {
+	writeLine("Local setup prepare");
+	runLocally("mkdir -p bootstrap/cache");
+	runLocally("mkdir -p storage/wordpress/uploads");
+	runLocally("mkdir -p storage/framework/sessions");
+	runLocally("mkdir -p storage/framework/views");
+	runLocally("mkdir -p storage/framework/cache");
+	runLocally("mkdir -p storage/cache");
+	runLocally("mkdir -p resources/wordpress");
+	runLocally("mkdir -p public/scripts/components");
+	runLocally("mkdir -p public/styles/components");
+	runLocally("cp .env.example .env");
+	writeRunLocally("composer install");
+	writeRunLocally("npm install");
+	writeLine("Local setup done!");
 });
 
 // Tasks / Build
