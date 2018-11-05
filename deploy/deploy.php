@@ -105,8 +105,8 @@ task('setup', function () {
 	runLocally("chmod -R 777 public/scripts");
 	runLocally("chmod -R 777 public/styles");
 	runLocally("cp .env.example .env");
-	writeRunLocally("composer install","composer install");
-	writeRunLocally("npm install","npm install");
+	writeRunLocally("composer install");
+	writeRunLocally("npm install");
 	writeLine("Local setup done!");
 });
 
