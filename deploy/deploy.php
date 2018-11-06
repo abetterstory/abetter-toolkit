@@ -136,11 +136,11 @@ task('reset', function () {
 
 task('build', function () {
 	writeLine("Build prepare");
-	runLocally("rm -rf storage/cache/*");
-	runLocally("rm -rf storage/clockwork/*");
-	runLocally("rm -rf storage/logs/*");
-	runLocally("rm -rf public/scripts/*");
-	runLocally("rm -rf public/styles/*");
+	runLocally("rm -rf storage/cache/* || true");
+	runLocally("rm -rf storage/clockwork/* || true");
+	runLocally("rm -rf storage/logs/* || true");
+	runLocally("rm -rf public/scripts/* || true");
+	runLocally("rm -rf public/styles/* || true");
 	writeLine("Building...");
 	writeRunLocally("npm run production");
 	writeLine("Build done!");
@@ -182,7 +182,7 @@ task('deploy', function () {
 	$dirs = ['app','bootstrap','config','database','resources','routes','storage','tests','vendor','public','artisan','composer.json','composer.lock','server.php'];
 	foreach ($dirs AS $dir) {
 		$dest = dirname($dir);
-		writeRunLocally("rsync -vr --links --quiet ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}","rsync: {$dir}");
+		writeRunLocally("rsync -vr --exclude=cache --exclude=clockwork --links --quiet ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}","rsync: {$dir}");
 	}
 	// ---
 	writeLine("Updating composer/laravel");
