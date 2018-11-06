@@ -13,6 +13,29 @@ if (!function_exists('_image')) {
 
 }
 
+if (!function_exists('_imageCache')) {
+
+	function _imageCache($file,$opt=NULL) {
+		$file = preg_replace('/https?\:\/\//',"",trim($file,'/'));
+		$type = ($headers = get_headers('https://'.$file,1)) ? (($ext = _contentType($headers['Content-Type'],TRUE)) ? '.'.$ext : '') : '';
+		$cache = preg_replace('/\/|\?|\=|\./','_',$file).$type;
+		$storage = storage_path('cache').'/image';
+		$opt = array_replace([
+			'source' => 'https://'.$file,
+			'cache' => '/cache/'.$cache,
+			'target' => $storage.'/'.$cache,
+			'content' => NULL,
+		],(array)$opt);
+		if (is_file($opt['target'])) return $opt['cache'];
+		if (!$opt['content'] = @file_get_contents($opt['source'])) return FALSE;
+		if (!is_dir($storage)) \File::makeDirectory($storage,0777,TRUE);
+		@file_put_contents($opt['target'],$opt['content']);
+		@chmod($opt['target'],0777);
+		return $opt['cache'];
+	}
+
+}
+
 if (!function_exists('_imageMagick')) {
 
 	function _imageMagick($source,$target,$style,$format=NULL) {
@@ -187,7 +210,7 @@ function _headersFile($file,$expire='1 month',$cors=FALSE) {
 	_headers($type,$created,$expire,$etag,$cors);
 }
 
-function _contentType($ext) {
+function _contentType($ext,$reverse=FALSE) {
 	$types = array(
 		'txt' => 'text/plain',
 		'html' => 'text/html',
@@ -214,6 +237,7 @@ function _contentType($ext) {
 		'xls' => 'application/vnd.ms-excel',
 		'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 	);
+	if ($reverse) $types = array_flip($types);
 	return (isset($types[$ext])) ? $types[$ext] : 'text/html';
 }
 
@@ -247,13 +271,18 @@ function _imageFileSearch($file) {
 		$name = pathinfo($name,PATHINFO_FILENAME);
 	}
 	$dir = dirname(public_path().$file);
-	if (!is_dir($dir)) {
-		// Try WP_UPLOADS
+	if (!is_dir($dir)) { // Try WP_UPLOADS
 		if (preg_match('/^\/uploads\//',$file)) {
 			$dir = dirname(public_path().str_replace('/uploads/',env('WP_UPLOADS'),$file));
 		}
-		if (!is_dir($dir)) return FALSE;
 	}
+	if (!is_dir($dir)) { // Try IMAGE CACHE
+		if (preg_match('/^\/cache\//',$file)) {
+			$dir = storage_path('cache').'/image/';
+			$file = preg_replace('/\/cache\//',"",$file);
+		}
+	}
+	if (!is_dir($dir)) return FALSE;
 	foreach (scandir($dir) AS $f) {
 		if ($return || in_array($f,['.','..'])) continue;
 		if ($f == "{$name}.{$ext}") $return = $f;

@@ -209,6 +209,7 @@ if (!function_exists('_pixsum')) {
 
 		$opt = array_replace([
 			'type' => 'placeholder',
+			'cache' => TRUE,
 			'width' => 1024,
 			'height' => 512,
 			'background' => '555555',
@@ -223,6 +224,7 @@ if (!function_exists('_pixsum')) {
 			'blur' => NULL,
 			'text' => NULL,
 			'index' => NULL,
+			'remote' => NULL,
 			'return' => "",
 		],(array)$opt);
 
@@ -251,12 +253,14 @@ if (!function_exists('_pixsum')) {
 			case 'icon' : {
 				$opt['icon'] = (empty($opt['icon'])) ? 'fa-image' : $opt['icon'];
 				$opt['return'] = "https://imgplaceholder.com/{$opt['x']}/{$opt['background']}/{$opt['color']}/{$opt['icon']}";
+				$opt['remote'] = 'imgplaceholder.com';
 				break;
 			}
 			case 'photo' : {
 				$opt['category'] = (empty($opt['category'])) ? 'any' : $opt['category'];
 				$opt['grayscale'] = (empty($opt['grayscale'])) ? '' : '/grayscale';
 				$opt['return'] = "https://placeimg.com/{$opt['width']}/{$opt['height']}/{$opt['category']}".$opt['grayscale'];
+				$opt['remote'] = 'placeimg.com';
 				break;
 			}
 			case 'wireframe' : {
@@ -267,10 +271,15 @@ if (!function_exists('_pixsum')) {
 			default : {
 				$opt['format'] = (empty($opt['format'])) ? 'jpg' : $opt['format'];
 				$opt['return'] = "https://via.placeholder.com/{$opt['x']}/{$opt['background']}/{$opt['color']}.{$opt['format']}";
+				$opt['remote'] = 'via.placeholder.com';
 			}
 		}
 
 		$opt['return'] .= $opt['index'];
+
+		// ---
+
+		if ($opt['remote'] && $opt['cache']) $opt['return'] = _imageCache($opt['return']);
 
 		// ---
 

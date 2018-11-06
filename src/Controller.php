@@ -53,7 +53,7 @@ class Controller extends BaseController {
 		$storage = storage_path('cache').'/proxy';
 		$opt = array_replace([
 			'source' => 'https://'.$file,
-			'target' => $storage.'/'.preg_replace('/\//','_',$file),
+			'target' => $storage.'/'.preg_replace('/\/|\?|\=/','_',$file),
 			'content' => NULL,
 		],(array)$opt);
 		if (is_file($opt['target'])) return _echoFile($opt['target'],'1 month');
