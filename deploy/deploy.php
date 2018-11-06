@@ -77,6 +77,8 @@ task('hello', function () {
 	writeRun("pwd","destination");
     writeLine("Hello world, ready to go @ ".ucwords($stage));
 	writeLine("Available tasks:");
+	writeln("> dep setup local");
+	writeln("> dep reset local");
 	writeln("> dep build local");
 	writeln("> dep prepare $stage");
 	writeln("> dep deploy $stage");
@@ -97,28 +99,48 @@ task('setup', function () {
 	runLocally("mkdir -p storage/framework/views");
 	runLocally("mkdir -p storage/framework/cache");
 	runLocally("mkdir -p storage/cache");
+	runLocally("mkdir -p resources/fonts");
+	runLocally("mkdir -p resources/images");
 	runLocally("mkdir -p resources/wordpress");
+	runLocally("mkdir -p public/fonts");
+	runLocally("mkdir -p public/images");
 	runLocally("mkdir -p public/scripts/components");
 	runLocally("mkdir -p public/styles/components");
 	runLocally("chmod -R 777 storage");
 	runLocally("chmod -R 777 bootstrap/cache");
+	runLocally("chmod -R 777 public/fonts");
+	runLocally("chmod -R 777 public/images");
 	runLocally("chmod -R 777 public/scripts");
 	runLocally("chmod -R 777 public/styles");
-	runLocally("cp .env.example .env");
+	runLocally("cp -n .env.example .env || true");
 	writeRunLocally("composer install");
 	writeRunLocally("npm install");
 	writeLine("Local setup done!");
+});
+
+// Tasks / Reset
+
+task('reset', function () {
+	writeLine("Local reset prepare");
+	runLocally("rm -rf storage/clockwork/*");
+	runLocally("rm -rf storage/cache/*");
+	runLocally("rm -rf public/fonts/*");
+	runLocally("rm -rf public/images/*");
+	runLocally("rm -rf public/scripts/*");
+	runLocally("rm -rf public/styles/*");
+	runLocally("chmod -R 777 storage");
+	writeLine("Local reset done!");
 });
 
 // Tasks / Build
 
 task('build', function () {
 	writeLine("Build prepare");
-	runLocally("rm -rf ./storage/cache/*");
-	runLocally("rm -rf ./storage/clockwork/*");
-	runLocally("rm -rf ./storage/logs/*");
-	runLocally("rm -rf ./public/scripts/*");
-	runLocally("rm -rf ./public/styles/*");
+	runLocally("rm -rf storage/cache/*");
+	runLocally("rm -rf storage/clockwork/*");
+	runLocally("rm -rf storage/logs/*");
+	runLocally("rm -rf public/scripts/*");
+	runLocally("rm -rf public/styles/*");
 	writeLine("Building...");
 	writeRunLocally("npm run production");
 	writeLine("Build done!");
