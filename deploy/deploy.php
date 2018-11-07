@@ -146,6 +146,12 @@ task('build', function () {
 	writeLine("Build done!");
 });
 
+// Tasks / Watch
+
+task('watch', function () {
+	writeRunLocally("npm run watch");
+});
+
 // Tasks / Prepare
 
 task('prepare', function () {

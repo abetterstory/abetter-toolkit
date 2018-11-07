@@ -17,7 +17,8 @@ if (!function_exists('_excerpt')) {
 
 if (!function_exists('_render')) {
 
-	function _render($str="") {
+	function _render($str="",$vars=[]) {
+		$__env = $vars['__env'] ?? NULL;
 		ob_start();
 		eval('?>'.\Blade::compileString($str));
 		$return = ob_get_contents();
