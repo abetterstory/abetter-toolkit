@@ -31,6 +31,7 @@ class BladeDirectives {
 	public static function style($name,$vars=[],$link=FALSE) {
 		if (in_array($name,self::$styles)) return "<!--style:{$name}-->";
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
+		if (isset($vars['link'])) $link = (boolean) $vars['link'];
 		$source = self::getSource($name,$vars);
 		$source = self::parseStyleIncludes($source,$vars);
 		$paths = [dirname(self::getSourceFile($name,$vars)),resource_path('styles'),resource_path('css')];
@@ -57,6 +58,7 @@ class BladeDirectives {
 	public static function script($name,$vars,$link=FALSE) {
 		if (in_array($name,self::$scripts)) return "<!--script:{$name}-->";
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
+		if (isset($vars['link'])) $link = (boolean) $vars['link'];
 		$source = self::getSource($name,$vars);
 		$source = self::parseScriptIncludes($source,$vars);
 		$JSqueeze = new JSqueeze();
