@@ -3,7 +3,7 @@
 if (!function_exists('_is_current')) {
 
 	function _is_current($url, $return='current') {
-		if ($item_hash = parse_url($url,PHP_URL_FRAGMENT)) return '';
+		if ($item_hash = parse_url($url,PHP_URL_FRAGMENT) || preg_match('/^\#/',$url)) return '';
 		if (($host = parse_url($url,PHP_URL_HOST)) && ($host != parse_url($_SERVER['REQUEST_URI'],PHP_URL_HOST))) return '';
 		$item_path = rtrim(urldecode(parse_url($url,PHP_URL_PATH)),'/');
 		$current_path = rtrim(urldecode(parse_url($_SERVER['REQUEST_URI'],PHP_URL_PATH)),'/');
