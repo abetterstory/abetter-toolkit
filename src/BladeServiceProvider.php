@@ -80,6 +80,16 @@ class BladeServiceProvider extends ServiceProvider {
 			return "<?php echo _pixsum('{$type}'); ?>";
         });
 
+		// Mockup
+		Blade::directive('mockup', function($expression){
+			list($path,$vars,$end) = BladeDirectives::parseExpression($expression);
+			$path = 'mockup.components.'.str_replace('components.',"",$path);
+			$end = TRUE;
+			if (!\View::exists($path)) $path .= '.'.array_last(explode('.',$path)); // Test if folder
+			if ($end) return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?><?php echo \$__env->renderComponent(); ?>";
+			return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?>";
+        });
+
 		// LAB
 		Blade::directive('lab', function($expression){
 			if (!BladeDirectives::canViewLab()) return "";
