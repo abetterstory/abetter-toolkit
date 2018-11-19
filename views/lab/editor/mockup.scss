@@ -1,0 +1,283 @@
+$color-text: #777;
+$color-border: #999;
+$color-background: rgba(#ddd,0.6);
+
+$grid-base: 101px;
+$grid-color: #000;
+$grid-size: 20px;
+$grid-offset-h: -61px;
+$grid-offset-v: -21px;
+
+$font-path: '/fonts/redacted/';
+
+// ---
+
+#mockup {
+
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	line-height: 1.2;
+	-webkit-font-smoothing: antialiased;
+
+	h1,h2,h3,h4,h5,h6 {
+		display: block;
+		margin: 0;
+		padding: 0;
+		font-family: Helvetica, Arial, sans-serif;
+		line-height: 1.2;
+		margin-bottom: 10px;
+	}
+
+	h1,h2 {
+		font-size: 38px;
+		line-height: 0.9;
+	}
+
+	p,li {
+		display: block;
+		margin: 0;
+		padding: 0;
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 14px;
+		line-height: 1.4;
+	}
+
+	li {
+		display: list-item;
+		list-style: circle;
+		line-height: 1;
+		margin: 2px 0;
+	}
+
+	hr {
+		display: block;
+		margin: 19px 39px;
+		margin-top: -2px;
+		border: none;
+		border-top: 2px solid $color-border;
+	}
+
+	block {
+		box-sizing: border-box;
+		display: block;
+		position: relative;
+		margin: 19px 39px;
+		height: $grid-base;
+		&[connect],
+		&.connect {
+			margin-top: -20px;
+			label {
+				margin-top: 1px;
+			}
+		}
+		&[small],
+		&.small {
+			height: 61px;
+		}
+		&[medium],
+		&.medium {
+			height: $grid-base * 2 - 1px;
+		}
+		&[large],
+		&.large {
+			height: $grid-base * 3 - 2px;
+		}
+		&[xlarge],
+		&.xlarge {
+			height: $grid-base * 4 - 3px;
+		}
+		&.height-1 { height: 20px * 1; }
+		&.height-2 { height: 20px * 2; }
+		&.height-3 { height: 20px * 3; }
+		&.height-4 { height: 20px * 4; }
+		&.height-5 { height: 20px * 5; }
+		&.height-6 { height: 20px * 6; }
+		&.height-7 { height: 20px * 7; }
+		&.height-8 { height: 20px * 8; }
+		&.height-9 { height: 20px * 9; }
+		&.height-10 { height: 20px * 10; }
+		&.height-11 { height: 20px * 11; }
+		&.height-12 { height: 20px * 12; }
+		&.height-13 { height: 20px * 13; }
+		&.height-14 { height: 20px * 14; }
+		&.height-15 { height: 20px * 15; }
+		&.height-16 { height: 20px * 16; }
+		&.height-17 { height: 20px * 17; }
+		&.height-18 { height: 20px * 18; }
+		&.height-19 { height: 20px * 19; }
+		&.height-20 { height: 20px * 20; }
+	}
+
+	label {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		font-size: 9px;
+		font-weight: bold;
+		line-height: 1;
+		padding: 3px 2px 1px 3px;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		z-index: 1;
+		background-color: $color-border;
+		color: #fff;
+	}
+
+	row {
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: space-evenly;
+		align-items: center;
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+	}
+
+	column {
+		box-sizing: border-box;
+		position: relative;
+		flex-grow: 0;
+		display: block;
+		vertical-align: middle;
+		line-height: 1;
+		color: $color-text;
+		&[grow] {
+			flex-grow: 1;
+		}
+	}
+
+	[top],
+	.top {
+		row {
+			align-items: flex-start;
+		}
+	}
+
+	[bottom],
+	.bottom {
+		row {
+			align-items: flex-end;
+		}
+	}
+
+	[center],
+	.center {
+		column {
+			text-align: center;
+		}
+	}
+
+	[background] {
+		background-color: $color-background;
+	}
+
+	[border] {
+		box-shadow: inset 0 0 0 2px $color-border;
+		/*
+		top: inset 0px 4px 0 -2px $color-border
+		bottom: inset 0px -4px 0 -2px $color-border
+		right: inset -4px 0px 0 -2px $color-border
+		left: inset 4px 0px 0 -2px $color-border
+		*/
+	}
+
+	[image] {
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHZpZXdCb3g9IjAgMCAxMDAwIDEwMDAiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDpub25lO3N0cm9rZTojOTk5O3N0cm9rZS13aWR0aDo1cHg7fTwvc3R5bGU+PC9kZWZzPjxsaW5lIGNsYXNzPSJjbHMtMSIgeDI9IjEwMDAiIHkyPSIxMDAwIi8+PGxpbmUgY2xhc3M9ImNscy0xIiB4MT0iMTAwMCIgeTI9IjEwMDAiLz48L3N2Zz4=');
+		h1,h2,h3,h4,h5,h6,p,li {
+			text-shadow: 2px 2px 0px #eee, -2px -2px 0px #eee;
+		}
+	}
+
+	[connect],
+	.connect {
+		&[border] {
+			box-shadow: inset 0px -4px 0 -2px $color-border, inset -4px 0px 0 -2px $color-border, inset 4px 0px 0 -2px $color-border;
+		}
+		label {
+			top: -2px;
+		}
+	}
+
+	[margin],
+	.margin {
+		margin-top: 40px;
+	}
+
+	/*
+	[lipsum] {
+		font-family: 'RedactedScriptRegular';
+		text-shadow: 1px 1px 0px #eee, -1px -1px 0px #ddd;
+		color: #777;
+	}
+	*/
+
+	[lipsum] {
+		font-family: 'RedactedScriptRegular';
+		color: #777;
+	}
+	h1[lipsum],
+	h2[lipsum],
+	h3[lipsum],
+	h4[lipsum],
+	h5[lipsum],
+	h6[lipsum] {
+		font-family: 'RedactedScriptBold';
+	}
+
+}
+
+// ---
+
+@font-face {
+    font-family: 'RedactedScriptRegular';
+    src: url('#{$font-path}redacted-regular.eot');
+    src: url('#{$font-path}redacted-regular.eot?#iefix') format('embedded-opentype'),
+         url('#{$font-path}redacted-regular.woff2') format('woff2'),
+         url('#{$font-path}redacted-regular.woff') format('woff'),
+         url('#{$font-path}redacted-regular.ttf') format('truetype'),
+         url('#{$font-path}redacted-regular.svg#redactedregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RedactedScriptBold';
+    src: url('#{$font-path}redacted-script-bold.eot');
+    src: url('#{$font-path}redacted-script-bold.eot?#iefix') format('embedded-opentype'),
+         url('#{$font-path}redacted-script-bold.woff2') format('woff2'),
+         url('#{$font-path}redacted-script-bold.woff') format('woff'),
+         url('#{$font-path}redacted-script-bold.ttf') format('truetype'),
+         url('#{$font-path}redacted-script-bold.svg#redacted_scriptbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RedactedScriptLight';
+    src: url('#{$font-path}redacted-script-light.eot');
+    src: url('#{$font-path}redacted-script-light.eot?#iefix') format('embedded-opentype'),
+         url('#{$font-path}redacted-script-light.woff2') format('woff2'),
+         url('#{$font-path}redacted-script-light.woff') format('woff'),
+         url('#{$font-path}redacted-script-light.ttf') format('truetype'),
+         url('#{$font-path}redacted-script-light.svg#redacted_scriptlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RedactedScriptRegular';
+    src: url('#{$font-path}redacted-script-regular.eot');
+    src: url('#{$font-path}redacted-script-regular.eot?#iefix') format('embedded-opentype'),
+         url('#{$font-path}redacted-script-regular.woff2') format('woff2'),
+         url('#{$font-path}redacted-script-regular.woff') format('woff'),
+         url('#{$font-path}redacted-script-regular.ttf') format('truetype'),
+         url('#{$font-path}redacted-script-regular.svg#redacted_scriptregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -3,13 +3,13 @@
 	&.lab-mockup {
 
 		display: block;
-		padding: 39px;
 
 		&.lab-mockup-grid {
 			$grid-color: #000;
 			$grid-size: 20px;
 			$grid-offset-h: -61px;
-			$grid-offset-v: -21px;			background-color: #fff;
+			$grid-offset-v: -21px;
+			background-color: #fff;
 			background-image: linear-gradient(rgba($grid-color,.1) 1px, transparent 1px),
 			linear-gradient(90deg, rgba($grid-color,.1) 1px, transparent 1px),
 			linear-gradient(rgba($grid-color,.1) 1px, transparent 1px),
@@ -43,5 +43,5 @@
 			}
 		}
 	}
-	
+
 }
