@@ -25,13 +25,15 @@
 					color: #333;
 					transition: opacity 0.2s, color 0.2s linear;
 				}
-				> a:after {
-					transform: scaleX(1);
-					transition: transform 0.2s ease-out;
+				&:not(.not-current) {
+					> a:after {
+						transform: scaleX(1);
+						transition: transform 0.2s ease-out;
+					}
 				}
 			}
-			&.current,
-			&.current-child {
+			&.current:not(.not-current),
+			&.current-child:not(.not-current) {
 				> a {
 					opacity: 1;
 					font-weight: normal;
@@ -111,7 +113,8 @@
 		li.mobile-menu-item {
 			font-family: $font-headline;
 			font-weight: bold;
-			&.current {
+			&.current:not(.not-current),
+			&.current-child:not(.not-current) {
 				a {
 					padding-bottom: 17px;
 				}
