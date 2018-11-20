@@ -1,0 +1,28 @@
+#mockup .mockup--title {
+
+	height: 41px;
+
+	h1 {
+		display: block;
+		margin: 0;
+		padding: 0;
+		margin-bottom: 0;
+		font-size: 22px;
+		line-height: 1.2;
+		width: 100%;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		span {
+			&:before {
+				content: " / ";
+				padding-left: 4px;
+				padding-right: 4px;
+			}
+			&:first-of-type:before {
+				display: none;
+			}
+		}
+	}
+
+}

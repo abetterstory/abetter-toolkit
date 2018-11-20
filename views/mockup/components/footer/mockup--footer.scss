@@ -1,0 +1,15 @@
+#mockup .mockup--footer {
+
+	//background-color: rgba(#aaa,0.6);
+
+	h1,h2,h3,h4,h5,h6 {
+		font-size: 18px;
+	}
+
+	> row {
+		padding-left: 40px;
+		padding-right: 40px;
+		justify-content: space-between;
+	}
+
+}

@@ -1,0 +1,27 @@
+#mockup .mockup--menu {
+
+	//background-color: rgba(#aaa,0.6);
+
+	p[lipsum] {
+		font-family: 'RedactedScriptBold';
+	}
+
+	column[left] {
+		flex-grow: 0;
+		min-width: 100px;
+		white-space: nowrap;
+		padding: 20px;
+	}
+	column[right] {
+		flex-grow: 0;
+		padding: 20px;
+	}
+	column[center] {
+		flex-grow: 1;
+		overflow: hidden;
+		column {
+			padding: 10px;
+		}
+	}
+
+}

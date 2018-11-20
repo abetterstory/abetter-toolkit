@@ -1,0 +1,44 @@
+#mockup .mockup--list {
+
+	height: auto;
+
+	padding: 40px 0px;
+
+	> row > column {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		> article {
+			display: block;
+			width: 80%;
+			max-width: 800px;
+			text-align: left;
+			h1,h2,h3,h4 {
+				font-size: 22px;
+				line-height: 1;
+			}
+			p {
+				font-size: 14px;
+				line-height: 1.2;
+			}
+			li {
+				font-size: 22px;
+				line-height: 1;
+				margin: 20px 0px;
+			}
+		}
+	}
+
+	&[center],
+	&.center {
+		> row > column > article {
+			text-align: center;
+		}
+	}
+
+	label {
+		//top: auto;
+		//bottom: 0px;
+	}
+
+}
