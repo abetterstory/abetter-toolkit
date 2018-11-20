@@ -1,11 +1,14 @@
 <section id="lab-inspector" class="lab-panel lab-inspector">
 
-	@style('inspector.scss')
+	@style('lab-inspector.scss')
+	@script('lab-inspector.js')
 
 	<header>
 		<a class="close" href="javascript:void(0)" onclick="lab_panelToggle(this)">×</a>
 	</header>
 
-	@script('inspector.js')
+	@component('lab.inspector.briefs',TRUE)
+	@component('lab.inspector.requirements',TRUE)
+	@component('lab.inspector.notes',TRUE)
 
 </section>

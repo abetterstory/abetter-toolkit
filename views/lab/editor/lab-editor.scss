@@ -26,7 +26,8 @@
 		left: 0;
 		right: 0;
 		z-index: 10050;
-		a.close {
+		a.close,
+		a.edit {
 			display: block;
 			position: absolute;
 			top: 0;
@@ -41,6 +42,12 @@
 			&:hover {
 				color: #333;
 			}
+		}
+		a.edit {
+			font-size: 14px;
+			top: 2px;
+			left: 2px;
+			right: auto;
 		}
 	}
 

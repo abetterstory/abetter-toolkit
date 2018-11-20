@@ -1,21 +1,28 @@
+@php
+
+$post = \ABetter\Wordpress\Controller::$handle->post ?? NULL;
+$url = "/wp/wp-admin/post.php?post={$post->ID}&action=edit";
+
+@endphp
 <section id="lab-editor" class="lab-panel lab-editor lab-mockup lab-mockup-grid">
 
-	@style('editor.scss')
+	@style('lab-editor.scss')
+	@style('lab-mockup.scss')
+
+	@script('lab-editor.js')
 
 	<header>
+		<a class="edit" href="{{$url}}" target="_blank"><i class="fa fa-pen"></i></a>
 		<a class="close" href="javascript:void(0)" onclick="lab_panelToggle(this)">×</a>
 	</header>
 
 	<section id="mockup">
 
-		@style('mockup.scss')
-
 		@php
 
-		$post = \ABetter\Wordpress\Controller::$handle->post ?? NULL;
-		$options = ($f = get_field('mockup_options',$post)) ? (array) $f : [];
-		$post = (in_array('inherit',$options)) ? get_post($post->post_parent) : NULL;
-		$mockup = ($f = get_field('mockup_template',$post)) ? _render($f,get_defined_vars()) : "";
+		$options = ($f = get_field('dev_mockup_options',$post)) ? (array) $f : [];
+		$current = (in_array('inherit',$options) && $post->post_parent) ? get_post($post->post_parent) : $post;
+		$mockup = ($f = get_field('dev_mockup_template',$current)) ? _render($f,get_defined_vars()) : "";
 
 		if (!$mockup) {
 			$view = \ABetter\Wordpress\Controller::$handle->view ?? NULL;
@@ -31,12 +38,10 @@
 
 		@endphp
 
-		@mockup('header')
+		@mockup('title')
 
 		{!! $mockup !!}
 
 	</section>
-
-	@script('editor.js')
 
 </section>

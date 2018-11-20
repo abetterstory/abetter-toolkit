@@ -14,10 +14,19 @@ $font-path: '/fonts/redacted/';
 
 #mockup {
 
+	display: block;
+	padding-bottom: 58px;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 16px;
 	line-height: 1.2;
 	-webkit-font-smoothing: antialiased;
+
+	min-width: 759px;
+	max-width: 1179px;
+
+	@media (min-width: 1180px) {
+		margin: 0 auto;
+	}
 
 	h1,h2,h3,h4,h5,h6 {
 		display: block;
@@ -52,9 +61,12 @@ $font-path: '/fonts/redacted/';
 	hr {
 		display: block;
 		margin: 19px 39px;
-		margin-top: -2px;
+		margin-top: -1px;
 		border: none;
 		border-top: 2px solid $color-border;
+		&[space],&.space {
+			border-color: transparent;
+		}
 	}
 
 	block {

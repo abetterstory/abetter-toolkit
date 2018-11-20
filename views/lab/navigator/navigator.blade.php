@@ -23,7 +23,7 @@ $Navigator = new Navigator();
 ?>
 <section id="lab-navigator" class="lab-panel lab-navigator lab-mockup-grid">
 
-	@style('navigator.scss')
+	@style('lab-navigator.scss')
 
 	<header>
 		<a class="close" href="javascript:void(0)" onclick="lab_panelToggle(this)">×</a>
@@ -65,6 +65,6 @@ $Navigator = new Navigator();
 
 	</ul>
 
-	@script('navigator.js')
+	@script('lab-navigator.js')
 
 </section>

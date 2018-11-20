@@ -1,7 +1,7 @@
 <section id="lab-bar-margin"></section>
 <section id="lab-bar" class="lab-panel lab-bar">
 
-	@style('bar.scss')
+	@style('lab-bar.scss')
 
 	<ul>
 		<li class="lab-brand">
@@ -24,6 +24,6 @@
 		</li>
 	</ul>
 
-	@script('bar.js')
+	@script('lab-bar.js')
 
 </section>

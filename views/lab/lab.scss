@@ -135,4 +135,17 @@ body {
 		}
 	}
 
+	@media (min-width: 2000px) {
+		&.lab-inspector {
+			margin-right: 657px !important;
+			#lab .lab-panel.lab-inspector {
+				display: block;
+				width: 657px;
+			}
+			#lab .lab-panel.lab-editor {
+				right: 657px;
+			}
+		}
+	}
+
 }
