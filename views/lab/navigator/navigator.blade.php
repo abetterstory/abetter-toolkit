@@ -3,6 +3,7 @@
 class Navigator extends ABetter\Toolkit\Component {
 	public function build() {
 
+
 		$this->web_label = "Wordpress Content";
 		$this->web_admin_new = "Add new";
 		$this->web_admin_goto = "Go to";
@@ -11,9 +12,19 @@ class Navigator extends ABetter\Toolkit\Component {
 		$this->web_admin_pages = "Pages";
 		$this->web_admin_post = "Post";
 		$this->web_admin_posts = "Posts";
+		$this->web_admin_language = "Language";
 
 		$this->web_index = new \ABetter\Wordpress\Index();
 		$this->web_items = $this->web_index->items;
+
+		$this->web_languages = [];
+
+		if (function_exists('icl_get_languages')) {
+			global $sitepress;
+			foreach (icl_get_languages() AS $lang) {
+				$this->web_languages[strtoupper($lang['code'])] = ($lang['code'] != $sitepress->get_default_language()) ? '/'.$lang['code'].'/' : '/';
+			}
+		}
 
 	}
 }
@@ -44,6 +55,16 @@ $Navigator = new Navigator();
 
 			<li class="divider"></li>
 
+			@if ($Navigator->web_languages)
+			<li class="admin">
+				<span class="label">{{ $Navigator->web_admin_language }}
+				@foreach ($Navigator->web_languages as $label => $url)
+					/ <a class="link" href="{{ $url }}">{{ $label }}</a>
+				@endforeach
+				</span>
+			</li>
+			@endif
+
 			<li class="admin">
 				<span class="label">{{ $Navigator->web_admin_new }}
 					<a class="link" href="/wp/wp-admin/post-new.php?post_type=page" target="_blank">{{ $Navigator->web_admin_page }}</a>
@@ -51,6 +72,7 @@ $Navigator = new Navigator();
 					<a class="link" href="/wp/wp-admin/post-new.php?post_type=post" target="_blank">{{ $Navigator->web_admin_post }}</a>
 				 </span>
 			</li>
+
 			<li class="admin">
 				<span class="label">{{ $Navigator->web_admin_goto }}
 					<a class="link" href="/wp/wp-admin/" target="_blank">{{ $Navigator->web_admin_dash }}</a>
