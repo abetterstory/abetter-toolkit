@@ -24,7 +24,16 @@ if (!function_exists('_dictionary')) {
 	}
 
 	function _dictionaryObject($dict,$lang=NULL,$default=NULL) {
-		return (is_object($dict)) ? $dict : get_page_by_path(preg_replace('/^dictionary_/',"",$dict),OBJECT,'dictionary');
+		$dict = (is_object($dict)) ? $dict : get_page_by_path(preg_replace('/^dictionary_/',"",$dict),OBJECT,'dictionary');
+		if ($dict && function_exists('icl_object_id')) {
+			$lang = (!empty($lang)) ? $lang : ICL_LANGUAGE_CODE;
+			if ($trid = $GLOBALS['wpdb']->get_var('SELECT trid FROM wp_icl_translations WHERE element_id = "'.$dict->ID.'"')) {
+				if ($translation = $GLOBALS['wpdb']->get_var('SELECT element_id FROM wp_icl_translations WHERE (trid = "'.$trid.'" AND language_code = "'.$lang.'")')) {
+					$dict = get_page($translation);
+				}
+			}
+		}
+		return $dict;
 	}
 
 	function _dictionaryContent($dict,$lang=NULL,$default=NULL) {
