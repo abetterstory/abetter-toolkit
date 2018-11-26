@@ -10,5 +10,6 @@
 	@component('lab.inspector.briefs',TRUE)
 	@component('lab.inspector.requirements',TRUE)
 	@component('lab.inspector.notes',TRUE)
+	@component('lab.inspector.design',TRUE)
 
 </section>

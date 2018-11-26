@@ -77,7 +77,7 @@
 				border-top: none;
 				padding-top: 0px;
 			}
-			a {
+			> a {
 				display: block;
 				position: absolute;
 				right: -12px;
@@ -94,8 +94,19 @@
 				}
 			}
 			&:hover {
-				a i {
+				> a i {
 					opacity: 1;
+				}
+			}
+			figure {
+				display: block;
+				margin: 0;
+				padding: 0;
+				img {
+					display: block;
+					width: 100%;
+					margin: 0;
+					padding: 0;
 				}
 			}
 			hgroup {
