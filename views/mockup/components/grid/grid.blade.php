@@ -1,5 +1,5 @@
 @php
-$items = $items ?? [["","","",""]];
+$items = $items ?? [[""],[""],[""],[""]];
 $style = $style ?? "";
 $label = $label ?? "";
 $icon = $icon ?? "";

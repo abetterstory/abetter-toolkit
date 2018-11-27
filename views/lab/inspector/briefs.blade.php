@@ -1,20 +1,20 @@
 @php
 
 $label = "Brief";
-$post = \ABetter\Wordpress\Controller::$handle->post ?? NULL;
+$post = \ABetter\Wordpress\Post::$post;
 $url = "/wp/wp-admin/post.php?post={$post->ID}&action=edit";
 $link = "Add Brief";
 
-$briefs = ($f = get_field('dev_mockup_briefs',$post)) ? (array) $f : [];
+$briefs = ($f = _wp_field('dev_mockup_briefs',$post)) ? (array) $f : [];
 
 foreach ($briefs AS &$brief) {
 	$brief = reset($brief);
 	$brief->edit = "/wp/wp-admin/post.php?post={$brief->ID}&action=edit";
-	$brief->message = ($f = get_field('dev_brief_message',$brief)) ? $f : "";
-	$brief->attention = ($f = get_field('dev_brief_attention',$brief)) ? $f : "";
-	$brief->proof = ($f = get_field('dev_brief_proof',$brief)) ? $f : "";
-	$brief->action = ($f = get_field('dev_brief_action',$brief)) ? $f : "";
-	$brief->voice = ($f = get_field('dev_brief_voice',$brief)) ? $f : "";
+	$brief->message = ($f = _wp_field('dev_brief_message',$brief)) ? $f : "";
+	$brief->attention = ($f = _wp_field('dev_brief_attention',$brief)) ? $f : "";
+	$brief->proof = ($f = _wp_field('dev_brief_proof',$brief)) ? $f : "";
+	$brief->action = ($f = _wp_field('dev_brief_action',$brief)) ? $f : "";
+	$brief->voice = ($f = _wp_field('dev_brief_voice',$brief)) ? $f : "";
 }
 unset($brief);
 

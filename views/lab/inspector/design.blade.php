@@ -1,11 +1,11 @@
 @php
 
 $label = "Design";
-$post = \ABetter\Wordpress\Controller::$handle->post ?? NULL;
+$post = \ABetter\Wordpress\Post::$post;
 $url = "/wp/wp-admin/post.php?post={$post->ID}&action=edit";
 $link = "Add Design";
 
-$designs = ($f = get_field('dev_mockup_design',$post)) ? (array) $f : [];
+$designs = ($f = _wp_field('dev_mockup_design',$post)) ? (array) $f : [];
 foreach ($designs AS &$design) {
 	$design = ['preview' => _image($design['url'],'w1000'), 'url' => _image($design['url'],'x')];
 }

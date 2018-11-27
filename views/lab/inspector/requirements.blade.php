@@ -1,25 +1,25 @@
 @php
 
 $label = "Requirements";
-$post = \ABetter\Wordpress\Controller::$handle->post ?? NULL;
+$post = \ABetter\Wordpress\Post::$post;
 $url = "/wp/wp-admin/post.php?post={$post->ID}&action=edit";
 $link = "Add Requirement";
 
-$requirements = ($f = get_field('dev_mockup_requirements',$post)) ? (array) $f : [];
+$requirements = ($f = _wp_field('dev_mockup_requirements',$post)) ? (array) $f : [];
 
 foreach ($requirements AS &$req) {
 	$req = reset($req);
 	$req->edit = "/wp/wp-admin/post.php?post={$req->ID}&action=edit";
-	$req->who = ($f = get_field('dev_requirement_who',$req)) ? $f : NULL;
+	$req->who = ($f = _wp_field('dev_requirement_who',$req)) ? $f : NULL;
 	$req->who_label = $req->who->post_title ?? "";
 	$req->who_link = (!empty($req->who->ID)) ? "/wp/wp-admin/post.php?post={$req->who->ID}&action=edit" : "";
-	$req->importance = ($f = get_field('dev_requirement_importance',$req)) ? $f : "";
-	$req->what = ($f = get_field('dev_requirement_what',$req)) ? $f : "";
-	$req->why = ($f = get_field('dev_requirement_why',$req)) ? $f : "";
-	$req->how = ($f = get_field('dev_requirement_how',$req)) ? $f : "";
-	$req->when = ($f = get_field('dev_requirement_when',$req)) ? $f : 0;
-	$req->type = ($f = get_field('dev_requirement_type',$req)) ? $f : "";
-	$req->status = ($f = get_field('dev_requirement_status',$req)) ? $f : "";
+	$req->importance = ($f = _wp_field('dev_requirement_importance',$req)) ? $f : "";
+	$req->what = ($f = _wp_field('dev_requirement_what',$req)) ? $f : "";
+	$req->why = ($f = _wp_field('dev_requirement_why',$req)) ? $f : "";
+	$req->how = ($f = _wp_field('dev_requirement_how',$req)) ? $f : "";
+	$req->when = ($f = _wp_field('dev_requirement_when',$req)) ? $f : 0;
+	$req->type = ($f = _wp_field('dev_requirement_type',$req)) ? $f : "";
+	$req->status = ($f = _wp_field('dev_requirement_status',$req)) ? $f : "";
 	// ---
 	$req->importance = strtolower($req->importance);
 	$req->what = (!preg_match('/^I /',$req->what)) ? lcfirst($req->what) : $req->what;

@@ -1,11 +1,11 @@
 @php
 
 $label = "Notes";
-$post = \ABetter\Wordpress\Controller::$handle->post ?? NULL;
+$post = \ABetter\Wordpress\Post::$post;
 $url = "/wp/wp-admin/post.php?post={$post->ID}&action=edit";
 $link = "Add Note";
 
-$notes = ($f = get_field('dev_mockup_notes',$post)) ? $f : "";
+$notes = ($f = _wp_field('dev_mockup_notes',$post)) ? $f : "";
 
 @endphp
 <section class="inspector--section inspector--notes">
