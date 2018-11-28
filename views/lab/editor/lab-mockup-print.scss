@@ -27,6 +27,11 @@
 			border-color: #000 !important;
 		}
 
+		hr[space],
+		hr.space {
+			border-color: transparent !important;
+		}
+
 		h1,h2,h3,h4,h5,h6,p,a,li,label {
 			color: #000 !important;
 		}
