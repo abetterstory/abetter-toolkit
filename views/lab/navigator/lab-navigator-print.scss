@@ -1,0 +1,25 @@
+@media print {
+
+	#lab-navigator {
+
+		> header {
+			display: none !important;
+		}
+
+		li.divider,
+		li.admin {
+			display: none !important;
+		}
+
+		li .label {
+			padding-top: 4px;
+			padding-bottom: 4px;
+		}
+
+		h1,h2,h3,h4,h5,h6,p,a,li,span,label {
+			color: #000 !important;
+		}
+
+	}
+
+}

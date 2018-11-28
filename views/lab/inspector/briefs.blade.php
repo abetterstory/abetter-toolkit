@@ -19,7 +19,7 @@ foreach ($briefs AS &$brief) {
 unset($brief);
 
 @endphp
-<section class="inspector--section inspector--briefs">
+<section class="inspector--section inspector--briefs" {{($briefs)?'':'empty'}}>
 	<label><a href="{{$url}}" target="_blank">{{ $label }}</a></label>
 	@foreach($briefs AS $brief)
 	<article>

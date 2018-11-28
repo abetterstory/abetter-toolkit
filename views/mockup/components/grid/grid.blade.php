@@ -1,38 +1,31 @@
 @php
-$items = $items ?? [[""],[""],[""],[""]];
-$style = $style ?? "";
-$label = $label ?? "";
-$icon = $icon ?? "";
-$background = (($background ?? TRUE) !== FALSE) ? 'background' : '';
-$border = (($border ?? TRUE) !== FALSE) ? 'border' : '';
-$image = (($image ?? FALSE) !== FALSE) ? 'image' : '';
-$lipsum = (($lipsum ?? TRUE) !== FALSE) ? 'lipsum' : '';
-$headline = $headline ?? _lipsum(50);
-$body = $body ?? _lipsum(200);
-foreach ($items AS &$item) {
-	$item = (is_array($item)) ? $item : ['label' => $item];
-	$item['style'] = $item['style'] ?? "";
-	$item['label'] = $item['label'] ?? $label;
-	$item['icon'] = $item['icon'] ?? $icon;
-	$item['background'] = (($item['background'] ?? TRUE) !== FALSE) ? $background : '';
-	$item['border'] = (($item['border'] ?? TRUE) !== FALSE) ? $border : '';
-	$item['image'] = (($item['image'] ?? FALSE) !== FALSE) ? $image : '';
-	$item['lipsum'] = (($item['lipsum'] ?? TRUE) !== FALSE) ? $lipsum : '';
-	$item['headline'] = $item['headline'] ?? $headline;
-	$item['body'] = $item['body'] ?? $body;
-}
-unset($item);
+$opt = [
+	'label' => $label ?? "",
+	'style' => $style ?? "",
+	'size' => $size ?? "medium",
+	'icon' => $icon ?? "",
+	'background' => $background ?? TRUE,
+	'border' => $border ?? TRUE,
+	'image' => $image ?? FALSE,
+	'lipsum' => $lipsum ?? TRUE,
+	'headline' => $headline ?? "",
+	'body' => $body ?? "",
+	'items' => $items ?? [[""],[""],[""],[""]],
+];
+$opt['headline'] = $opt['headline'] ?: (in_array($opt['size'],['large','xlarge'])) ? _lipsum(50) : _lipsum(40);
+$opt['body'] = $opt['body'] ?: (in_array($opt['size'],['large','xlarge'])) ? _lipsum(250) : _lipsum(150);
+foreach ($opt['items'] AS &$i) $i = array_merge($opt,(is_array($i)) ? $i : ['label' => $i]);
 @endphp
-<block class="mockup--grid {{ $style }}">
+<block class="mockup--grid {{ $opt['style'] }}" {{$opt['size']}}>
 	@style('mockup--grid.scss')
 	<row>
-		@foreach ($items AS $item)
-		<column class="{{$item['style']}}" {{$item['background']}} {{$item['border']}} {{$item['image']}}>
+		@foreach ($opt['items'] AS $item)
+		<column class="{{$item['style']}}" {{$item['size']}} {{$item['background']?'background':''}} {{$item['border']?'border':''}} {{$item['image']?'image':''}}>
 			@if($item['label'])<label>{{ $item['label'] }}</label>@endif
 			<article>
 				@if($item['icon'])<icon class="{{ $item['icon'] }}"></icon>@endif
-				@if($item['headline'])<h4 {{$item['lipsum']}}>{{ $item['headline'] }}</h4>@endif
-				@if($item['body'])<p {{$item['lipsum']}}>{!! $item['body'] !!}</p>@endif
+				@if($item['headline'])<h4 {{$item['lipsum']?'lipsum':''}}>{{ $item['headline'] }}</h4>@endif
+				@if($item['body'])<p {{$item['lipsum']?'lipsum':''}}>{!! $item['body'] !!}</p>@endif
 			</article>
 		</column>
 		@endforeach

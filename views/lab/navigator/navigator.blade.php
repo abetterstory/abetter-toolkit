@@ -35,6 +35,7 @@ $Navigator = new Navigator();
 <section id="lab-navigator" class="lab-panel lab-navigator lab-mockup-grid">
 
 	@style('lab-navigator.scss')
+	@style('lab-navigator-print.scss')
 
 	<header>
 		<a class="close" href="javascript:void(0)" onclick="lab_panelToggle(this)">×</a>

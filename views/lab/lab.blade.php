@@ -12,6 +12,8 @@
 	@component('lab.inspector',TRUE)
 	@component('lab.bar',TRUE)
 
+	@style('lab-print.scss')
+
 	@script('lab.js')
 
 </aside>

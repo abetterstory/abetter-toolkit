@@ -1,6 +1,7 @@
 <section id="lab-inspector" class="lab-panel lab-inspector">
 
 	@style('lab-inspector.scss')
+	@style('lab-inspector-print.scss')
 	@script('lab-inspector.js')
 
 	<header>

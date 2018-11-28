@@ -105,7 +105,12 @@ class BladeDirectives {
 		if (!$vars) return base_path().'/'.$name;
 		$view = (isset($vars['view']->path)) ? $vars['view']->path : '';
 		$path = ((!preg_match('/^\//',$name) && $view) ? dirname($view) : resource_path('views')) . '/';
-		return $path.trim($name,'/');
+		$path = $path.trim($name,'/');
+		if (!is_file($path) && preg_match('/\/mockup\//',$path)) {
+			$vendor = preg_replace('/^(.*)\/mockup\/(.*)/',base_path().'/vendor/abetter/toolkit/views/mockup/$2',$path);
+			$path = (is_file($vendor)) ? $vendor : $path;
+		}
+		return $path;
 	}
 
 	protected static function getSource($name,$vars=[]) {

@@ -8,7 +8,7 @@ $link = "Add Note";
 $notes = ($f = _wp_field('dev_mockup_notes',$post)) ? $f : "";
 
 @endphp
-<section class="inspector--section inspector--notes">
+<section class="inspector--section inspector--notes" {{($notes)?'':'empty'}}>
 	<label><a href="{{$url}}" target="_blank">{{ $label }}</a></label>
 	<article>
 		<p pre>{{ $notes }}</p>

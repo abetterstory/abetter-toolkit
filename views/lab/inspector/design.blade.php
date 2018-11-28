@@ -12,7 +12,7 @@ foreach ($designs AS &$design) {
 unset($design);
 
 @endphp
-<section class="inspector--section inspector--design">
+<section class="inspector--section inspector--design" {{($designs)?'':'empty'}}>
 	<label><a href="{{$url}}" target="_blank">{{ $label }}</a></label>
 	@foreach($designs AS $design)
 	<article>

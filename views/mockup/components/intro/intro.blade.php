@@ -1,19 +1,19 @@
 @php
 $opt = [
-	'label' => $label ?? "List",
+	'label' => $label ?? "Intro",
 	'style' => $style ?? "",
 	'size' => $size ?? "",
 	'icon' => $icon ?? "",
 	'background' => $background ?? FALSE,
-	'border' => $border ?? TRUE,
+	'border' => $border ?? FALSE,
 	'image' => $image ?? FALSE,
 	'lipsum' => $lipsum ?? TRUE,
 	'headline' => $headline ?? _lipsum('headline'),
-	'body' => $body ?? _lipsum('headline:li:10'),
+	'body' => $body ?? _lipsum('large'),
 ];
 @endphp
-<block class="mockup--list {{$opt['style']}}" {{$opt['size']}} {{$opt['background']?'background':''}} {{$opt['border']?'border':''}} {{$opt['image']?'image':''}}>
-	@style('mockup--list.scss')
+<block class="mockup--intro {{$opt['style']}}" {{$opt['size']}} {{$opt['background']?'background':''}} {{$opt['border']?'border':''}} {{$opt['image']?'image':''}}>
+	@style('mockup--intro.scss')
 	<label>{{ $opt['label'] }}</label>
 	<row>
 		<column>

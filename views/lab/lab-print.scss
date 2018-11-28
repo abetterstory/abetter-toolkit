@@ -1,0 +1,118 @@
+@media print {
+
+	body {
+
+		margin: 0 !important;
+		padding: 0 !important;
+		width: 100% !important;
+		overflow: auto !important;
+		border-top: 1px solid #999 !important;
+		padding-top: 1px !important;
+		margin-left: 0px !important;
+
+		> *:not(#lab) {
+			display: none !important;
+		}
+
+		// ---
+
+		#lab {
+			display: block !important;
+			position: relative !important;
+			top: auto !important;
+			bottom: auto !important;
+			left: auto !important;
+			right: auto !important;
+			width: auto !important;
+			margin: 0 !important;
+			vertical-align: top !important;
+			// ---
+			a,
+			a:before,
+			a:after {
+				text-decoration: none !important;
+			}
+			a[href]:after {
+				content: none !important;
+			}
+			// ---
+			.lab-panel {
+				position: relative !important;
+				box-sizing: border-box !important;
+				top: auto !important;
+				bottom: auto !important;
+				left: auto !important;
+				right: auto !important;
+				width: auto !important;
+				border-color: #999 !important;
+				background-color: #fff !important;
+				background-image: none !important;
+				overflow: auto !important;
+				height: auto !important;
+				margin: 0 !important;
+				vertical-align: top !important;
+				min-height: 100vh !important;
+			}
+			// ---
+			.lab-bar,
+			.lab-report,
+			.lab-navigator,
+			.lab-editor,
+			.lab-inspector {
+				display: none !important;
+			}
+		}
+
+		// ---
+
+		&.lab-navigator {
+			margin-left: 0px !important;
+			#lab .lab-navigator {
+				display: inline-block !important;
+				width: 100% !important;
+				padding-top: 40px !important;
+			}
+			&.lab-editor {
+				#lab .lab-navigator {
+					width: 20% !important;
+				}
+			}
+		}
+
+		&.lab-inspector {
+			margin-right: 0px !important;
+			#lab .lab-inspector {
+				display: inline-block !important;
+				width: 100% !important;
+				padding-top: 20px !important;
+			}
+			&.lab-editor {
+				#lab .lab-inspector {
+					width: 20% !important;
+				}
+			}
+		}
+
+		&.lab-editor {
+			margin-left: 0px !important;
+			#lab .lab-editor {
+				display: inline-block !important;
+				width: 100% !important;
+				padding-top: 0px !important;
+			}
+			&.lab-navigator,
+			&.lab-inspector {
+				#lab .lab-editor {
+					width: 79% !important;
+				}
+			}
+			&.lab-navigator.lab-inspector {
+				#lab .lab-editor {
+					width: 59% !important;
+				}
+			}
+		}
+
+	}
+
+}

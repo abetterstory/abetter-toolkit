@@ -1,0 +1,36 @@
+@media print {
+
+	#lab-editor {
+
+		> header {
+			display: none !important;
+		}
+
+	}
+
+	#mockup {
+
+		[border],.border {
+			border: 2px solid #000 !important;
+			box-shadow: none !important;
+		}
+
+		label {
+			background-color: #fff !important;
+			color: #000 !important;
+			border: 1px solid #000 !important;
+			padding: 3px 3px 2px 4px !important;
+			margin: -1px !important;
+		}
+
+		hr {
+			border-color: #000 !important;
+		}
+
+		h1,h2,h3,h4,h5,h6,p,a,li,label {
+			color: #000 !important;
+		}
+
+	}
+
+}

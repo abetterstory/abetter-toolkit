@@ -1,5 +1,5 @@
 @php
-$post = \ABetter\Wordpress\Controller::$handle->post ?? NULL;
+$post = \ABetter\Wordpress\Post::$post;
 $parents = get_post_ancestors($post) ?? [];
 @endphp
 <block class="mockup--title {{ $style ?? '' }}">

@@ -1,6 +1,6 @@
 @php
 
-$post = \ABetter\Wordpress\Controller::$handle->post ?? NULL;
+$post = \ABetter\Wordpress\Post::$post;
 $url = "/wp/wp-admin/post.php?post={$post->ID}&action=edit";
 
 @endphp
@@ -8,6 +8,7 @@ $url = "/wp/wp-admin/post.php?post={$post->ID}&action=edit";
 
 	@style('lab-editor.scss')
 	@style('lab-mockup.scss')
+	@style('lab-mockup-print.scss')
 
 	@script('lab-editor.js')
 

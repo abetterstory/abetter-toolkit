@@ -28,7 +28,7 @@ foreach ($requirements AS &$req) {
 unset($req);
 
 @endphp
-<section class="inspector--section inspector--requirements">
+<section class="inspector--section inspector--requirements" {{($requirements)?'':'empty'}}>
 	<label><a href="{{$url}}" target="_blank">{{ $label }}</a></label>
 	@foreach($requirements AS $req)
 	<article>
