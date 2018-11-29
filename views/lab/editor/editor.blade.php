@@ -26,11 +26,6 @@ $url = "/wp/wp-admin/post.php?post={$post->ID}&action=edit";
 		$mockup = ($f = get_field('dev_mockup_template',$current)) ? _render($f,get_defined_vars()) : "";
 
 		if (!$mockup) {
-			$view = \ABetter\Wordpress\Controller::$handle->view ?? NULL;
-			$mockup = ($view && view()->exists('mockup.'.$view)) ? view('mockup.'.$view)->render() : "";
-		}
-
-		if (!$mockup) {
 			$suggestions = \ABetter\Wordpress\Controller::$handle->suggestions ?? [];
 			foreach ($suggestions AS $suggestion) {
 				$mockup = (!$mockup && view()->exists('mockup.'.$suggestion)) ? view('mockup.'.$suggestion)->render() : $mockup;

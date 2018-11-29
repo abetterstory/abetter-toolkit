@@ -25,6 +25,7 @@ class BladeServiceProvider extends ServiceProvider {
 			view()->share('view', $view_data);
 			view()->addLocation(base_path().'/vendor/abetter/toolkit/views');
 			view()->addLocation(base_path().'/vendor/abetter/wordpress/views');
+			view()->addNamespace('abetter',base_path().'/vendor/abetter/toolkit/views');
 		});
 
 		// Inject (extends laravel inject directive)
@@ -84,8 +85,10 @@ class BladeServiceProvider extends ServiceProvider {
 		Blade::directive('mockup', function($expression){
 			list($path,$vars,$end) = BladeDirectives::parseExpression($expression);
 			$path = 'mockup.components.'.str_replace('components.',"",$path);
+			if (preg_match('/abetter::/',$path)) $path = 'abetter::'.str_replace('abetter::','',$path); // Move namespace
 			$end = TRUE;
 			if (!\View::exists($path)) $path .= '.'.array_last(explode('.',$path)); // Test if folder
+			if (!\View::exists($path)) return "<?php echo 'Mockup not found: {$path}'; ?>";
 			if ($end) return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?><?php echo \$__env->renderComponent(); ?>";
 			return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?>";
         });
