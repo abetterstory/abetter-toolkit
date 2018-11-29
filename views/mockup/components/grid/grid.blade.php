@@ -8,14 +8,27 @@ $opt = [
 	'border' => $border ?? TRUE,
 	'image' => $image ?? FALSE,
 	'lipsum' => $lipsum ?? TRUE,
-	'headline' => $headline ?? "",
-	'body' => $body ?? "",
+	'headline' => $headline ?? "auto",
+	'body' => $body ?? "auto",
+	'intro' => $intro ?? "",
 	'items' => $items ?? [[""],[""],[""],[""]],
 ];
-$opt['headline'] = $opt['headline'] ?: (in_array($opt['size'],['large','xlarge'])) ? _lipsum(50) : _lipsum(40);
-$opt['body'] = $opt['body'] ?: (in_array($opt['size'],['large','xlarge'])) ? _lipsum(250) : _lipsum(150);
-foreach ($opt['items'] AS &$i) $i = array_merge($opt,(is_array($i)) ? $i : ['label' => $i]);
+if ($opt['headline'] == "auto") $opt['headline'] = (in_array($opt['size'],['large','xlarge'])) ? _lipsum(50) : _lipsum(40);
+if ($opt['body'] == "auto") $opt['body'] = (in_array($opt['size'],['large','xlarge'])) ? _lipsum(250) : _lipsum(150);
+if ($opt['intro'] && !preg_match('/<(h1|h2|h3|h4|h5|h6|p)/',$opt['intro'])) $opt['intro'] = "<h6 ".(($opt['lipsum'])?'lipsum':'').">{$opt['intro']}</h6>";
+foreach ($opt['items'] AS &$i) $i = array_merge($opt,(is_array($i)) ? $i : ['label' => $i]); unset($i);
 @endphp
+@if($opt['intro'])
+<block class="mockup--block--intro">
+	<row>
+		<column>
+			<article>
+				{!! $opt['intro'] !!}
+			</article>
+		</column>
+	</row>
+</block>
+@endif
 <block class="mockup--grid {{ $opt['style'] }}" {{$opt['size']}}>
 	@style('mockup--grid.scss')
 	<row>

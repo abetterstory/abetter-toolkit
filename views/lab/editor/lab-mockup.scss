@@ -15,7 +15,7 @@ $font-path: '/fonts/redacted/';
 #mockup {
 
 	display: block;
-	padding-bottom: 58px;
+	padding-bottom: 89px; // 58px;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 16px;
 	line-height: 1.2;
@@ -40,6 +40,10 @@ $font-path: '/fonts/redacted/';
 	h1,h2 {
 		font-size: 38px;
 		line-height: 0.9;
+	}
+
+	h5,h6 {
+		font-size: 18px;
 	}
 
 	p,li {
@@ -248,6 +252,38 @@ $font-path: '/fonts/redacted/';
 			color: #999;
 			font-style: italic;
 			text-shadow: 1px 1px 0px #fff, -1px -1px 0px #fff;
+		}
+	}
+
+	// ---
+
+	.mockup--block--intro {
+		height: auto;
+		> row {
+	    	align-items: flex-end;
+			> column {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+				> article {
+					display: block;
+					width: 80%;
+					max-width: 800px;
+					text-align: center;
+					h1,h2,h3,h4 {
+						font-size: 22px;
+						line-height: 1;
+					}
+					p {
+						font-size: 14px;
+						line-height: 1.2;
+					}
+					> *:last-child {
+						margin-bottom: 0px;
+					}
+				}
+			}
 		}
 	}
 

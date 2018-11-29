@@ -14,7 +14,7 @@ $opt = [
 @endphp
 <block class="mockup--intro {{$opt['style']}}" {{$opt['size']}} {{$opt['background']?'background':''}} {{$opt['border']?'border':''}} {{$opt['image']?'image':''}}>
 	@style('mockup--intro.scss')
-	<label>{{ $opt['label'] }}</label>
+	@if($opt['label'])<label>{{ $opt['label'] }}</label>@endif
 	<row>
 		<column>
 			<article>
