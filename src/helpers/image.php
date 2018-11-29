@@ -266,7 +266,7 @@ function _imageFileSearch($file) {
 	$return = NULL;
 	$ext = pathinfo($file,PATHINFO_EXTENSION);
 	$name = pathinfo($file,PATHINFO_FILENAME);
-	if ($conv = pathinfo($name,PATHINFO_EXTENSION)) {
+	if (($conv = strtolower(pathinfo($name,PATHINFO_EXTENSION))) && in_array($conv,['jpg','jpeg','png'])) {
 		$ext = $conv;
 		$name = pathinfo($name,PATHINFO_FILENAME);
 	}
