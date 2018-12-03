@@ -18,7 +18,7 @@ if (!function_exists('_imageCache')) {
 	function _imageCache($file,$opt=NULL) {
 		$file = preg_replace('/https?\:\/\//',"",trim($file,'/'));
 		$type = ($headers = get_headers('https://'.$file,1)) ? (($ext = _contentType($headers['Content-Type'],TRUE)) ? '.'.$ext : '') : '';
-		$cache = preg_replace('/\/|\?|\=|\./','_',$file).$type;
+		$cache = _slugify($file).$type;
 		$storage = storage_path('cache').'/image';
 		$opt = array_replace([
 			'source' => 'https://'.$file,

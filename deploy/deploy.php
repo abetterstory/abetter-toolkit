@@ -99,6 +99,7 @@ task('setup', function () {
 	runLocally("mkdir -p storage/framework/views");
 	runLocally("mkdir -p storage/framework/cache");
 	runLocally("mkdir -p storage/cache");
+	runLocally("mkdir -p storage/service");
 	runLocally("mkdir -p resources/fonts");
 	runLocally("mkdir -p resources/images");
 	runLocally("mkdir -p resources/wordpress");
@@ -124,6 +125,7 @@ task('reset', function () {
 	writeLine("Local reset prepare");
 	runLocally("rm -rf storage/clockwork/*");
 	runLocally("rm -rf storage/cache/*");
+	runLocally("rm -rf storage/service/*");
 	runLocally("rm -rf public/fonts/*");
 	runLocally("rm -rf public/images/*");
 	runLocally("rm -rf public/scripts/*");
@@ -137,6 +139,7 @@ task('reset', function () {
 task('build', function () {
 	writeLine("Build prepare");
 	runLocally("rm -rf storage/cache/* || true");
+	runLocally("rm -rf storage/service/* || true");
 	runLocally("rm -rf storage/clockwork/* || true");
 	runLocally("rm -rf storage/logs/* || true");
 	runLocally("rm -rf public/scripts/* || true");
@@ -203,6 +206,30 @@ task('deploy', function () {
 	writeRun("chmod -R 777 bootstrap/cache || true");
 	writeRun("chmod -R 777 storage || true");
 	writeLine("Deploy done!");
+});
+
+task('deploy:hot', function () {
+	$stage = get('stage');
+	$confirm = "Are you sure you want to hot-deploy with rsync to %s?";
+	if (in_array($stage,['production','stage'])) {
+		$ask = str_replace('%s',ucwords($stage),$confirm);
+		if (!askConfirmation($ask)) return false;
+	}
+	cd("{{ deploy_path }}");
+	writeRun("pwd","Hot-deploy prepare destination");
+	// ---
+	$dirs = ['resources','routes','public'];
+	foreach ($dirs AS $dir) {
+		$dest = dirname($dir);
+		writeRunLocally("rsync -vr --exclude=cache --exclude=clockwork --links --quiet ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}","rsync: {$dir}");
+	}
+	// ---
+	writeRun("php artisan cache:clear");
+	writeRun("php artisan route:clear");
+	writeRun("php artisan view:clear");
+	writeRun("php artisan config:clear");
+	writeRun("rm -rf storage/framework/sessions/*");
+	writeLine("Hot-deploy done!");
 });
 
 // Tasks / Database
