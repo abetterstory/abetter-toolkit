@@ -13,9 +13,9 @@ class Service {
 	public $type = "";
 	public $args = [];
 	public $data = [];
+	public $file = NULL;
 	public $expire = '1 hour';
 	public $storage = 'service';
-	public $file = NULL;
 	public $response = NULL;
 	public $handled = NULL;
 	public $debug = NULL;
@@ -49,7 +49,6 @@ class Service {
 			$this->debug = TRUE;
 			$this->data['debug'] = $this->debug;
 		}
-
 		$this->handle();
 	}
 
@@ -61,8 +60,21 @@ class Service {
 
 	// ---
 
+	public function debug() {
+
+	}
+
+	// ---
+
+	public function log($key,$value=NULL) {
+		if (!$value) $this->log[] = $key; else $this->log[$key] = $value;
+	}
+
 	public function response() {
-		if ($this->debug) $this->data['log'] = $this->log;
+		if ($this->debug) {
+			$this->debug();
+			$this->data['log'] = $this->log;
+		}
 		return _echoJson($this->data,$this->expire);
     }
 
@@ -72,16 +84,16 @@ class Service {
 
 	// ---
 
-	public function locked($file=NULL) {
-		return (is_file($file ?? $this->storage.'/'.$this->slug.'.lock')) ? TRUE : FALSE;
+	public function locked($name=NULL) {
+		return (is_file($this->storage.'/'.($name ?? $this->slug).'.lock')) ? TRUE : FALSE;
 	}
 
 	public function lock($name=NULL) {
-		@file_put_contents($file ?? $this->storage.'/'.$this->slug.'.lock',date('Y-m-d H:i:s'));
+		@file_put_contents($this->storage.'/'.($name ?? $this->slug).'.lock',date('Y-m-d H:i:s'));
 	}
 
 	public function unlock($name=NULL) {
-		@unlink($file ?? $this->storage.'/'.$this->slug.'.lock');
+		@unlink($this->storage.'/'.($name ?? $this->slug).'.lock');
 	}
 
 }
