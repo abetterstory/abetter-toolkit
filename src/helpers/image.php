@@ -36,6 +36,39 @@ if (!function_exists('_imageCache')) {
 
 }
 
+if (!function_exists('_imageFileSearch')) {
+
+	function _imageFileSearch($file,$return=NULL) {
+		$ext = pathinfo($file,PATHINFO_EXTENSION);
+		$name = pathinfo($file,PATHINFO_FILENAME);
+		if (!$name) return $return;
+		if (($conv = strtolower(pathinfo($name,PATHINFO_EXTENSION))) && in_array($conv,['jpg','jpeg','png'])) {
+			$ext = $conv;
+			$name = pathinfo($name,PATHINFO_FILENAME);
+		}
+		$dir = dirname(public_path().$file);
+		if (!is_dir($dir)) { // Try WP_UPLOADS
+			if (preg_match('/^\/uploads\//',$file)) {
+				$dir = dirname(public_path().str_replace('/uploads/',env('WP_UPLOADS'),$file));
+			}
+		}
+		if (!is_dir($dir)) { // Try IMAGE CACHE
+			if (preg_match('/^\/cache\//',$file)) {
+				$dir = storage_path('cache').'/image/';
+				$file = preg_replace('/\/cache\//',"",$file);
+			}
+		}
+		if (!is_dir($dir)) return FALSE;
+		foreach (scandir($dir) AS $f) {
+			if ($return || in_array($f,['.','..'])) continue;
+			if ($f == "{$name}.{$ext}") $return = $f;
+			if (pathinfo($f,PATHINFO_FILENAME) == $name) $return = $f;
+		}
+		return ($return) ? realpath($dir.DIRECTORY_SEPARATOR.$return) : FALSE;
+	}
+
+}
+
 if (!function_exists('_imageMagick')) {
 
 	function _imageMagick($source,$target,$style,$format=NULL) {
@@ -189,104 +222,4 @@ if (!function_exists('_imageStyle')) {
 		return $style;
 	}
 
-}
-
-// ---
-
-function _echoFile($file,$expire='1 month') {
-	if (!is_file($file)) return _echoExit();
-	_headersFile($file,$expire);
-	echo file_get_contents($file);
-	exit(0);
-}
-
-function _headersFile($file,$expire='1 month',$cors=FALSE) {
-	if (!is_file($file)) return FALSE;
-	$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-	$type = _contentType($ext);
-	$created = filemtime($file);
-	$expire = _expireTime($expire);
-	$etag = md5_file($file);
-	_headers($type,$created,$expire,$etag,$cors);
-}
-
-function _contentType($ext,$reverse=FALSE) {
-	$types = array(
-		'txt' => 'text/plain',
-		'html' => 'text/html',
-		'xml' => 'text/xml',
-		'json' => 'application/json',
-		'pdf' => 'application/pdf',
-		'js' => 'application/javascript',
-		'css' => 'text/css',
-		'svg' => 'image/svg+xml',
-		'jpg' => 'image/jpeg',
-		'jpeg' => 'image/jpeg',
-		'png' => 'image/png',
-		'gif' => 'image/gif',
-		'ico' => 'image/x-icon',
-		'ttf' => 'application/x-font-ttf',
-		'eot' => 'application/vnd.ms-fontobject',
-		'woff' => 'application/font-woff',
-		'woff2' => 'application/font-woff2',
-		'mp4' => 'video/mp4',
-		'm4v' => 'video/mp4',
-		'ogg' => 'video/ogg',
-		'ogv' => 'video/ogg',
-		'webm' => 'video/webm',
-		'xls' => 'application/vnd.ms-excel',
-		'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-	);
-	if ($reverse) $types = array_flip($types);
-	return (isset($types[$ext])) ? $types[$ext] : 'text/html';
-}
-
-function _expireTime($time) {
-	if (is_numeric($time)) return $time;
-	return strtotime($time, 0);
-}
-
-function _headers($type,$created,$expire,$etag=NULL,$cors=FALSE) {
-	@header('Content-Type: '.$type.'; charset=utf-8');
-	@header('Cache-Control: public, max-age='.$expire);
-	@header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + $expire));
-	if ($created) @header('Last-Modified: '.gmdate('D, d M Y H:i:s \G\M\T', $created));
-	if ($etag) @header('Etag: '.$etag);
-	// SVG: @header('Vary: Accept-Encoding'); // Add AddOutputFilterByType DEFLATE image/svg+xml in htaccess
-	@header_remove('X-Powered-By');
-	if ($cors) {
-		@header('Access-Control-Allow-Origin: *');
-		@header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-		@header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, X-Requested-With');
-	}
-	return TRUE;
-}
-
-function _imageFileSearch($file) {
-	$return = NULL;
-	$ext = pathinfo($file,PATHINFO_EXTENSION);
-	$name = pathinfo($file,PATHINFO_FILENAME);
-	if (($conv = strtolower(pathinfo($name,PATHINFO_EXTENSION))) && in_array($conv,['jpg','jpeg','png'])) {
-		$ext = $conv;
-		$name = pathinfo($name,PATHINFO_FILENAME);
-	}
-	$dir = dirname(public_path().$file);
-	if (!is_dir($dir)) { // Try WP_UPLOADS
-		if (preg_match('/^\/uploads\//',$file)) {
-			$dir = dirname(public_path().str_replace('/uploads/',env('WP_UPLOADS'),$file));
-		}
-	}
-	if (!is_dir($dir)) { // Try IMAGE CACHE
-		if (preg_match('/^\/cache\//',$file)) {
-			$dir = storage_path('cache').'/image/';
-			$file = preg_replace('/\/cache\//',"",$file);
-		}
-	}
-	if (!is_dir($dir)) return FALSE;
-	foreach (scandir($dir) AS $f) {
-		if ($return || in_array($f,['.','..'])) continue;
-		if ($f == "{$name}.{$ext}") $return = $f;
-		if (pathinfo($f,PATHINFO_FILENAME) == $name) $return = $f;
-	}
-	return ($return) ? realpath($dir.DIRECTORY_SEPARATOR.$return) : FALSE;
 }
