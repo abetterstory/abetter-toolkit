@@ -402,7 +402,21 @@ task('media:push', function () {
 	writeLine("Push media done!");
 });
 
-// ---
+// Tasks / Service
+
+task('service', function () {
+	global $service; if (!$service) return writeLine("Error: no service defined.");
+	$env = run("cat {{ deploy_path }}/.env");
+	if (!preg_match('/APP_URL=(.+)/',$env,$match)) return writeLine("Error: no service domain found.");
+	$domain = $match[1];
+	writeLine("Calling service: {$domain}{$service}");
+	writeRun("curl {$domain}{$service}","Response");
+});
+
+task('service:aws', function () {
+	global $service; $service = "/aws/invalidate.json";
+	invoke('service');
+});
 
 // ---
 

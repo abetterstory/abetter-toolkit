@@ -15,8 +15,9 @@ class AwsService extends BaseService {
 	// ---
 
 	public function output() {
-		$this->invalidated = array_keys($this->invalidated);
-		$this->data['invalidated'] = count($this->invalidated);
+		if ($this->invalidated) {
+			$this->data['invalidated'] = $this->invalidated;
+		}
 	}
 
 }
