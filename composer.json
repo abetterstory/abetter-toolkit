@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+		"aws/aws-sdk-php": "^3.0",
 		"fzaninotto/faker": "^1.4",
 		"leafo/scssphp": "^0.7",
 		"mrclay/jsmin-php": "^2.3",
