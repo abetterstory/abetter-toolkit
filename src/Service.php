@@ -67,6 +67,12 @@ class Service {
 
 	// ---
 
+	public function output() {
+
+	}
+
+	// ---
+
 	public function debug() {
 
 	}
