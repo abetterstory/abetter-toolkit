@@ -21,6 +21,9 @@ class Service {
 	public $debug = NULL;
 	public $log = [];
 
+	public $aws = [];
+	public $invalidated = [];
+
 	// ---
 
 	public function __construct() {
@@ -45,11 +48,15 @@ class Service {
 			'method' => $this->method,
 			'type' => $this->type
 		];
+		if ($this->locked()) {
+			$this->data['locked'] = TRUE;
+		}
 		if (isset($_GET['debug'])) {
 			$this->debug = TRUE;
 			$this->data['debug'] = $this->debug;
 		}
 		$this->handle();
+		$this->output();
 	}
 
 	// ---
@@ -94,6 +101,42 @@ class Service {
 
 	public function unlock($name=NULL) {
 		@unlink($this->storage.'/'.($name ?? $this->slug).'.lock');
+	}
+
+	// ---
+
+	public function invalidate() {
+		$this->aws['id'] = getenv('AWS_ID');
+		$this->aws['key'] = getenv('AWS_KEY');
+		$this->aws['distribution'] = ($d = getenv('AWS_DISTRIBUTION')) ? explode(',',$d) : [];
+		$this->aws['paths'] = ['/*'];
+		$this->aws['results'] = [];
+		if (!$this->aws['id'] || !$this->aws['key'] || !$this->aws['distribution']) return;
+		$client = new \Aws\CloudFront\CloudFrontClient(array(
+		    'version' => 'latest',
+			'region' => 'us-east-1',
+		    'credentials' => array(
+		        'key' => $this->aws['id'],
+		        'secret' => $this->aws['key']
+		    )
+		));
+		foreach ($this->aws['distribution'] as $distribution) {
+			$result = $client->createInvalidation(array(
+			    'DistributionId' => $distribution,
+			    'InvalidationBatch' => array(
+			        'CallerReference' => $distribution.date('U'),
+			        'Paths' => array(
+			            'Items' => $this->aws['paths'],
+			            'Quantity' => count($this->aws['paths'])
+			        )
+			    )
+			));
+			$this->invalidated($distribution,$result['Invalidation']['Id']);
+		}
+	}
+
+	public function invalidated($distribution,$value=TRUE) {
+		$this->invalidated[$distribution] = $value;
 	}
 
 }
