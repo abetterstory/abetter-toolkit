@@ -38,8 +38,8 @@ class Service {
 		$this->args = func_get_args();
 		$this->route = Route::getFacadeRoot()->current();
 		$this->service = _slugify(strtok($this->route->uri(),'{'));
-		$this->method = trim($this->route->parameters['path'] ?? '', '/');
-		$this->type = trim($this->route->parameters['type'] ?? '', '.');
+		$this->method = trim($this->args[0]['method'] ?? $this->route->parameters['path'] ?? '', '/');
+		$this->type = trim($this->args[0]['type'] ?? $this->route->parameters['type'] ?? '', '.');
 		$this->slug = _slugify("{$this->service}-{$this->method}");
 		$this->storage = storage_path($this->storage);
 		if (!is_dir($this->storage)) \File::makeDirectory($this->storage,0777,TRUE);

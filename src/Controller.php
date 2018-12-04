@@ -28,6 +28,7 @@ class Controller extends BaseController {
 			case 'image' : return new ImageService(['style' => $this->args[0], 'file' => $this->args[1]]);
 			case 'proxy' : return new ProxyService(['file' => $this->args[0]]);
 			case 'browsersync' : return new BrowsersyncService(['event' => $this->args[0], 'file' => $this->args[1]]);
+			case 'aws' : return new AwsService();
 		}
 		return $this->echo(['error' => "Service {$this->service} not found"]);
     }
