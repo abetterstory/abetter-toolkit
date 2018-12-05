@@ -1,10 +1,11 @@
 $Ready(function(){
 
-	var $this = document.getElementById('lab');
+	var $this = document.querySelector('#lab');
+	var $panels = $this.querySelectorAll('section.lab-panel');
 
 	// ---
 
-	$this.querySelectorAll('section.lab-panel').forEach(function($item){
+	[].forEach.call($panels,function($item){
 		var id = $item.id;
 		var preset = localStorage.getItem(id);
 		if (preset === null) return;

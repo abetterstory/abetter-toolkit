@@ -1,6 +1,6 @@
 $Ready(function(){
 
-	var $this = document.getElementById('lab-navigator');
+	var $this = document.querySelector('#lab-navigator');
 
 	// ---
 
@@ -16,7 +16,9 @@ $Ready(function(){
 
 	// ---
 
-	$this.querySelectorAll('li.has-children').forEach(function($item){
+	var $haschildren = $this.querySelectorAll('li.has-children');
+
+	[].forEach.call($haschildren,function($item){
 		var open; if (open = localStorage.getItem('lab-nav-item-'+$item.id)) {
 			$item.classList.add('show-children');
 		}
@@ -41,13 +43,13 @@ $Ready(function(){
 		var $items = $ul.querySelectorAll('li.has-children');
 		var open = $ul.querySelectorAll('li.show-children').length;
 		if (open || $ul.classList.contains('show-all')) {
-			$items.forEach(function($item){
+			[].forEach.call($items,function($item){
 				$item.classList.remove('show-children');
 				localStorage.removeItem('lab-nav-item-'+$item.id);
 			});
 			$ul.classList.remove('show-all');
 		} else {
-			$items.forEach(function($item){
+			[].forEach.call($items,function($item){
 				$item.classList.add('show-children');
 				localStorage.setItem('lab-nav-item-'+$item.id, 1);
 			});
