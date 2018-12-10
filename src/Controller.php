@@ -26,6 +26,7 @@ class Controller extends BaseController {
 		$this->method = $this->args[0];
 		switch ($this->service) {
 			case 'image' : return new ImageService(['style' => $this->args[0], 'file' => $this->args[1]]);
+			case 'cache' : return new ImageService(['style' => 'x', 'file' => '/cache/'.$this->args[0]]);
 			case 'proxy' : return new ProxyService(['file' => $this->args[0]]);
 			case 'browsersync' : return new BrowsersyncService(['event' => $this->args[0], 'file' => $this->args[1]]);
 			case 'aws' : return new AwsService();

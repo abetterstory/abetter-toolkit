@@ -34,7 +34,7 @@ if (!function_exists('_relative')) {
 if (!function_exists('_slugify')) {
 
 	function _slugify($url,$sep='-',$base=FALSE) {
-		$url = ($base) ? basename($url) : str_replace('/',$sep,$url);
+		$url = ($base) ? basename($url) : preg_replace('/(\/|\?|\=|\&|\#)/',$sep,$url);
 		$ext = strtolower(pathinfo($url,PATHINFO_EXTENSION));
 		$name = strtolower(pathinfo($url,PATHINFO_FILENAME));
 		$slug = Illuminate\Support\Str::slug($name,$sep);
