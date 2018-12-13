@@ -12,7 +12,10 @@ if (!function_exists('_lipsum')) {
 
 		$faker = Faker::create();
 
-		if (is_string($opt)) {
+		if (is_numeric($opt)) {
+			$input = (int) $opt;
+			$opt = ['min' => $input - ($input / 10), 'max' => $input + ($input / 10)];
+		} else if (is_string($opt)) {
 			$input = $opt;
 			$opts = explode(':',$input);
 			$opt = ['type' => $opts[0]];
@@ -20,9 +23,6 @@ if (!function_exists('_lipsum')) {
 			if (preg_match('/\:(p|a|li|span|h1|h2|h3|h4|h5|h6)/',$input,$match)) $opt['tag'] = $match[1];
 			if (preg_match('/\.(lead)/',$input,$match)) $opt['class'] = $match[1];
 			if (preg_match('/\:([0-9]+)/',$input,$match)) $opt['repeat'] = $match[1];
-		} else if (is_numeric($opt)) {
-			$input = (int) $opt;
-			$opt = ['min' => $input - ($input / 10), 'max' => $input + ($input / 10)];
 		}
 
 		if (is_string($opt2)) {
@@ -224,7 +224,9 @@ if (!function_exists('_pixsum')) {
 			'blur' => NULL,
 			'text' => NULL,
 			'index' => NULL,
+			'random' => NULL,
 			'remote' => NULL,
+			'debug' => NULL,
 			'return' => "",
 		],(array)$opt);
 
@@ -245,7 +247,10 @@ if (!function_exists('_pixsum')) {
 
 		$opt['x'] = "{$opt['width']}x{$opt['height']}";
 
-		$opt['index'] = "?index={$_pixsum_i}";
+		if ($opt['random']) $opt['index'] = rand(1,(is_numeric($opt['random']))?(int)$opt['random']:25);
+		if ($opt['index'] !== FALSE) $opt['index'] = "?index=".(($opt['index']) ? $opt['index'] : $_pixsum_i);
+
+		if ($opt['debug']) clock(['before' => $opt]);
 
 		// ---
 
@@ -286,6 +291,8 @@ if (!function_exists('_pixsum')) {
 		if ($opt['tag']) $opt['return'] = "<img src=\"{$opt['return']}\" />";
 
 		// ---
+
+		if ($opt['debug']) clock(['after' => $opt]);
 
 		return (string) $opt['return'];
 
