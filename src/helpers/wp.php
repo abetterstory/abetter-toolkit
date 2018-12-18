@@ -39,3 +39,19 @@ if (!function_exists('_wp_option')) {
 	}
 
 }
+
+if (!function_exists('_wp_url')) {
+
+	function _wp_url($post) {
+		return _relative(get_permalink($post));
+	}
+
+}
+
+if (!function_exists('_wp_title')) {
+
+	function _wp_title($post) {
+		return $post->post_title ?? "";
+	}
+
+}
