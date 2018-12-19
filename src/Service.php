@@ -9,6 +9,7 @@ class Service {
 	public $route = "";
 	public $service = "";
 	public $method = "";
+	public $origin = "";
 	public $slug = "";
 	public $type = "";
 	public $args = [];
@@ -39,6 +40,7 @@ class Service {
 	public function boot() {
 		$this->args = func_get_args();
 		$this->route = Route::getFacadeRoot()->current();
+		$this->origin = $_GET['origin'] ?? 'direct';
 		$this->service = _slugify(strtok($this->route->uri(),'{'));
 		$this->method = trim($this->args[0]['method'] ?? $this->route->parameters['path'] ?? '', '/');
 		$this->type = trim($this->args[0]['type'] ?? $this->route->parameters['type'] ?? '', '.');
@@ -47,6 +49,7 @@ class Service {
 		if (!is_dir($this->storage)) \File::makeDirectory($this->storage,0777,TRUE);
 		$this->data = [
 			'requested' => date('Y-m-d H:i:s'),
+			'origin' => $this->origin,
 			'service' => $this->service,
 			'method' => $this->method,
 			'type' => $this->type
