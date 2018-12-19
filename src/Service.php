@@ -15,11 +15,13 @@ class Service {
 	public $data = [];
 	public $file = NULL;
 	public $expire = '1 hour';
+	public $lockexpire = '2 minutes';
 	public $storage = 'service';
 	public $response = NULL;
 	public $handled = NULL;
 	public $debug = NULL;
 	public $log = [];
+	public $logfile = TRUE;
 
 	public $aws = [];
 	public $invalidated = [];
@@ -44,6 +46,7 @@ class Service {
 		$this->storage = storage_path($this->storage);
 		if (!is_dir($this->storage)) \File::makeDirectory($this->storage,0777,TRUE);
 		$this->data = [
+			'requested' => date('Y-m-d H:i:s'),
 			'service' => $this->service,
 			'method' => $this->method,
 			'type' => $this->type
@@ -57,6 +60,7 @@ class Service {
 		}
 		$this->handle();
 		$this->output();
+		$this->logfile();
 	}
 
 	// ---
@@ -75,6 +79,15 @@ class Service {
 
 	public function debug() {
 
+	}
+
+	// ---
+
+	public function logfile() {
+		if (!$this->logfile) return;
+		$file = $this->storage.'/'.($name ?? $this->slug).'.log';
+		$log = json_encode($this->data);
+		@file_put_contents($file, $log.PHP_EOL, FILE_APPEND | LOCK_EX);
 	}
 
 	// ---
@@ -98,15 +111,22 @@ class Service {
 	// ---
 
 	public function locked($name=NULL) {
-		return (is_file($this->storage.'/'.($name ?? $this->slug).'.lock')) ? TRUE : FALSE;
+		$file = $this->storage.'/'.($name ?? $this->slug).'.lock';
+		if (!$lock = (is_file($file)) ? file_get_contents($file) : NULL) return FALSE;
+		if (strtotime($lock) > time()) return TRUE;
+		$this->unlock($name);
+		return FALSE;
 	}
 
 	public function lock($name=NULL) {
-		@file_put_contents($this->storage.'/'.($name ?? $this->slug).'.lock',date('Y-m-d H:i:s'));
+		$file = $this->storage.'/'.($name ?? $this->slug).'.lock';
+		$expire = (is_string($this->lockexpire)) ? strtotime('+'.$this->lockexpire) : time()+(int)$this->lockexpire;
+		@file_put_contents($file,date('Y-m-d H:i:s',$expire));
 	}
 
 	public function unlock($name=NULL) {
-		@unlink($this->storage.'/'.($name ?? $this->slug).'.lock');
+		$file = $this->storage.'/'.($name ?? $this->slug).'.lock';
+		@unlink($file);
 	}
 
 	// ---
