@@ -22,7 +22,7 @@ class Service {
 	public $handled = NULL;
 	public $debug = NULL;
 	public $log = [];
-	public $logfile = TRUE;
+	public $logfile = FALSE;
 
 	public $aws = [];
 	public $invalidated = [];
