@@ -48,7 +48,7 @@ class Service {
 		$this->storage = storage_path($this->storage);
 		if (!is_dir($this->storage)) \File::makeDirectory($this->storage,0777,TRUE);
 		$this->data = [
-			'requested' => date('Y-m-d H:i:s'),
+			'requested' => date(\DateTime::ISO8601),
 			'origin' => $this->origin,
 			'service' => $this->service,
 			'method' => $this->method,
@@ -124,7 +124,7 @@ class Service {
 	public function lock($name=NULL) {
 		$file = $this->storage.'/'.($name ?? $this->slug).'.lock';
 		$expire = (is_string($this->lockexpire)) ? strtotime('+'.$this->lockexpire) : time()+(int)$this->lockexpire;
-		@file_put_contents($file,date('Y-m-d H:i:s',$expire));
+		@file_put_contents($file,date(\DateTime::ISO8601,$expire));
 	}
 
 	public function unlock($name=NULL) {
