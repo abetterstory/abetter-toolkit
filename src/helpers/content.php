@@ -18,6 +18,7 @@ if (!function_exists('_excerpt')) {
 if (!function_exists('_render')) {
 
 	function _render($str="",$vars=[]) {
+		if (!is_string($str) || !preg_match('/@/',$str)) return $str;
 		$__env = $vars['__env'] ?? NULL;
 		ob_start();
 		eval('?>'.\Blade::compileString($str));
