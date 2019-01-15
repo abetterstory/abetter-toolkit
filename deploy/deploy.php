@@ -195,15 +195,15 @@ task('deploy', function () {
 	}
 	// ---
 	writeLine("Updating composer/laravel");
+	writeRun("mkdir -p bootstrap/cache");
+	writeRun("chmod -R 777 bootstrap/cache || true");
 	writeRun("composer install -n --no-dev");
 	writeRun("php artisan cache:clear");
 	writeRun("php artisan route:clear");
 	writeRun("php artisan view:clear");
 	writeRun("php artisan config:clear");
 	writeRun("rm -rf storage/framework/sessions/*");
-	writeRun("mkdir -p bootstrap/cache");
 	writeRun("mkdir -p storage");
-	writeRun("chmod -R 777 bootstrap/cache || true");
 	writeRun("chmod -R 777 storage || true");
 	writeLine("Deploy done!");
 });
@@ -230,6 +230,22 @@ task('deploy:hot', function () {
 	writeRun("php artisan config:clear");
 	writeRun("rm -rf storage/framework/sessions/*");
 	writeLine("Hot-deploy done!");
+});
+
+task('deploy:composer', function () {
+	$stage = get('stage');
+	$confirm = "Are you sure you want to composer-deploy with rsync to %s?";
+	if (in_array($stage,['production','stage'])) {
+		$ask = str_replace('%s',ucwords($stage),$confirm);
+		if (!askConfirmation($ask)) return false;
+	}
+	cd("{{ deploy_path }}");
+	// ---
+	writeLine("Updating composer/laravel");
+	writeRun("mkdir -p bootstrap/cache");
+	writeRun("chmod -R 777 bootstrap/cache || true");
+	writeRun("composer install -n --no-dev");
+	writeLine("Composer-Deploy done!");
 });
 
 // Tasks / Database
