@@ -19,7 +19,8 @@ if (!function_exists('_render')) {
 
 	function _render($str="",$vars=[]) {
 		if (!is_string($str) || !preg_match('/@/',$str)) return $str;
-		$__env = $vars['__env'] ?? NULL;
+		if (!$__env = $vars['__env'] ?? NULL) { global $___env; $__env = $___env ?? NULL; }
+		if (!$__env && preg_match('/@(component)/',$str)) return $str;
 		ob_start();
 		eval('?>'.\Blade::compileString($str));
 		$return = ob_get_contents();
