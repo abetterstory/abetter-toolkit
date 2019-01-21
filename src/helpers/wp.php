@@ -1,5 +1,17 @@
 <?php
 
+if (!function_exists('_wp_post')) {
+
+	function _wp_page($id,$lang=NULL) {
+		return \ABetter\Wordpress\Post::getPage($id,$lang);
+	}
+
+	function _wp_post($id,$lang=NULL) {
+		return \ABetter\Wordpress\Post::getPage($id,$lang);
+	}
+
+}
+
 if (!function_exists('_wp_content')) {
 
 	function _wp_content($post,$lang=NULL,$return=NULL) {
