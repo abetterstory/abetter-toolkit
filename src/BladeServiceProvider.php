@@ -67,6 +67,13 @@ class BladeServiceProvider extends ServiceProvider {
 			return "<?php echo \ABetter\Toolkit\BladeDirectives::script('{$file}',array_merge(get_defined_vars(),$vars)); ?>";
         });
 
+		// Svg
+        Blade::directive('svg', function($expression){
+			list($file,$opt) = BladeDirectives::parseExpression($expression);
+			if ($opt) return "<?php echo \ABetter\Toolkit\BladeDirectives::svg('{$file}',{$opt}); ?>";
+			return "<?php echo \ABetter\Toolkit\BladeDirectives::svg('{$file}'); ?>";
+        });
+
 		// Dictionary
         Blade::directive('dictionary', function($expression){
 			list($type,$opt) = BladeDirectives::parseExpression($expression);

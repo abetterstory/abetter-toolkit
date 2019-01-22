@@ -55,7 +55,7 @@ class BladeDirectives {
 
 	// Script
 
-	public static function script($name,$vars,$link=FALSE) {
+	public static function script($name,$vars=[],$link=FALSE) {
 		if (in_array($name,self::$scripts)) return "<!--script:{$name}-->";
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		if (isset($vars['link'])) $link = (boolean) $vars['link'];
@@ -76,6 +76,15 @@ class BladeDirectives {
 		}
 		self::$scripts[] = $name;
 		return $script;
+	}
+
+	// Embedd
+
+	public static function svg($file,$vars=[]) {
+		$svg = "<!--svg:{$file}-->";
+		$file = resource_path().$file;
+		if (is_file($file)) $svg = @file_get_contents($file);
+		return $svg;
 	}
 
 	// Helpers
