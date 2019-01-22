@@ -1,7 +1,6 @@
 <?php
 
 require_once 'helpers/dev.php';
-require_once 'helpers/wp.php';
 require_once 'helpers/echo.php';
 require_once 'helpers/url.php';
 require_once 'helpers/content.php';
