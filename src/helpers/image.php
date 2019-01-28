@@ -3,8 +3,12 @@
 if (!function_exists('_image')) {
 
 	function _image($file,$style='x',$ext=NULL) {
-		if (($wp = env('WP_UPLOADS')) && preg_match('|'.$wp.'|',$file)) $file = str_replace($wp,'/uploads/',$file);
-		$url = '/image/'.$style._relative($file);
+		if (preg_match('/https?\:\/\//',$file)) {
+			$url = '/image/'.$style._imageCache($file);
+		} else {
+			if (($wp = env('WP_UPLOADS')) && preg_match('|'.$wp.'|',$file)) $file = str_replace($wp,'/uploads/',$file);
+			$url = '/image/'.$style._relative($file);
+		}
 		if ($ext === TRUE) return $url;
 		$ext = ($ext) ? $ext : 'jpg';
 		$url = dirname($url).'/'.pathinfo($url,PATHINFO_FILENAME).'.'.$ext;
