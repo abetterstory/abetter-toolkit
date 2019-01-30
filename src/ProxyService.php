@@ -7,30 +7,59 @@ use ABetter\Toolkit\Service as BaseService;
 class ProxyService extends BaseService {
 
 	public function handle() {
+
 		$opt = (isset($this->args[0][0])) ? $this->args[0][0] : [];
-		$file = $opt['file'] ?? NULL;
-		$file = trim($file,'/');
-		$storage = storage_path('cache').'/proxy';
-		$opt = array_replace([
-			'source' => 'https://'.$file,
-			'target' => $storage.'/'.preg_replace('/\/|\?|\=/','_',$file),
-			'content' => NULL,
-		],(array)$opt);
+
+		$opt['storage'] = storage_path('cache').'/proxy';
+		$opt['file'] = $opt['file'] ?? NULL;
+		$opt['file'] = trim($opt['file'],'/');
+		$opt['files'] = [];
+		$opt['sources'] = [];
+		$opt['content'] = "";
+
+		if (!preg_match('/^.+\..+\//',$opt['file'])) {
+			$opt['file'] = request()->getSchemeAndHttpHost().'/'.$opt['file'];
+		}
+
+		if ((preg_match('/(.*)\[([^\]]+)\](.*)/',$opt['file'],$m)) && ($ms = explode(',',$m[2]))) {
+			foreach ($ms AS $f) $opt['files'][] = "{$m[1]}{$f}{$m[3]}";
+		}
+
+		if (!$opt['files']) $opt['files'] = [$opt['file']];
+
+		foreach ($opt['files'] AS $f) {
+			$opt['sources'][] = (preg_match('/^https?\:\/\//',$f)) ? $f : 'https://'.$f;
+		}
+
+		$opt['target'] = $opt['storage'].'/'.preg_replace('/\/|\?|\=/','_',$opt['file']);
+
 		if (!is_file($opt['target'])) {
-			if (!$opt['content'] = @file_get_contents($opt['source'])) return abort(404);
-			if (!is_dir($storage)) \File::makeDirectory($storage,0777,TRUE);
-			$opt['content'] = str_replace([
-				'https://www.google-analytics.com/analytics.js'
-			],[
-				'/proxy/www.google-analytics.com/analytics.js'
-			],$opt['content']);
+			foreach ($opt['sources'] AS $s) $opt['content'] .= @file_get_contents($s);
+			if (!$opt['content']) return abort(404);
+			if (!is_dir($opt['storage'])) \File::makeDirectory($opt['storage'],0777,TRUE);
+			$opt['content'] = $this->filter($opt['content']);
 			@file_put_contents($opt['target'],$opt['content']);
 			@chmod($opt['target'],0755);
 		}
+
 		$this->file = $opt['target'];
 		$this->expire = '1 month';
 		$this->handled = TRUE;
+
 	}
+
+	// ---
+
+	public function filter($content) {
+		$content = str_replace([
+			'https://www.google-analytics.com/analytics.js'
+		],[
+			'/proxy/www.google-analytics.com/analytics.js'
+		],$content);
+		return $content;
+	}
+
+	// ---
 
 	public function response() {
 		return _echoFile($this->file,$this->expire);
