@@ -53,6 +53,15 @@ class BladeServiceProvider extends ServiceProvider {
 			*/
         });
 
+		// Block
+		Blade::directive('block', function($expression){
+			list($class,$opt) = BladeDirectives::parseExpression($expression);
+			return "<section class=\"component--block {$class}\">";
+        });
+		Blade::directive('endblock', function(){
+			return "</section>";
+        });
+
         // Style
         Blade::directive('style', function($expression){
 			list($file,$vars,$link) = BladeDirectives::parseExpression($expression);
