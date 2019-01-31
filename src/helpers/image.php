@@ -3,6 +3,7 @@
 if (!function_exists('_image')) {
 
 	function _image($file,$style='x',$ext=NULL) {
+		$file = str_replace(request()->getSchemeAndHttpHost(),"",$file);
 		if (preg_match('/https?\:\/\//',$file)) {
 			$url = '/image/'.$style._imageCache($file);
 		} else {
