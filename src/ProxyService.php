@@ -16,6 +16,8 @@ class ProxyService extends BaseService {
 		$opt['files'] = [];
 		$opt['sources'] = [];
 		$opt['content'] = "";
+		
+		$opt['v'] = (!empty($_GET['id'])) ? $_GET['id'].'-' : "";
 
 		if (!preg_match('/^.+\..+\//',$opt['file'])) {
 			$opt['file'] = request()->getSchemeAndHttpHost().'/'.$opt['file'];
@@ -31,7 +33,7 @@ class ProxyService extends BaseService {
 			$opt['sources'][] = (preg_match('/^https?\:\/\//',$f)) ? $f : 'https://'.$f;
 		}
 
-		$opt['target'] = $opt['storage'].'/'.preg_replace('/\/|\?|\=/','_',$opt['file']);
+		$opt['target'] = $opt['storage'].'/'.preg_replace('/\:|\/|\?|\=/','_',$opt['v'].$opt['file']);
 
 		if (!is_file($opt['target'])) {
 			foreach ($opt['sources'] AS $s) $opt['content'] .= @file_get_contents($s);
