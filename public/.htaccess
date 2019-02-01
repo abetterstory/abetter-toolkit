@@ -5,12 +5,17 @@
 
     RewriteEngine On
 
+	# Force HTTPS redirect if not local
+	RewriteCond %{HTTP_HOST} !\.loc$
+	RewriteCond %{HTTP:X-Forwarded-Proto} !https
+	RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Redirect Trailing Slashes If Not A Folder... 
-	# Incompatible with CDN
+	# Redirect Trailing Slashes If Not A Folder...
+	# DO NOT USE, Will break CDN
     # RewriteCond %{REQUEST_FILENAME} !-d
     # RewriteCond %{REQUEST_URI} (.+)/$
     # RewriteRule ^ %1 [L,R=301]
@@ -20,3 +25,9 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+<ifModule mod_headers.c>
+	<filesMatch "\\.(ttf|otf|woff|woff2|eot|svg|ico|mp4|m4v|webm|ogg|ogv)$">
+		Header set Cache-Control "max-age=31536000, public"
+	</filesMatch>
+</ifModule>

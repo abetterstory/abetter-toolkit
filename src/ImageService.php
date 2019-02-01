@@ -21,7 +21,7 @@ class ImageService extends BaseService {
 			_imageMagick($opt['source'],$opt['target'],$opt['style']);
 		}
 		$this->file = $opt['target'];
-		$this->expire = '1 month';
+		$this->expire = '1 year';
 		$this->handled = TRUE;
 	}
 

@@ -16,7 +16,7 @@ class ProxyService extends BaseService {
 		$opt['files'] = [];
 		$opt['sources'] = [];
 		$opt['content'] = "";
-		
+
 		$opt['v'] = (!empty($_GET['id'])) ? $_GET['id'].'-' : "";
 
 		if (!preg_match('/^.+\..+\//',$opt['file'])) {
@@ -45,7 +45,7 @@ class ProxyService extends BaseService {
 		}
 
 		$this->file = $opt['target'];
-		$this->expire = '1 month';
+		$this->expire = '1 year';
 		$this->handled = TRUE;
 
 	}
