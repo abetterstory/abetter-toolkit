@@ -15,9 +15,9 @@ if (!function_exists('_excerpt')) {
 
 }
 
-if (!function_exists('_render')) {
+if (!function_exists('_compile')) {
 
-	function _render($str="",$vars=[]) {
+	function _compile($str="",$vars=[]) {
 		if (!is_string($str) || !preg_match('/@/',$str)) return $str;
 		if (!$__env = $vars['__env'] ?? NULL) { global $___env; $__env = $___env ?? NULL; }
 		if (!$__env && preg_match('/@(component)/',$str)) return $str;
@@ -26,6 +26,14 @@ if (!function_exists('_render')) {
 		$return = ob_get_contents();
 		ob_end_clean();
 		return trim($return);
+	}
+
+}
+
+if (!function_exists('_render')) {
+
+	function _render($str="",$vars=[]) {
+		return _compile($str,$vars);
 	}
 
 }
