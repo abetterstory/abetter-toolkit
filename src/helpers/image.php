@@ -82,6 +82,7 @@ if (!function_exists('_imageMagick')) {
 		File::makeDirectory(dirname($target),0777,TRUE,TRUE);
 		$ext = strtolower(pathinfo($target, PATHINFO_EXTENSION));
 		$style = _imageStyle($style);
+		$style['background'] = $style['background'] ?? '#FFFFFF';
 		// ---
 		$imagick = new Imagick($source);
 		_imagickResize($imagick,$style);
@@ -92,6 +93,9 @@ if (!function_exists('_imageMagick')) {
 		} else if ($ext == 'jpg' || $ext == 'jpeg') {
 			$imagick->setImageCompression(Imagick::COMPRESSION_JPEG);
 			$imagick->setImageCompressionQuality(70);
+			$imagick->setImageBackgroundColor($style['background']);
+			$imagick->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE);
+			$imagick = $imagick->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN);
 		}
 		$imagick->stripImage();
 		$imagick->writeImage($target);
