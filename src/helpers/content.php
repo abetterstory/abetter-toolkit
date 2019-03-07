@@ -37,3 +37,19 @@ if (!function_exists('_render')) {
 	}
 
 }
+
+if (!function_exists('_style')) {
+
+	function _style($path,$vars=[]) {
+		return \ABetter\Toolkit\BladeDirectives::style($path,$vars);
+	}
+
+}
+
+if (!function_exists('_script')) {
+
+	function _script($path,$vars=[]) {
+		return \ABetter\Toolkit\BladeDirectives::script($path,$vars);
+	}
+
+}
