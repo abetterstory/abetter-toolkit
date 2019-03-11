@@ -92,6 +92,7 @@ class BladeDirectives {
 	public static function parseExpression($parse) {
 		$id = trim(strtok($parse,','));
 		$vars = trim(str_replace($id,'',$parse),',');
+		$vars = preg_replace('/(\'|") ?(=&gt;|=) ?(\'|")/',"$1 => $3",$vars);
 		$end = trim(preg_match('/, ?(end|true|1)$/i',$parse));
 		if ($end) $vars = trim(substr($vars,0,strrpos($vars,',')));
 		$exp = array();
