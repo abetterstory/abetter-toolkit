@@ -17,6 +17,7 @@ class Service {
 	public $file = NULL;
 	public $expire = '1 hour';
 	public $lockexpire = '2 minutes';
+	public $md5expire = '2 hours';
 	public $storage = 'service';
 	public $response = NULL;
 	public $handled = NULL;
@@ -129,6 +130,38 @@ class Service {
 
 	public function unlock($name=NULL) {
 		$file = $this->storage.'/'.($name ?? $this->slug).'.lock';
+		@unlink($file);
+	}
+
+	// ---
+
+	public function md5changed($string) {
+		if (isset($this->data['changed'])) return $this->data['changed'];
+		$md5 = md5($string);
+		$md5_last = $this->md5stored();
+		$md5_changed = ($md5 === $md5_last) ? FALSE : TRUE;
+		$this->data['changed'] = $md5_changed;
+		if (!$md5_changed) return FALSE;
+		$this->md5change($md5);
+		return TRUE;
+	}
+
+	public function md5stored($name=NULL) {
+		$file = $this->storage.'/'.($name ?? $this->slug).'.md5';
+		if (!$md5 = (is_file($file)) ? file_get_contents($file) : NULL) return NULL;
+		list($time,$value) = explode('=',$md5);
+		if (strtotime($time) > time()) return $value;
+		return NULL;
+	}
+
+	public function md5change($value="",$name=NULL) {
+		$file = $this->storage.'/'.($name ?? $this->slug).'.md5';
+		$expire = (is_string($this->md5expire)) ? strtotime('+'.$this->md5expire) : time()+(int)$this->md5expire;
+		@file_put_contents($file,date(\DateTime::ISO8601,$expire)."=".$value);
+	}
+
+	public function md5unlock($name=NULL) {
+		$file = $this->storage.'/'.($name ?? $this->slug).'.md5';
 		@unlink($file);
 	}
 
