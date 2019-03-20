@@ -15,7 +15,7 @@ class Component {
 
 	public function __construct(array $defined_vars = []) {
 		global $__vars;
-		$this->vars = (array) $__vars;
+		$this->vars = (object) $__vars;
 		$this->scope = (object) $defined_vars;
 		$this->init();
 		$this->build();
