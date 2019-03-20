@@ -41,8 +41,8 @@ class BladeServiceProvider extends ServiceProvider {
 		Blade::directive('component', function($expression){
 			list($path,$vars,$end) = BladeDirectives::parseExpression($expression);
 			if (!\View::exists($path)) $path .= '.'.array_last(explode('.',$path)); // Test if folder
-			if ($end) return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?><?php echo \$__env->renderComponent(); ?>";
-			return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?>";
+			if ($end) return "<?php global \$__vars; \$__vars = {$vars}; \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),{$vars})); ?><?php echo \$__env->renderComponent(); ?>";
+			return "<?php global \$__vars; \$__vars = {$vars}; \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),{$vars})); ?>";
 		});
 
 		// Block
