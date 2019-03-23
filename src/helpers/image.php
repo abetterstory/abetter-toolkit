@@ -21,7 +21,7 @@ if (!function_exists('_image')) {
 if (!function_exists('_imageCache')) {
 
 	function _imageCache($file,$opt=NULL) {
-		if (!_imageSafe($file)) return NULL;
+		if (preg_match('/https?\:\/\//',$file) && !_imageSafe(ltrim($file,'/'))) return NULL;
 		$file = preg_replace('/https?\:\/\//',"",trim($file,'/'));
 		$type = ($headers = @get_headers('https://'.$file,1)) ? (($ext = _contentType($headers['Content-Type'],TRUE)) ? '.'.$ext : '') : '';
 		$cache = _slugify($file).$type;
