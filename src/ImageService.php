@@ -11,6 +11,9 @@ class ImageService extends BaseService {
 		$style = $opt['style'] ?? NULL;
 		$file = $opt['file'] ?? NULL;
 		$file = '/'.trim($file,'/');
+		if (preg_match('/https?\:\/\//',$file)) {
+			$file = _imageCache($file);
+		}
 		$opt = array_replace([
 			'style' => $style,
 			'source' => _imageFileSearch($file),
