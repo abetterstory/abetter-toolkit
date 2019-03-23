@@ -21,6 +21,7 @@ if (!function_exists('_image')) {
 if (!function_exists('_imageCache')) {
 
 	function _imageCache($file,$opt=NULL) {
+		if (!_imageSafe($file)) return NULL;
 		$file = preg_replace('/https?\:\/\//',"",trim($file,'/'));
 		$type = ($headers = @get_headers('https://'.$file,1)) ? (($ext = _contentType($headers['Content-Type'],TRUE)) ? '.'.$ext : '') : '';
 		$cache = _slugify($file).$type;
@@ -38,6 +39,15 @@ if (!function_exists('_imageCache')) {
 		@file_put_contents($opt['target'],$opt['content']);
 		@chmod($opt['target'],0777);
 		return $opt['cache'];
+	}
+
+}
+
+if (!function_exists('imageSafe')) {
+
+	function _imageSafe($url,$false='') {
+		$test = (($t = @getimagesize($url)) && is_array($t)) ? $t['mime'] : FALSE;
+		return ($test) ? $url : $false;
 	}
 
 }
