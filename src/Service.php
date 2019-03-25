@@ -13,6 +13,7 @@ class Service {
 	public $slug = "";
 	public $type = "";
 	public $args = [];
+	public $query = [];
 	public $data = [];
 	public $file = NULL;
 	public $expire = '1 hour';
@@ -40,6 +41,7 @@ class Service {
 
 	public function boot() {
 		$this->args = func_get_args();
+		$this->query = $_GET ?? [];
 		$this->route = Route::getFacadeRoot()->current();
 		$this->origin = $_GET['origin'] ?? 'direct';
 		$this->service = _slugify(strtok($this->route->uri(),'{'));

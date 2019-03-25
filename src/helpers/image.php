@@ -20,11 +20,12 @@ if (!function_exists('_image')) {
 
 if (!function_exists('_imageCache')) {
 
-	function _imageCache($file,$opt=NULL) {
+	function _imageCache($file,$opt=NULL,$querystring=NULL) {
+		$name = $file; if ($querystring) $file .= $querystring;
 		if (preg_match('/https?\:\/\//',$file) && !_imageSafe(ltrim($file,'/'))) return NULL;
 		$file = preg_replace('/https?\:\/\//',"",trim($file,'/'));
 		$type = ($headers = @get_headers('https://'.$file,1)) ? (($ext = _contentType($headers['Content-Type'],TRUE)) ? '.'.$ext : '') : '';
-		$cache = _slugify($file).$type;
+		$cache = _slugify($name).(($querystring)?'_'.md5($querystring):'').$type;
 		$cache = str_replace([$type.$type,'.jpeg.jpg'],[$type,'.jpg'],$cache); // Cleanup double extension
 		$storage = storage_path('cache').'/image';
 		$opt = array_replace([
