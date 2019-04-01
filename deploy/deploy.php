@@ -82,11 +82,19 @@ task('hello', function () {
 	writeln("> dep build local");
 	writeln("> dep prepare $stage");
 	writeln("> dep deploy $stage");
+	writeln("> dep deploy:hot $stage");
+	writeln("> dep deploy:composer $stage");
+	writeln("> dep hot $stage");
 	writeln("> dep db:import $stage");
 	writeln("> dep db:pull $stage");
+	writeln("> dep db $stage");
 	writeln("> dep db:push $stage");
 	writeln("> dep media:pull $stage");
 	writeln("> dep media:push $stage");
+	writeln("> dep media $stage");
+	writeln("> dep service $stage");
+	writeln("> dep service:aws $stage");
+	writeln("> dep aws $stage");
 });
 
 // Tasks / Setup
@@ -232,6 +240,10 @@ task('deploy:hot', function () {
 	writeLine("Hot-deploy done!");
 });
 
+task('hot', function () {
+	invoke('deploy:hot');
+});
+
 task('deploy:composer', function () {
 	$stage = get('stage');
 	$confirm = "Are you sure you want to composer-deploy with rsync to %s?";
@@ -374,6 +386,10 @@ task('db:push', function () {
 	writeLine("Push database done!");
 });
 
+task('db', function () {
+	invoke('db:push');
+});
+
 // Tasks / Media
 
 task('media:pull', function () {
@@ -418,6 +434,10 @@ task('media:push', function () {
 	writeLine("Push media done!");
 });
 
+task('media', function () {
+	invoke('media:push');
+});
+
 // Tasks / Service
 
 task('service', function () {
@@ -432,6 +452,10 @@ task('service', function () {
 task('service:aws', function () {
 	global $service; $service = "/aws/invalidate.json";
 	invoke('service');
+});
+
+task('aws', function () {
+	invoke('service:aws');
 });
 
 // ---
