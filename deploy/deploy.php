@@ -44,10 +44,10 @@ if ($s = env('DP_DEV_SERVER')) {
 	host('dev')->stage('dev')->hostname($s)->set('server',$s)->set('deploy_path',env('DP_DEV_PATH'))->set('branch',$b=env('DP_DEV_BRANCH')?:get('branch'));
 }
 if ($s = env('DP_STAGE_SERVER')) {
-	host('stage')->stage('stage')->hostname($s)->set('server',$s)->set('deploy_path',env('DP_STAGE_PATH'))->set('deploy_dblock',env('DP_STAGE_DBLOCK'))->set('branch',$b=env('DP_STAGE_BRANCH')?:get('branch'));
+	host('stage')->stage('stage')->hostname($s)->set('server',$s)->set('deploy_path',env('DP_STAGE_PATH'))->set('deploy_unlock',env('DP_STAGE_UNLOCK'))->set('branch',$b=env('DP_STAGE_BRANCH')?:get('branch'));
 }
 if ($s = env('DP_PRODUCTION_SERVER')) {
-	host('production')->stage('production')->hostname($s)->set('server',$s)->set('deploy_path',env('DP_PRODUCTION_PATH'))->set('deploy_dblock',env('DP_PRODUCTION_DBLOCK'))->set('branch',$b=env('DP_PRODUCTION_BRANCH')?:get('branch'));
+	host('production')->stage('production')->hostname($s)->set('server',$s)->set('deploy_path',env('DP_PRODUCTION_PATH'))->set('deploy_unlock',env('DP_PRODUCTION_UNLOCK'))->set('branch',$b=env('DP_PRODUCTION_BRANCH')?:get('branch'));
 }
 
 // -------------------------------------
@@ -70,13 +70,14 @@ function writeRunLocally($command,$message="") {
 
 task('hello', function () {
 	$stage = get('stage');
+	$lock = ($unlock = get('deploy_unlock')) ? FALSE : TRUE;
 	writeLine('{{ server }}');
 	cd('{{ deploy_path }}');
 	writeRun("hostname");
 	writeRun("whoami","username");
 	writeRun("pwd","destination");
-	if ($dblock = get('deploy_dblock')) writeLine('Database is locked for push!');
     writeLine("Hello world, ready to go @ ".ucwords($stage));
+	writeLine(ucwords($stage).' is '.(($lock)?'LOCKED':'OPEN').' for push! (set DP_'.strtoupper($stage).'_UNLOCK in .ENV)');
 	writeLine("Available tasks:");
 	writeln("> dep setup local");
 	writeln("> dep reset local");
@@ -88,10 +89,10 @@ task('hello', function () {
 	writeln("> dep hot $stage");
 	writeln("> dep db:import $stage");
 	writeln("> dep db:pull $stage");
-	writeln("> dep db:push $stage".(($dblock)?" LOCKED!":""));
+	writeln("> dep db:push $stage".(($lock)?" LOCKED!":""));
 	writeln("> dep db $stage");
 	writeln("> dep media:pull $stage");
-	writeln("> dep media:push $stage");
+	writeln("> dep media:push $stage".(($lock)?" LOCKED!":""));
 	writeln("> dep media $stage");
 	writeln("> dep service $stage");
 	writeln("> dep service:aws $stage");
@@ -343,7 +344,8 @@ task('db:pull', function () {
 task('db:push', function () {
 	$origin = 'local';
 	$stage = get('stage');
-	if ($dblock = get('deploy_dblock')) return writeLine('Database is locked for push!');
+	$lock = ($unlock = get('deploy_unlock')) ? FALSE : TRUE;
+	if ($lock) return writeLine('Database is LOCKED for push! (set DP_'.strtoupper($stage).'_UNLOCK in .ENV)');
 	$confirm = "Are you sure you want to replace %s database with %o?";
 	if (in_array($stage,['production','stage'])) {
 		$ask = str_replace(['%o','%s'],[ucwords($origin),ucwords($stage)],$confirm);
@@ -422,6 +424,8 @@ task('media:push', function () {
 	];
 	$origin = 'local';
 	$stage = get('stage');
+	$lock = ($unlock = get('deploy_unlock')) ? FALSE : TRUE;
+	if ($lock) return writeLine('Media is LOCKED for push! (set DP_'.strtoupper($stage).'_UNLOCK in .ENV)');
 	$confirm = "Are you sure you want to upload %o media to %s?";
 	if (in_array($stage,['production','stage'])) {
 		$ask = str_replace(['%o','%s'],[ucwords($origin),ucwords($stage)],$confirm);
