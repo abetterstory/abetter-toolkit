@@ -26,9 +26,10 @@ class Controller extends BaseController {
 		$this->method = $this->args[0];
 		if ($this->service == 'service') {
 			$this->argx = explode('/',$this->method);
-			$this->service = $this->argx[0];
-			$this->method = $this->argx[1];
+			$this->service = $this->argx[0] ?? '';
+			$this->method = $this->argx[1] ?? '';
 		}
+		// Core services
 		switch ($this->service) {
 			case 'image' : return new ImageService(['style' => $this->args[0], 'file' => $this->args[1]]);
 			case 'cache' : return new ImageService(['style' => 'x', 'file' => '/cache/'.$this->args[0]]);
@@ -36,7 +37,14 @@ class Controller extends BaseController {
 			case 'browsersync' : return new BrowsersyncService(['event' => $this->args[0], 'file' => $this->args[1]]);
 			case 'aws' : return new AwsService();
 		}
-		return $this->echo(['error' => "Service {$this->service} not found"]);
+		// Try service in views
+		$this->view = 'service.'.$this->service;
+		view()->addLocation(base_path().'/vendor/abetter/toolkit/views');
+		view()->addLocation(base_path().'/vendor/abetter/wordpress/views');
+		if (\View::exists($this->view)) return view($this->view);
+		// Nothing found
+		//return $this->echo(['error' => "Service {$this->service} not found"]);
+		return abort(404);
     }
 
 	// ---

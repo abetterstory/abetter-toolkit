@@ -53,8 +53,8 @@ class Service {
 		if (!is_dir($this->storage)) \File::makeDirectory($this->storage,0777,TRUE);
 		if ($this->service == 'service') {
 			$this->argx = explode('/',$this->method);
-			$this->service = $this->argx[0];
-			$this->method = $this->argx[1];
+			$this->service = $this->argx[0] ?? '';
+			$this->method = $this->argx[1] ?? '';
 		}
 		$this->data = [
 			'requested' => date(\DateTime::ISO8601),
