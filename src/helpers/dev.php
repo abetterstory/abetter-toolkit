@@ -18,8 +18,9 @@ if (!function_exists('_debug')) {
 	function _debug($message="",$type='html') {
 		if (!defined('WP_DEBUG') || strtolower(WP_DEBUG) != 'true') return;
 		if (in_array(env('APP_ENV'),['stage','production'])) return;
-		$prefix = ($type == 'html') ? "<!-- " : "# ";
-		$suffix = ($type == 'html') ? " -->" : "";
+		$prefix = ""; $suffix = "";
+		if ($type == 'txt') $prefix = "# ";
+		if ($type == 'html') { $prefix = "<!-- "; $suffix = " -->"; };
 		if ($message) echo "{$prefix}{$message}{$suffix}"; return;
 	 	$trace = debug_backtrace(NULL,1);
 	 	$file = preg_replace('/.*\/abetter\/(.*)\.(.*)$/',"$1",$trace[0]['file']);

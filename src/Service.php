@@ -13,6 +13,7 @@ class Service {
 	public $slug = "";
 	public $type = "";
 	public $args = [];
+	public $argx = [];
 	public $query = [];
 	public $data = [];
 	public $file = NULL;
@@ -50,6 +51,11 @@ class Service {
 		$this->slug = _slugify("{$this->service}-{$this->method}");
 		$this->storage = storage_path($this->storage);
 		if (!is_dir($this->storage)) \File::makeDirectory($this->storage,0777,TRUE);
+		if ($this->service == 'service') {
+			$this->argx = explode('/',$this->method);
+			$this->service = $this->argx[0];
+			$this->method = $this->argx[1];
+		}
 		$this->data = [
 			'requested' => date(\DateTime::ISO8601),
 			'origin' => $this->origin,
@@ -170,9 +176,9 @@ class Service {
 	// ---
 
 	public function invalidate() {
-		$this->aws['id'] = getenv('AWS_ID');
-		$this->aws['key'] = getenv('AWS_KEY');
-		$this->aws['distribution'] = ($d = getenv('AWS_DISTRIBUTION')) ? explode(',',$d) : [];
+		$this->aws['id'] = ($e = getenv('AWS_ID')) ? $e : getenv('AWS_ACCESS_KEY_ID');
+		$this->aws['key'] = ($e = getenv('AWS_KEY')) ? $e : getenv('AWS_SECRET_ACCESS_KEY');
+		$this->aws['distribution'] = ($e = getenv('AWS_DISTRIBUTION')) ? explode(',',$e) : [];
 		$this->aws['paths'] = ['/*'];
 		$this->aws['results'] = [];
 		if (!$this->aws['id'] || !$this->aws['key'] || !$this->aws['distribution']) return;

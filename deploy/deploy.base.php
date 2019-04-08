@@ -520,7 +520,7 @@ task('service', function () {
 });
 
 task('service:aws', function () {
-	global $service; $service = "/aws/invalidate.json";
+	global $service; $service = "/service/aws/invalidate.json";
 	invoke('service');
 });
 

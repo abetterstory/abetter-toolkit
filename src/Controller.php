@@ -24,6 +24,11 @@ class Controller extends BaseController {
 		$this->args = func_get_args();
 		$this->service = strtok(Route::getFacadeRoot()->current()->uri(),'/');
 		$this->method = $this->args[0];
+		if ($this->service == 'service') {
+			$this->argx = explode('/',$this->method);
+			$this->service = $this->argx[0];
+			$this->method = $this->argx[1];
+		}
 		switch ($this->service) {
 			case 'image' : return new ImageService(['style' => $this->args[0], 'file' => $this->args[1]]);
 			case 'cache' : return new ImageService(['style' => 'x', 'file' => '/cache/'.$this->args[0]]);
