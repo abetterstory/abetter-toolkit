@@ -8,6 +8,7 @@ class Component {
 
 	protected $vars;
 	protected $scope;
+	protected $slot;
 
 	// --- Public
 
@@ -17,6 +18,7 @@ class Component {
 		global $__vars;
 		$this->vars = (object) $__vars;
 		$this->scope = (object) $defined_vars;
+		$this->slot = trim($this->scope->slot ?? "");
 		$this->init();
 		$this->build();
 	}

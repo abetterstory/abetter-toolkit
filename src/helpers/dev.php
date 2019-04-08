@@ -21,7 +21,7 @@ if (!function_exists('_debug')) {
 		$prefix = ""; $suffix = "";
 		if ($type == 'txt') $prefix = "# ";
 		if ($type == 'html') { $prefix = "<!-- "; $suffix = " -->"; };
-		if ($message) echo "{$prefix}{$message}{$suffix}"; return;
+		if ($message) { echo "{$prefix}{$message}{$suffix}"; return; }
 	 	$trace = debug_backtrace(NULL,1);
 	 	$file = preg_replace('/.*\/abetter\/(.*)\.(.*)$/',"$1",$trace[0]['file']);
 	 	echo "{$prefix}include:{$file}{$suffix}";
