@@ -111,7 +111,7 @@ task('setuponce', function () {
 	writeRunLocally("rm -rf public/web.config");
 	writeRunLocally("rm -rf public/mix-manifest.json");
 	writeRunLocally("rm -rf public/.htaccess");
-	writeRunLocally("rm -rf webpack-mix.js");
+	writeRunLocally("rm -rf webpack.mix.js");
 	// ---
 	writeRunLocally("mkdir -p bootstrap/cache");
 	writeRunLocally("mkdir -p storage/wordpress/uploads");
