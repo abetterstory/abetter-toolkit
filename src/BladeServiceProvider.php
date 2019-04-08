@@ -115,6 +115,14 @@ class BladeServiceProvider extends ServiceProvider {
 			return "<?php \$__env->startComponent('{$path}'); ?><?php echo \$__env->renderComponent(); ?>";
 		});
 
+		// Debug
+        Blade::directive('debug', function($expression){
+			if (!env('APP_DEBUG') && !env('WP_DEBUG')) return;
+			list($message,$opt) = BladeDirectives::parseExpression($expression);
+			if ($opt != '[]') return "<?php echo _debug('{$message}',{$opt}); ?>";
+			return "<?php echo _debug('{$message}'); ?>";
+        });
+
     }
 
     /**
