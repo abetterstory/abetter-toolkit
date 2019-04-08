@@ -136,18 +136,6 @@ task('setuponce', function () {
 	writeRunLocally("chmod -R 777 public/images");
 	writeRunLocally("chmod -R 777 public/scripts");
 	writeRunLocally("chmod -R 777 public/styles");
-	// --
-	writeRunLocally("composer install");
-	// ---
-	writeRunLocally("npm install");
-	writeRunLocally("npm install font-awesome --save-dev");
-	writeRunLocally("npm install uikit --save-dev");
-	writeRunLocally("npm install what-input --save-dev");
-	writeRunLocally("npm install foundation-sites --save-dev");
-	writeRunLocally("npm install browser-sync --save-dev");
-	writeRunLocally("npm install browser-sync-webpack-plugin --save-dev");
-	writeRunLocally("npm install es6-promise --save-dev");
-	writeRunLocally("npm install request --save-dev");
 	// ---
 	writeRunLocally("cp -n vendor/abetter/toolkit/public/.htaccess public/.htaccess");
 	writeRunLocally("cp -n vendor/abetter/toolkit/mix/webpack.mix.js webpack.mix.js");
@@ -160,6 +148,18 @@ task('setuponce', function () {
 	writeRunLocally("cp -n vendor/abetter/wordpress/resources/templates.php resources/wordpress/templates.php");
 	// ---
 	writeRunLocally("ln -s ../vendor/abetter/wordpress/core public/wp");
+	// --
+	writeRunLocally("composer install");
+	// ---
+	writeRunLocally("npm install");
+	writeRunLocally("npm install font-awesome --save-dev");
+	writeRunLocally("npm install uikit --save-dev");
+	writeRunLocally("npm install what-input --save-dev");
+	writeRunLocally("npm install foundation-sites --save-dev");
+	writeRunLocally("npm install browser-sync --save-dev");
+	writeRunLocally("npm install browser-sync-webpack-plugin --save-dev");
+	writeRunLocally("npm install es6-promise --save-dev");
+	writeRunLocally("npm install request --save-dev");
 	// ---
 	writeLine("Local setup done!");
 	writeRunLocally("dep build local");
