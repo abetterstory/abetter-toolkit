@@ -3,11 +3,20 @@
 ABetter Blade toolkit for Laravel 5+
 
 ## Install
-- composer require abetter/toolkit
+```bash
+composer require abetter/toolkit
+```
 
 ## Register Middleware
-- Add to $middleware in app/Kernel.php
+
+Add to the `$middleware` array in app/Kernel.php:
 - \ABetter\Toolkit\SandboxMiddleware::class,
+
+## Usage
+
+```php
+# Put demo code here.
+```
 
 ## Directives
 - @component('<view.name>',[<variables>])
