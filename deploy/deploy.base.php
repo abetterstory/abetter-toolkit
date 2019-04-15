@@ -139,10 +139,11 @@ task('setuponce', function () {
 	// ---
 	writeRunLocally("cp -n vendor/abetter/toolkit/public/.htaccess public/.htaccess");
 	writeRunLocally("cp -n vendor/abetter/toolkit/mix/webpack.mix.js webpack.mix.js");
-	writeRunLocally("cp -n vendor/abetter/toolkit/scripts/app-default.js resources/scripts/app.js");
-	writeRunLocally("cp -n vendor/abetter/toolkit/styles/app-default.scss resources/styles/app.scss");
+	writeRunLocally("cp -n vendor/abetter/toolkit/scripts/app.js resources/scripts/app.js");
+	writeRunLocally("cp -n vendor/abetter/toolkit/styles/app.scss resources/styles/app.scss");
+	writeRunLocally("cp -n vendor/abetter/toolkit/styles/editor.scss resources/styles/editor.scss");
+	writeRunLocally("cp -n vendor/abetter/toolkit/styles/_variables.scss resources/styles/_variables.scss");
 	// ---
-	writeRunLocally("cp -n vendor/abetter/wordpress/resources/editor.scss resources/wordpress/editor.scss");
 	writeRunLocally("cp -n vendor/abetter/wordpress/resources/functions.php resources/wordpress/functions.php");
 	writeRunLocally("cp -n vendor/abetter/wordpress/resources/helpers.php resources/wordpress/helpers.php");
 	writeRunLocally("cp -n vendor/abetter/wordpress/resources/templates.php resources/wordpress/templates.php");
@@ -152,6 +153,7 @@ task('setuponce', function () {
 	writeRunLocally("composer install");
 	// ---
 	writeRunLocally("npm install");
+	writeRunLocally("npm install normalize.css --save-dev");
 	writeRunLocally("npm install font-awesome --save-dev");
 	writeRunLocally("npm install uikit --save-dev");
 	writeRunLocally("npm install what-input --save-dev");

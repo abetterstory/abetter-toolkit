@@ -17,3 +17,4 @@
 //import '$scripts/detectors.js';
 //import '$scripts/responsive.js';
 //import '$scripts/tracker.js';
+//import '$scripts/lazy.js';

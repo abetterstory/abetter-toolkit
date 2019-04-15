@@ -1,12 +1,54 @@
 
 // Color
 
-$color-primary: #AE8A00 !default;
+$color-theme: #ae8a00 !default;
+$color-theme-link: #ae8a00 !default;
+$color-theme-dark: darken($color-theme,25%) !default;
+
+$color-link: $color-theme-link !default;
+$color-primary: $color-theme !default;
+$color-background: #f0f0f0 !default;
+
+$color-component: #964e49;
+$color-block: #417885;
+
+// Limit
+
+$limit-text: 54rem;
+$limit-block: 1200px;
 
 // Font
 
-$font-headline: 'Helvetica Neue', Helvetica, Arial, sans-serif !default;
-$font-body: 'Courier New', Courier, Lucida, Console, monospace !default;
+$font-path: '/fonts/' !default; // Bypassing cachebusting
+
+$font-serif: 'Times New Roman', Times, serif !default;
+$font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif !default;
+$font-mono: 'Courier New', Courier, monospace !default;
+$font-icon: 'Font Awesome' !default;
+
+$font-body: $font-sans;
+$font-body-weight: 400 !default;
+$font-body-spacing: -0.00em !default;
+
+$font-headline: $font-sans;
+$font-headline-weight: 600 !default;
+$font-headline-style: normal !default;
+$font-headline-spacing: -0.00em !default;
+
+$font-lead: $font-sans;
+$font-lead-weight: 600 !default;
+$font-lead-style: normal !default;
+$font-lead-spacing: -0.00em !default;
+
+$font-hero: $font-sans;
+$font-hero-weight: 600 !default;
+$font-hero-style: normal !default;
+$font-hero-spacing: -0.02em !default;
+
+$font-mono-weight: 400 !default;
+$font-mono-spacing: 0.0em !default;
+
+$font-icon-weight: 400 !default;
 
 // Transitions
 
@@ -21,32 +63,3 @@ $ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
 $ease: $ease-quart;
 $ease-in: $ease-in-quart;
 $ease-out: $ease-out-quart;
-
-// ---
-
-// UIKit
-
-$breakpoint-tiny: 480px !default;  // Phone landscape
-$breakpoint-small: 640px !default;  // Phone landscape
-$breakpoint-medium: 960px !default;  // Tablet Landscape
-$breakpoint-large: 1200px !default; // Desktop
-$breakpoint-xlarge: 1600px !default; // Large Screens
-
-$global-font-family: $font-body !default;
-$global-font-size: 16px !default;
-$global-line-height: 1.5 !default; // 24px
-$global-xxlarge-font-size: 2.625rem !default; // 42px
-$global-xlarge-font-size: 2rem !default; // 2rem !default; // 32px
-$global-large-font-size: 1.5rem !default;   // 24px
-$global-medium-font-size: 1.25rem !default;  // 20px
-$global-small-font-size: 0.75rem !default; // 0.875rem !default; // 14px
-$global-color: #333 !default; // #666 !default;
-$global-emphasis-color: #333 !default;
-$global-muted-color: #aaa !default; // #999
-$global-link-color: $color-primary !default;
-$global-link-hover-color: $global-color !default;
-
-$base-selection-background: $color-primary !default;
-$base-selection-color: #fff !default; // $global-inverse-color !default;
-
-$container-max-width: 820px !default; // 1200px

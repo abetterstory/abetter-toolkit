@@ -1,0 +1,56 @@
+
+// Import
+@import '$styles/_variables.scss';
+@import '$styles/typography.scss';
+
+// Editor
+body {
+	@extend .block--typography;
+	max-width: none !important;
+	margin: 15px !important;
+	h1,h2,h3,h4,h5,h6,p {
+		&:first-of-type {
+			margin-top: 0 !important;
+		}
+	}
+}
+
+// ---
+
+.--directive {
+	color: #99a;
+}
+
+.--component,
+.--block {
+	display: block;
+	text-align: left;
+	z-index: 10;
+	color: $color-component;
+	text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, -4px -4px 0 #fff, 4px -4px 0 #fff, -4px 4px 0 #fff, 4px 4px 0 #fff;
+	font-size: 100%;
+	font-family: $font-headline;
+	font-style: normal;
+	font-weight: bold;
+	padding: 0;
+	margin: 0rem 0;
+	padding-left: 30px;
+   	&:after {
+		content: "";
+		display: block;
+		position: absolute;
+		z-index: -1;
+		left: 12px;
+		right: 12px;
+		margin-top: -11px;
+		border-top: 2px dashed $color-component;
+	}
+	&.--block {
+		color: $color-block;
+		&:after {
+			border-top: 2px dashed $color-block;
+		}
+	}
+}
+
+// ---

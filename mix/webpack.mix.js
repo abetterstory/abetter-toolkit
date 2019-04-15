@@ -20,7 +20,7 @@ mix.js('resources/scripts/app.js', 'public/scripts')
 // ---
 
 mix.sass('resources/styles/app.scss', 'public/styles').version();
-mix.sass('resources/wordpress/editor.scss', 'public/styles');
+mix.sass('resources/styles/editor.scss', 'public/styles');
 
 // ---
 

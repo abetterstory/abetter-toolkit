@@ -37,14 +37,6 @@ class BladeServiceProvider extends ServiceProvider {
 			return "<?php \${$variable} = \ABetter\Toolkit\BladeDirectives::inject('{$service}',get_defined_vars()); ?>";
 		});
 
-		// Component (extends laravel component directive)
-		Blade::directive('component', function($expression){
-			list($path,$vars,$end) = BladeDirectives::parseExpression($expression);
-			if (!\View::exists($path)) $path .= '.'.array_last(explode('.',$path)); // Test if folder
-			if ($end) return "<?php global \$__vars; \$__vars = {$vars}; \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),{$vars})); ?><?php echo \$__env->renderComponent(); ?>";
-			return "<?php global \$__vars; \$__vars = {$vars}; \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),{$vars})); ?>";
-		});
-
 		// Block
 		Blade::directive('block', function($expression){
 			list($class,$opt) = BladeDirectives::parseExpression($expression);
@@ -53,6 +45,31 @@ class BladeServiceProvider extends ServiceProvider {
 		Blade::directive('endblock', function(){
 			return "</section>";
         });
+
+		// Component (extends laravel component directive)
+		Blade::directive('component', function($expression){
+			list($path,$vars,$end) = BladeDirectives::parseExpression($expression);
+			$view = $this->componentTest($path);
+			if ($end) return "<?php global \$__vars; \$__vars = {$vars}; \$path = '{$path}'; \$__env->startComponent('{$view}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),{$vars})); echo \$__env->renderComponent(); ?>";
+			return "<?php global \$__vars; \$__vars = {$vars}; \$path = '{$path}'; \$__env->startComponent('{$view}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),{$vars})); ?>";
+		});
+
+		// Special
+		Blade::directive('dateline', function($expressions){
+			$path = 'components.dateline'; $vars = '[]';
+			$view = $this->componentTest($path);
+			return "<?php \$path = '{$path}'; \$__env->startComponent('{$view}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),{$vars})); echo \$__env->renderComponent(); ?>";
+		});
+		Blade::directive('byline', function($expression){
+			$path = 'components.byline'; $vars = '[]';
+			$view = $this->componentTest($path);
+			return "<?php \$path = '{$path}'; \$__env->startComponent('{$view}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),{$vars})); echo \$__env->renderComponent(); ?>";
+		});
+		Blade::directive('tagline', function($expression){
+			$path = 'components.tagline'; $vars = '[]';
+			$view = $this->componentTest($path);
+			return "<?php \$path = '{$path}'; \$__env->startComponent('{$view}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),{$vars})); echo \$__env->renderComponent(); ?>";
+		});
 
         // Style
         Blade::directive('style', function($expression){
@@ -102,17 +119,16 @@ class BladeServiceProvider extends ServiceProvider {
 			$path = 'mockup.components.'.str_replace('components.',"",$path);
 			if (preg_match('/abetter::/',$path)) $path = 'abetter::'.str_replace('abetter::','',$path); // Move namespace
 			$end = TRUE;
-			if (!\View::exists($path)) $path .= '.'.array_last(explode('.',$path)); // Test if folder
-			if (!\View::exists($path)) return "<?php echo 'Mockup not found: {$path}'; ?>";
-			if ($end) return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?><?php echo \$__env->renderComponent(); ?>";
-			return "<?php \$__env->startComponent('{$path}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?>";
+			$view = $this->componentTest($path);
+			if ($end) return "<?php \$path = '{$path}'; \$__env->startComponent('{$view}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); echo \$__env->renderComponent(); ?>";
+			return "<?php \$path = '{$path}'; \$__env->startComponent('{$view}',\ABetter\Toolkit\BladeDirectives::vars(get_defined_vars(),$vars)); ?>";
         });
 
 		// LAB
 		Blade::directive('lab', function($expression){
 			if (!BladeDirectives::canViewLab()) return "";
 			$path = 'lab.lab';
-			return "<?php \$__env->startComponent('{$path}'); ?><?php echo \$__env->renderComponent(); ?>";
+			return "<?php \$__env->startComponent('{$path}'); echo \$__env->renderComponent(); ?>";
 		});
 
 		// Debug
@@ -123,7 +139,44 @@ class BladeServiceProvider extends ServiceProvider {
 			return "<?php echo _debug('{$message}'); ?>";
         });
 
+		// Wordpress
+        Blade::directive('wp_content', function($expression){
+			return "<?php echo _wp_content(); ?>";
+        });
+		Blade::directive('wp_render_content', function($expression){
+			return "<?php echo _wp_render_content(); ?>";
+        });
+		Blade::directive('wp_property', function($expression){
+			list($name) = BladeDirectives::parseExpression($expression);
+			return "<?php echo _wp_property('{$name}'); ?>";
+        });
+		Blade::directive('wp_render_property', function($expression){
+			list($name) = BladeDirectives::parseExpression($expression);
+			return "<?php echo _wp_render_property('{$name}'); ?>";
+        });
+		Blade::directive('wp_field', function($expression){
+			list($name) = BladeDirectives::parseExpression($expression);
+			return "<?php echo _wp_field('{$name}'); ?>";
+        });
+		Blade::directive('wp_render_field', function($expression){
+			list($name) = BladeDirectives::parseExpression($expression);
+			return "<?php echo _wp_render_field('{$name}'); ?>";
+        });
+
     }
+
+	// ---
+
+	public function componentTest($path,$missing='components.missing.missing') {
+		return ($view = $this->componentExists($path)) ? $view : $missing;
+	}
+
+	public function componentExists($path) {
+		if (empty($path)) return FALSE;
+		if (!\View::exists($path)) $path .= '.'.array_last(explode('.',$path)); // Test if folder
+		if (!\View::exists($path)) return FALSE;
+		return $path;
+	}
 
     /**
      * Register the application services.

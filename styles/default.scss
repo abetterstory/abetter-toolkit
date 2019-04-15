@@ -1,31 +1,26 @@
 
-// Reset
-/*
-*,
-*:before,
-*:after {
-    //box-sizing: border-box;
-}
-*/
-
-// ---
-
-* {
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
-
 html {
-    height: 100%;
+	margin: 0;
+	padding: 0;
+	height: 100%;
 }
 
 body {
-	height: 100%;
+	position: relative;
+	margin: 0;
+	padding: 0;
+	max-width: 100vw;
 	overflow-x: hidden;
+}
+
+ul,ol,dl,li,dt,dd {
+	display: block;
+	list-style: none;
 	margin: 0;
 	padding: 0;
 }
+
+// ---
 
 [ontouchstart],
 [no-tap],
@@ -35,7 +30,13 @@ body {
 
 // ---
 
-.uk-section {
-	padding-top: 20px;
-	@media (min-width: 640px) { padding-top: 40px; }
+nowrapx,[nowrapx],.nowrapx {
+	white-space: nowrap !important;
+	@media (min-width: 600px) {
+		white-space: nowrap !important;
+	}
+}
+
+prewrap,[prewrap],.prewrap {
+	white-space: pre-wrap !important;
 }
