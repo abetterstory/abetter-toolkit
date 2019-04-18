@@ -1,11 +1,11 @@
 {
     "name": "abetter/toolkit",
-    "description": "ABetter blade toolkit",
+    "description": "A Better Laravel Toolkit, for exceptionally fast web applications.",
     "license": "MIT",
     "authors": [
         {
-            "name": "Johan Sjoland",
-            "email": "hello@abetter.app"
+            "name": "Johan Sjöland",
+            "email": "johan@sjoland.com"
         }
     ],
     "require": {
