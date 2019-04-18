@@ -1,4 +1,8 @@
-# LABS-ABetter-Toolkit v1.0.4
+# A Better Toolkit
+
+[![Packagist Version](https://img.shields.io/packagist/v/abetter/toolkit.svg)](https://packagist.org/packages/abetter/toolkit)
+[![Total Downloads](https://poser.pugx.org/abetter/toolkit/downloads.svg)](https://packagist.org/packages/abetter/toolkit)
+[![License](https://poser.pugx.org/abetter/toolkit/license.svg)](https://packagist.org/packages/abetter/toolkit)
 
 ABetter Blade toolkit for Laravel 5+
 
