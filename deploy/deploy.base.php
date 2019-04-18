@@ -162,6 +162,8 @@ task('setuponce', function () {
 	writeRunLocally("npm install browser-sync-webpack-plugin --save-dev");
 	writeRunLocally("npm install es6-promise --save-dev");
 	writeRunLocally("npm install request --save-dev");
+	writeRunLocally("npm install rellax --save-dev");
+	writeRunLocally("npm install basicscroll --save-dev");
 	// ---
 	writeLine("Local setup done!");
 	writeRunLocally("dep build local");

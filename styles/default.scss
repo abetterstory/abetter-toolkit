@@ -1,8 +1,12 @@
+@import '_variables';
 
 html {
 	margin: 0;
 	padding: 0;
 	height: 100%;
+	font-family: $font-body;
+	font-size: 16px; // 1rem;
+	line-height: 1.4;
 }
 
 body {
@@ -20,6 +24,15 @@ ul,ol,dl,li,dt,dd {
 	padding: 0;
 }
 
+a {
+	color: $color-link;
+	text-decoration: underline;
+	&:hover {
+		color: #000;
+		text-decoration: underline;
+	}
+}
+
 // ---
 
 [ontouchstart],
@@ -30,11 +43,15 @@ ul,ol,dl,li,dt,dd {
 
 // ---
 
+nowrap,[nowrap],.nowrap {
+	white-space: normal;
+	@media (min-width: 375px) {
+		white-space: nowrap;
+	}
+}
+
 nowrapx,[nowrapx],.nowrapx {
 	white-space: nowrap !important;
-	@media (min-width: 600px) {
-		white-space: nowrap !important;
-	}
 }
 
 prewrap,[prewrap],.prewrap {

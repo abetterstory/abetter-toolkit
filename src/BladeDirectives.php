@@ -40,6 +40,7 @@ class BladeDirectives {
 		$scss->setImportPaths($paths);
 		$css = $scss->compile($source);
 		if ($link) {
+			$name = str_replace('~','',$name);
 			$path = '/styles/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
@@ -65,6 +66,7 @@ class BladeDirectives {
 		$js = $JSqueeze->squeeze($source,TRUE,TRUE,FALSE);
 		//$js = JSMin::minify($source);
 		if ($link) {
+			$name = str_replace('~','',$name);
 			$path = '/scripts/components/'.$name;
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
@@ -117,14 +119,19 @@ class BladeDirectives {
 		$view = (isset($vars['view']->path)) ? $vars['view']->path : '';
 		$path = ((!preg_match('/^\//',$name) && $view) ? dirname($view) : resource_path('views')) . '/';
 		$path = $path.trim($name,'/');
-		if (!is_file($path) && preg_match('/\/styles\//',$path)) {
-			$styles = preg_replace('/^(.*)\/styles\/(.*)/',base_path().'/resources/styles/$2',$path);
-			$path = (is_file($styles)) ? $styles : $path;
-		} else if (!is_file($path) && preg_match('/\/scripts\//',$path)) {
-			$scripts = preg_replace('/^(.*)\/scripts\/(.*)/',base_path().'/resources/scripts/$2',$path);
-			$path = (is_file($scripts)) ? $scripts : $path;
-		} else if (!is_file($path) && preg_match('/\/mockup\//',$path)) {
-			$vendor = preg_replace('/^(.*)\/mockup\/(.*)/',base_path().'/vendor/abetter/toolkit/views/mockup/$2',$path);
+		if (!is_file($path) && preg_match('/\.(js|scss|css)/',$path) && preg_match('/~/',$path)) {
+			$dir = (preg_match('/\.js/',$path)) ? 'scripts' : 'styles';
+			if (!is_file($find = preg_replace('/^(.*)\/~\/?(.*)/',base_path().'/resources/'.$dir.'/$2',$path))) {
+				$find = preg_replace('/^(.*)\/~\/?(.*)/',base_path('vendor').'/abetter/toolkit/'.$dir.'/$2',$path);
+			}
+			$path = (is_file($find)) ? $find : $path;
+		} else if (!is_file($path) && preg_match('/(\/|\$)(styles|scripts)\//',$path)) {
+			if (!is_file($find = preg_replace('/^(.*)(\/|\$)(styles|scripts)\/(.*)/',base_path().'/resources/$3/$4',$path))) {
+				$find = preg_replace('/^(.*)(\/|\$)(styles|scripts)\/(.*)/',base_path('vendor').'/abetter/toolkit/$3/$4',$path);
+			}
+			$path = (is_file($find)) ? $find : $path;
+		} else if (!is_file($path) && preg_match('/(\/|\$)mockup\//',$path)) {
+			$vendor = preg_replace('/^(.*)(\/|\$)mockup\/(.*)/',base_path('vendor').'/abetter/toolkit/views/mockup/$3',$path);
 			$path = (is_file($vendor)) ? $vendor : $path;
 		}
 		return $path;

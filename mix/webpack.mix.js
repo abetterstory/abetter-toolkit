@@ -14,7 +14,7 @@ const request = require('request');
 
 mix.js('resources/scripts/app.js', 'public/scripts')
 	.sourceMaps(!mix.inProduction())
-	.extract(['vue','axios','uikit','es6-promise'])
+	.extract(['vue','axios','uikit','es6-promise','rellax','basicscroll'])
 	.version();
 
 // ---

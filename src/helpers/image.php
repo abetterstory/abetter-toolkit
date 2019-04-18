@@ -22,12 +22,12 @@ if (!function_exists('_imageCache')) {
 
 	function _imageCache($file,$opt=NULL,$querystring=NULL) {
 		$name = $file; if ($querystring) $file .= $querystring;
-		if (preg_match('/https?\:\/\//',$file) && !_imageSafe(ltrim($file,'/'))) return NULL;
+		$type = _imageType($file);
+		$ext = '.'.$type;
+		$remote = (preg_match('/https?\:\/\//',$file)) ? ltrim($file,'/') : FALSE;
 		$file = preg_replace('/https?\:\/\//',"",trim($file,'/'));
-		$type = ($headers = @get_headers('https://'.$file,1)) ? (($ext = _contentType($headers['Content-Type'],TRUE)) ? '.'.$ext : '') : '';
-		if (isset($_GET['jpg'])) $type = '.jpg';
-		$cache = _slugify($name).(($querystring)?'_'.md5($querystring):'').$type;
-		$cache = str_replace([$type.$type,'.jpeg.jpg','.png.jpg'],[$type,'.jpg','.jpg'],$cache); // Cleanup double extension
+		$cache = _slugify($name).(($querystring)?'_'.md5($querystring):'').$ext;
+		$cache = str_replace([$ext.$ext,'.jpeg.jpg','.png.jpg'],[$ext,'.jpg','.jpg'],$cache); // Cleanup double extension
 		$storage = storage_path('cache').'/image';
 		$opt = array_replace([
 			'source' => 'https://'.$file,
@@ -36,11 +36,22 @@ if (!function_exists('_imageCache')) {
 			'content' => NULL,
 		],(array)$opt);
 		if (is_file($opt['target'])) return $opt['cache'];
+		if ($remote && !_imageSafe($remote)) return NULL;
 		if (!$opt['content'] = @file_get_contents($opt['source'])) return FALSE;
 		if (!is_dir($storage)) \File::makeDirectory($storage,0777,TRUE);
 		@file_put_contents($opt['target'],$opt['content']);
 		@chmod($opt['target'],0777);
 		return $opt['cache'];
+	}
+
+}
+
+if (!function_exists('_imageType')) {
+
+	function _imageType($file,$type='',$def='jpg') {
+		if (preg_match_all('/jpeg|jpg|png/',$file,$m)) $type = $m[0][count($m[0])-1];
+		if (!$type) $type = ($headers = @get_headers('https://'.$file,1)) ? (($ext = _contentType($headers['Content-Type'],TRUE)) ? '.'.$ext : '') : $type;
+		return ($type) ? str_replace('jpeg','jpg',$type) : $def;
 	}
 
 }
