@@ -7,7 +7,8 @@ if (!function_exists('_image')) {
 		if (preg_match('/https?\:\/\//',$file)) {
 			$url = '/image/'.$style._imageCache($file);
 		} else {
-			if (($wp = env('WP_UPLOADS')) && preg_match('|'.$wp.'|',$file)) $file = str_replace($wp,'/uploads/',$file);
+			$wp = ($env = env('WP_UPLOADS')) ? $env : '/wp/wp-content/uploads/';
+			if (preg_match('|'.$wp.'|',$file)) $file = str_replace($wp,'/uploads/',$file);
 			$url = '/image/'.$style._relative($file);
 		}
 		if ($ext === TRUE) return $url;
@@ -78,7 +79,8 @@ if (!function_exists('_imageFileSearch')) {
 		$dir = dirname(public_path().$file);
 		if (!is_dir($dir)) { // Try WP_UPLOADS
 			if (preg_match('/^\/uploads\//',$file)) {
-				$dir = dirname(public_path().str_replace('/uploads/',env('WP_UPLOADS'),$file));
+				$wp = ($env = env('WP_UPLOADS')) ? $env : '/wp/wp-content/uploads/';
+				$dir = dirname(public_path().str_replace('/uploads/',$wp,$file));
 			}
 		}
 		if (!is_dir($dir)) { // Try IMAGE CACHE

@@ -26,7 +26,8 @@ if (!function_exists('_relative')) {
 		$rel = parse_url($url,PHP_URL_PATH);
 		$rel .= (($q = parse_url($url,PHP_URL_QUERY)) ? "?{$q}" : "");
 		$rel .= (($f = parse_url($url,PHP_URL_FRAGMENT)) ? "#{$f}" : "");
-		if (($wp = env('WP_UPLOADS')) && preg_match('|'.$wp.'|',$rel)) $rel = str_replace($wp,'/uploads/',$rel);
+		$wp = ($env = env('WP_UPLOADS')) ? $env : '/wp/wp-content/uploads/';
+		if (preg_match('|'.$wp.'|',$rel)) $rel = str_replace($wp,'/uploads/',$rel);
 		return $rel;
 	}
 
