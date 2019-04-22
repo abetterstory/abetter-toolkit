@@ -385,7 +385,7 @@ task('db:pull', function () {
 	runLocally('chmod 777 backup/db');
 	download('{{ deploy_path }}/.env', "tmp/{$stage}.env");
 	// ---
-	$tmpenv = new \Dotenv\Dotenv(__ROOT__.'/tmp',"{$stage}.env");
+	$tmpenv = \Dotenv\Dotenv::create(__ROOT__.'/tmp',"{$stage}.env");
 	$tmpenv->overload();
 	$remote['user'] = env('DB_USERNAME');
 	$remote['pass'] = env('DB_PASSWORD');
@@ -433,7 +433,7 @@ task('db:push', function () {
 	runLocally('chmod 777 tmp');
 	download('{{ deploy_path }}/.env', "tmp/{$stage}.env");
 	// ---
-	$tmpenv = new \Dotenv\Dotenv(__ROOT__.'/tmp',"{$stage}.env");
+	$tmpenv = \Dotenv\Dotenv::create(__ROOT__.'/tmp',"{$stage}.env");
 	$tmpenv->overload();
 	$remote['user'] = env('DB_USERNAME');
 	$remote['pass'] = env('DB_PASSWORD');
