@@ -17,7 +17,9 @@ body {
 
 // ---
 
-.--directive {
+.--directive,
+.--slot,
+.--var {
 	color: #99a;
 }
 
