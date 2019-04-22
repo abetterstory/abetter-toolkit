@@ -10,7 +10,7 @@
 //window.Vue = require('vue');
 //window.axios = require('axios');
 //window.Rellax = require('rellax');
-window.BasicScroll = require('basicscroll');
+//window.BasicScroll = require('basicscroll');
 
 //require('es6-promise').polyfill();
 

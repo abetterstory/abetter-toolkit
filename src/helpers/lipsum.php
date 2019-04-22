@@ -344,17 +344,20 @@ if (!function_exists('_logosum')) {
 
 		if (strlen($opt['text']) > 4) $opt['width'] = strlen($opt['text']) * $opt['pad'] + $opt['pad'];
 
+		$opt['base'] = 1;
+		$opt['ratio'] = round($opt['width'] / $opt['height'] * $opt['base'],2);
+
 		// ---
 
-		$template = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 [width] [height]">
+		$template = '<svg data-aspect="[ratio]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 [width] [height]">
 		<defs>
 			<style>
-				rect { width: 100%; height: 100%; fill: [background]; stroke: [border]; stroke-width: [line]px; }
-			    text { fill: [color]; font-family: [font]; font-size: [size]px; font-weight: [weight]; letter-spacing: [spacing]px; text-transform: [transform]; alignment-baseline: middle; }
+				rect { fill: [background]; stroke: [border]; stroke-width: [line]px; }
+			    text { fill: [color]; font-family: [font]; font-size: [size]px; line-height: 1; font-weight: [weight]; letter-spacing: [spacing]px; text-transform: [transform]; }
 			</style>
 		</defs>
-		<rect />
-		<text x="50%" y="53%" text-anchor="middle">[text]</text>
+		<rect width="100%" height="100%" />
+		<text x="50%" y="50%" text-anchor="middle" dy=".3em">[text]</text>
 		</svg>';
 
 		// ---
@@ -362,6 +365,8 @@ if (!function_exists('_logosum')) {
 		$opt['return'] = str_replace([
 			'[width]',
 			'[height]',
+			'[base]',
+			'[ratio]',
 			'[background]',
 			'[border]',
 			'[line]',
@@ -375,6 +380,8 @@ if (!function_exists('_logosum')) {
 		],[
 			$opt['width'],
 			$opt['height'],
+			$opt['base'],
+			$opt['ratio'],
 			$opt['background'],
 			$opt['border'],
 			$opt['line'],
