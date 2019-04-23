@@ -9,7 +9,7 @@
 body {
 	@extend .block--typography;
 	max-width: none !important;
-	margin: 15px !important;
+	margin: 0.5rem !important;
 	h1,h2,h3,h4,h5,h6,p {
 		&:first-of-type {
 			margin-top: 0 !important;
@@ -23,7 +23,6 @@ body {
 .--var {
 	display: block;
 	margin: 1rem 0;
-	padding-left: 1.5rem;
 	color: $color-directive;
 }
 
@@ -39,7 +38,7 @@ body {
 	font-weight: bold;
 	padding: 0;
 	margin: 1rem 0;
-	padding-left: 1.5rem;
+	margin-left: -1.5rem;
 	color: $color-component;
    	&:after {
 		content: "";
