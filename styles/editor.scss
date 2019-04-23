@@ -9,7 +9,8 @@
 body {
 	@extend .block--typography;
 	max-width: none !important;
-	margin: 0.5rem !important;
+	margin: 2rem !important;
+	padding: 0 !important;
 	h1,h2,h3,h4,h5,h6,p {
 		&:first-of-type {
 			margin-top: 0 !important;
