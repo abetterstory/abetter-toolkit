@@ -1,6 +1,8 @@
 
+// Variables
+@import '_variables.scss';
+
 // Import
-@import '$styles/_variables.scss';
 @import '$styles/typography.scss';
 
 // Editor
@@ -18,25 +20,27 @@ body {
 // ---
 
 .--directive,
-.--slot,
 .--var {
-	color: #99a;
+	display: block;
+	margin: 1rem 0;
+	padding-left: 1.5rem;
+	color: $color-directive;
 }
 
 .--component,
+.--slot,
 .--block {
 	display: block;
 	text-align: left;
 	z-index: 10;
-	color: $color-component;
 	text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, -4px -4px 0 #fff, 4px -4px 0 #fff, -4px 4px 0 #fff, 4px 4px 0 #fff;
 	font-size: 100%;
-	font-family: $font-headline;
 	font-style: normal;
 	font-weight: bold;
 	padding: 0;
-	margin: 0rem 0;
-	padding-left: 30px;
+	margin: 1rem 0;
+	padding-left: 1.5rem;
+	color: $color-component;
    	&:after {
 		content: "";
 		display: block;
@@ -47,6 +51,12 @@ body {
 		margin-top: -11px;
 		border-top: 2px dashed $color-component;
 	}
+	&.--slot {
+		color: $color-slot;
+		&:after {
+			border-top: 2px dashed $color-slot;
+		}
+	}
 	&.--block {
 		color: $color-block;
 		&:after {
@@ -54,5 +64,3 @@ body {
 		}
 	}
 }
-
-// ---
