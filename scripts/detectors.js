@@ -14,6 +14,9 @@
 	detect((function(){ try { $doc.createEvent('TouchEvent'); return true; } catch(e) { return false; } }),'is-touch','no-touch');
 	detect((function(){ return ua.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i); }),'is-mobile','is-desktop');
 
+	detect((function(){ return ua.match(/Windows/i); }),'is-win');
+	detect((function(){ return ua.match(/Mac/i); }),'is-mac');
+
 	detect((function(){ return ua.match(/Android/i); }),'is-android');
 	detect((function(){ return ua.match(/iPhone|iPad|iPod/i); }),'is-ios');
 	detect((function(){ return ua.match(/BlackBerry/i); }),'is-blackberry');
