@@ -57,3 +57,12 @@ nowrapx,[nowrapx],.nowrapx {
 prewrap,[prewrap],.prewrap {
 	white-space: pre-wrap !important;
 }
+
+// ---
+
+html.is-mac {
+	baseline,[baseline],.baseline {
+		display: inline-block !important;
+		transform: translate3d(0,0.12em,0) !important;
+	}
+}
