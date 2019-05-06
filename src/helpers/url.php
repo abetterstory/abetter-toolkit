@@ -33,6 +33,17 @@ if (!function_exists('_relative')) {
 
 }
 
+if (!function_exists('_base')) {
+
+	function _base($url) {
+		if (($base = env('APP_BASE')) && preg_match('/^\/.*/')) {
+			$url = rtrim($base,'/').$url;
+		}
+		return $url;
+	}
+
+}
+
 if (!function_exists('_slugify')) {
 
 	function _slugify($url,$sep='-',$base=FALSE) {
