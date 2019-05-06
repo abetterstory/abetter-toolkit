@@ -23,9 +23,15 @@ class AfterMiddleware {
 
 	public function filterRootBase($content,$base) {
 		$base = rtrim($base,'/');
-		if (preg_match_all('/<link[^>]+href=\"(\/[^\"]+)\"/',$content,$links)) $content = $this->replaceRootBase($content,$links[1],$base);
-		if (preg_match_all('/<javascript[^>]+src=\"(\/[^\"]+)\"/',$content,$scripts)) $content = $this->replaceRootBase($content,$scripts[1],$base);
-		if (preg_match_all('/<img[^>]+src=\"(\/[^\"]+)\"/',$content,$images)) $content = $this->replaceRootBase($content,$images[1],$base);
+		if (preg_match_all('/src=\"(\/[^\"]+)\"/',$content,$srcs)) {
+			$content = $this->replaceRootBase($content,$srcs[1],$base);
+		}
+		if (preg_match_all('/<link[^>]+href=\"(\/[^\"]+)\"/',$content,$links)) {
+			$content = $this->replaceRootBase($content,$links[1],$base);
+		}
+		if (preg_match_all('/background-image\:url\(\'(\/[^\']+)\'/',$content,$bgimages)) {
+			$content = $this->replaceRootBase($content,$bgimages[1],$base);
+		}
 		return $content;
 	}
 

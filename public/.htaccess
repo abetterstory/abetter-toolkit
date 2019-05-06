@@ -30,5 +30,6 @@
 	<filesMatch "\\.(ttf|otf|woff|woff2|eot|svg|ico|mp4|m4v|webm|ogg|ogv)$">
 		AddDefaultCharset utf-8
 		Header set Cache-Control "max-age=31536000, public"
+		Header set Access-Control-Allow-Origin "*"
 	</filesMatch>
 </ifModule>
