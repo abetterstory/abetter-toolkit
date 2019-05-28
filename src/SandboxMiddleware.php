@@ -16,10 +16,10 @@ class SandboxMiddleware {
 			$this->deleteFiles(app('path.storage').'/cache/',FALSE);
 		}
 
-		if (($login = env('WP_LOGIN')) && env('APP_ENV') != 'production') {
+		if (env('WP_LOGIN') && env('APP_ENV') != 'production') {
 			$pass = (preg_match('/_logged_in_/',$_SERVER['HTTP_COOKIE']??'')) ? TRUE : FALSE;
 			if (!$pass) {
-				@header('Location:'.$login.'?redirect_to='.$_SERVER['REQUEST_URI']);
+				@header('Location:/wp/wp-login.php?redirect_to='.$_SERVER['REQUEST_URI']);
 				exit;
 			}
 		}
