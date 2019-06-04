@@ -25,7 +25,7 @@ class SandboxMiddleware {
 	public function deleteFiles($path,$rmdir=TRUE) {
 		$i = new \DirectoryIterator($path);
         foreach ($i AS $f) {
-            if ($f->isFile()) {
+			if ($f->isFile() && !preg_match('/^\./',$f->getFilename())) {
                 @unlink($f->getRealPath());
             } else if (!$f->isDot() && $f->isDir()) {
                 $this->deleteFiles($f->getRealPath());
