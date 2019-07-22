@@ -10,7 +10,7 @@
     ],
     "require": {
 		"aws/aws-sdk-php": "^3.0",
-		"itsgoingd/clockwork": "^3.0",
+		"itsgoingd/clockwork": "^4.0",
 		"deployer/deployer": "^6.3",
 		"fzaninotto/faker": "^1.4",
 		"leafo/scssphp": "^0.7",
