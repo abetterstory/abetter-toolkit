@@ -24,6 +24,7 @@ if (!function_exists('_dictionary')) {
 	}
 
 	function _dictionaryObject($dict,$lang=NULL,$default=NULL) {
+		if (!_wp_loaded()) return $dict;
 		$dict = (is_object($dict)) ? $dict : get_page_by_path(preg_replace('/^dictionary_/',"",$dict),OBJECT,'dictionary');
 		if ($dict && function_exists('icl_object_id')) {
 			$lang = (!empty($lang)) ? $lang : ICL_LANGUAGE_CODE;
