@@ -49,6 +49,12 @@ class Controller extends BaseController {
 
 	// ---
 
+	public function view($view) {
+		return ($C = new \ABetter\Wordpress\Controller()) ? $C->view($view) : NULL;
+	}
+
+	// ---
+
 	public function echo($send = []) {
 		$this->json['service'] = $this->service;
 		$this->json['method'] = $this->method;
