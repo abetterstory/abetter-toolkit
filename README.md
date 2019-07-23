@@ -49,9 +49,9 @@ Note: The middleware helps Blade clear the view cache when developing many neste
 
     @component('<view.name>',[<variables>])
 	@component('<view.name>',TRUE)
-	@component('<view.name>') @endcomponent
+	@component('<view.name>') <slot-here> @endcomponent
 
-Names will be auto-resolved if the blade file has same basename as folder.
+Component names will be auto-resolved if the blade file has same basename as folder.
 
 You can auto-terminate a @component with TRUE as the second paramater, to avoid writing out @endcomponent, e.g when not using any slots or nested content.
 
