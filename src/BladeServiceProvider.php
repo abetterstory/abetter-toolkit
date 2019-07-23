@@ -113,6 +113,13 @@ class BladeServiceProvider extends ServiceProvider {
 			return "<?php echo _pixsum('{$type}'); ?>";
         });
 
+		// Logosum
+        Blade::directive('logosum', function($expression){
+			list($type,$opt) = BladeDirectives::parseExpression($expression);
+			if ($opt) return "<?php echo _logosum('{$type}',{$opt}); ?>";
+			return "<?php echo _logosum('{$type}'); ?>";
+        });
+
 		// Mockup
 		Blade::directive('mockup', function($expression){
 			list($path,$vars,$end) = BladeDirectives::parseExpression($expression);

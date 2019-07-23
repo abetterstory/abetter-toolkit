@@ -1,6 +1,6 @@
 
 // Variables
-@import '$styles/_variables.scss';
+@import '_variables.scss';
 
 // Normalize
 @import '~normalize.css';
@@ -8,3 +8,5 @@
 // Default
 @import '$styles/default.scss';
 @import '$styles/fonts.scss';
+@import '$styles/typography.scss';
+@import '$styles/grid.scss';
