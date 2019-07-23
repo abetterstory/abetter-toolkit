@@ -95,8 +95,9 @@ Embedded JS files will be rendered as external files in development mode to supp
 
 #### @pixsum : Insert mockup image
 
-	@pixsum('<variables>')
-	@pixsum('photo:people')
+	@pixsum('<variables>','<options>')
+	@pixsum('photo:tech')
+	@pixsum('photo:tech','img:w500')
 
 #### @logosum : Insert mockup svg logo
 

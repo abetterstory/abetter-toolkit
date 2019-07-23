@@ -196,7 +196,10 @@ if (!function_exists('_pixsum')) {
 			if (isset($opts[3])) {
 				if ($opt['type'] == 'icon') $opt['color'] = $opts[3];
 			}
-			if (preg_match('/\:(img)/',$input)) $opt['tag'] = 'img';
+			if (preg_match('/\:(img)/',$input) || preg_match('/(img)\:/',$opt2)) {
+				$opt['tag'] = 'img';
+				$opt['imgservice'] = (is_string($opt2)) ? str_replace('img:','',$opt2) : NULL;
+			}
 		}
 
 		if (is_string($opt2)) {
@@ -218,6 +221,7 @@ if (!function_exists('_pixsum')) {
 			'x' => NULL,
 			'icon' => NULL,
 			'tag' => NULL,
+			'imgservice' => NULL,
 			'category' => NULL,
 			'filter' => NULL,
 			'grayscale' => NULL,
@@ -288,6 +292,7 @@ if (!function_exists('_pixsum')) {
 
 		// ---
 
+		if ($opt['tag'] && $opt['imgservice']) $opt['return'] = "/image/{$opt['imgservice']}".$opt['return'];
 		if ($opt['tag']) $opt['return'] = "<img src=\"{$opt['return']}\" />";
 
 		// ---
