@@ -86,9 +86,11 @@ class Component {
 	// ---
 
 	public function getFunction($function,$return=NULL,$options=[]) {
-		$options = (empty($options) && is_array($return)) ? $return : $options;
 		if (empty($function)) return $return;
+		$options = (empty($options) && is_array($return)) ? $return : $options;
+		$model = '\\Components\\'.preg_replace('/component$/i','',$this->namespace).'Model';
 		if (method_exists($this,$function)) return $this->{$function}($options);
+		if (class_exists($model) && method_exists($model,$function) && ($Model = new $model())) return $Model->{$function}($options);
 		if (function_exists($this->namespace.'_'.$function)) return $this->namespace.'_'.$function($options);
 		if (env('APP_DEBUG')) echo "<!-- missing-data:{$this->namespace}_{$function} -->";
 		return $return;
