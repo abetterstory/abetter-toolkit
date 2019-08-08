@@ -224,6 +224,9 @@ task('build', function () {
 	runLocally("rm -rf public/styles/* || true");
 	writeLine("Building...");
 	writeRunLocally("npm run production");
+	runLocally("rm -rf public/fonts/.fonts-here.txt || true");
+	runLocally("rm -rf public/images/.images-here.txt || true");
+	runLocally("rm -rf public/videos/.videos-here.txt || true");
 	writeLine("Build done!");
 });
 
