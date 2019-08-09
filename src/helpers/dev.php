@@ -28,3 +28,19 @@ if (!function_exists('_debug')) {
 	}
 
 }
+
+if (!function_exists('_is_dev')) {
+
+	function _is_dev() {
+		return (in_array(env('APP_ENV'),['stage','production'])) ? FALSE : TRUE;
+	}
+
+}
+
+if (!function_exists('_is_production')) {
+
+	function _is_productiom() {
+		return (in_array(env('APP_ENV'),['stage','production'])) ? TRUE : FALSE;
+	}
+
+}
