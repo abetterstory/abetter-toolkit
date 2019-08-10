@@ -29,18 +29,36 @@ if (!function_exists('_debug')) {
 
 }
 
+// ---
+
 if (!function_exists('_is_dev')) {
 
 	function _is_dev() {
-		return (in_array(env('APP_ENV'),['stage','production'])) ? FALSE : TRUE;
+		return (in_array(strtolower(env('APP_ENV')),['stage','production'])) ? FALSE : TRUE;
+	}
+
+}
+
+if (!function_exists('_is_live')) {
+
+	function _is_live() {
+		return (in_array(strtolower(env('APP_ENV')),['stage','production'])) ? TRUE : FALSE;
+	}
+
+}
+
+if (!function_exists('_is_stage')) {
+
+	function _is_stage() {
+		return (strtolower(env('APP_ENV')) == 'stage']) ? TRUE : FALSE;
 	}
 
 }
 
 if (!function_exists('_is_production')) {
 
-	function _is_productiom() {
-		return (in_array(env('APP_ENV'),['stage','production'])) ? TRUE : FALSE;
+	function _is_production() {
+		return (strtolower(env('APP_ENV')) == 'production']) ? TRUE : FALSE;
 	}
 
 }
