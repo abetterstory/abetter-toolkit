@@ -50,7 +50,7 @@ if (!function_exists('_is_live')) {
 if (!function_exists('_is_stage')) {
 
 	function _is_stage() {
-		return (strtolower(env('APP_ENV')) == 'stage']) ? TRUE : FALSE;
+		return (strtolower(env('APP_ENV')) == 'stage') ? TRUE : FALSE;
 	}
 
 }
@@ -58,7 +58,7 @@ if (!function_exists('_is_stage')) {
 if (!function_exists('_is_production')) {
 
 	function _is_production() {
-		return (strtolower(env('APP_ENV')) == 'production']) ? TRUE : FALSE;
+		return (strtolower(env('APP_ENV')) == 'production') ? TRUE : FALSE;
 	}
 
 }
