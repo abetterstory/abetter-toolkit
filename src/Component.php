@@ -10,6 +10,7 @@ class Component {
 	protected $scope;
 	protected $slot;
 	protected $namespace;
+	protected $dev;
 
 	// --- Public
 
@@ -86,7 +87,7 @@ class Component {
 	// ---
 
 	public function getFunction($function,$return=NULL,$options=[]) {
-		if (empty($function)) return $return;
+		if (empty($function)) return $this->getEmpty($return);
 		$options = (empty($options) && is_array($return)) ? $return : $options;
 		$model = '\\Components\\'.preg_replace('/component$/i','',$this->namespace).'Model';
 		$data = NULL;
@@ -94,7 +95,11 @@ class Component {
 		if ($data === NULL && class_exists($model) && method_exists($model,$function) && ($Model = new $model())) $data = $Model->{$function}($options);
 		if ($data === NULL && function_exists($this->namespace.'_'.$function)) $data = $this->namespace.'_'.$function($options);
 		if ($data === NULL && env('APP_DEBUG')) echo "<!-- missing-data:{$this->namespace}_{$function} -->";
-		return ($data === NULL) ? $return : $data;
+		return ($data === NULL) ? $this->getEmpty($return) : $data;
+	}
+
+	public function getEmpty($return) {
+		return ((isset($this->dev)) ? $this->dev : _is_dev()) ? $return : "";
 	}
 
 }
