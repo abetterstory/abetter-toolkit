@@ -32,21 +32,24 @@ class BladeDirectives {
 		if (in_array($name,self::$styles)) return "<!--style:{$name}-->";
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		if (isset($vars['link'])) $link = (boolean) $vars['link'];
-		$source = self::getSource($name,$vars);
-		$source = self::parseStyleIncludes($source,$vars);
-		$paths = [dirname(self::getSourceFile($name,$vars)),resource_path('styles'),resource_path('css')];
-		$scss = new Compiler();
-		$scss->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
-		$scss->setImportPaths($paths);
-		$css = $scss->compile($source);
+		if (empty($css = $vars['style'] ?? "")) {
+			$source = self::getSource($name,$vars);
+			$source = self::parseStyleIncludes($source,$vars);
+			$paths = [dirname(self::getSourceFile($name,$vars)),resource_path('styles'),resource_path('css')];
+			$scss = new Compiler();
+			$scss->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
+			$scss->setImportPaths($paths);
+			$css = $scss->compile($source);
+		}
 		if ($link) {
+			$attr = "";
 			$name = str_replace('~','',$name);
 			$path = '/styles/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			@file_put_contents($file,$css);
 			@chmod($file,0755);
-			$style = "<link href=\"{$path}\" rel=\"stylesheet\" type=\"text/css\">";
+			$style = "<link href=\"{$path}\" rel=\"stylesheet\" type=\"text/css\" {$attr}>";
 		} else {
 			$style = "<style>{$css}</style>";
 		}
@@ -60,19 +63,24 @@ class BladeDirectives {
 		if (in_array($name,self::$scripts)) return "<!--script:{$name}-->";
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		if (isset($vars['link'])) $link = (boolean) $vars['link'];
-		$source = self::getSource($name,$vars);
-		$source = self::parseScriptIncludes($source,$vars);
-		$JSqueeze = new JSqueeze();
-		$js = $JSqueeze->squeeze($source,TRUE,TRUE,FALSE);
-		//$js = JSMin::minify($source);
+		if (empty($js = $vars['script'] ?? "")) {
+			$source = self::getSource($name,$vars);
+			$source = self::parseScriptIncludes($source,$vars);
+			$JSqueeze = new JSqueeze();
+			$js = $JSqueeze->squeeze($source,TRUE,TRUE,FALSE);
+			//$js = JSMin::minify($source);
+		}
 		if ($link) {
+			$attr = "";
+			if (!empty($vars['defer'])) $attr .= " defer";
+			if (!empty($vars['async'])) $attr .= " async";
 			$name = str_replace('~','',$name);
 			$path = '/scripts/components/'.$name;
 			$file = public_path().$path;
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			@file_put_contents($file,$js);
 			@chmod($file,0755);
-			$script = "<script src=\"{$path}\" type=\"text/javascript\"></script>";
+			$script = "<script src=\"{$path}\" type=\"text/javascript\" {$attr}></script>";
 		} else {
 			$script = "<script>{$js}</script>";
 		}
