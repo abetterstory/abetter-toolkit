@@ -275,6 +275,15 @@ task('deploy', function () {
 		writeRunLocally("rsync -vr --exclude=cache --exclude=clockwork --links --quiet ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}","rsync: {$dir}");
 	}
 	// ---
+	writeRun("chmod -R 777 public/scripts || true");
+	writeRun("chmod -R 777 public/styles || true");
+	writeRun("rm -rf public/scripts/components/* || true");
+	writeRun("rm -rf public/styles/components/* || true");
+	writeRun("mkdir -p public/scripts/components || true");
+	writeRun("mkdir -p public/styles/components || true");
+	writeRun("chmod -R 777 public/scripts/components || true");
+	writeRun("chmod -R 777 public/styles/components || true");
+	// ---
 	writeLine("Updating composer/laravel");
 	writeRun("mkdir -p bootstrap/cache");
 	writeRun("chmod -R 777 bootstrap/cache || true");
@@ -305,11 +314,20 @@ task('deploy:hot', function () {
 		writeRunLocally("rsync -vr --exclude=cache --exclude=clockwork --links --quiet ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}","rsync: {$dir}");
 	}
 	// ---
+	writeRun("chmod -R 777 public/scripts || true");
+	writeRun("chmod -R 777 public/styles || true");
+	writeRun("rm -rf public/scripts/components/* || true");
+	writeRun("rm -rf public/styles/components/* || true");
+	writeRun("mkdir -p public/scripts/components || true");
+	writeRun("mkdir -p public/styles/components || true");
+	writeRun("chmod -R 777 public/scripts/components || true");
+	writeRun("chmod -R 777 public/styles/components || true");
+	// ---
 	writeRun("php artisan cache:clear");
 	writeRun("php artisan route:clear");
 	writeRun("php artisan view:clear");
 	writeRun("php artisan config:clear");
-	writeRun("rm -rf storage/framework/sessions/*");
+	writeRun("rm -rf storage/framework/sessions/* || true");
 	writeLine("Hot-deploy done!");
 });
 
