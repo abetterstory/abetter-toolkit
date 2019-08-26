@@ -59,16 +59,16 @@ class ProxyService extends BaseService {
 			'https://www.google-analytics.com','"www.google-analytics.com',"'www.google-analytics.com",
 			'https://www.googleadservices.com','"www.googleadservices.com',"'www.googleadservices.com",
 			'https://www.googletagmanager.com','"www.googletagmanager.com',"'www.googletagmanager.com",
-			'https://www.facebook.com','"www.facebook.com',"'www.facebook.com",
 			'https://connect.facebook.net','"connect.facebook.net',"'connect.facebook.net",
+			//'https://www.facebook.com','"www.facebook.com',"'www.facebook.com",
 			//'https://px.ads.linkedin.com','"px.ads.linkedin.com',"'px.ads.linkedin.com",
 			//'https://tb.de17a.com','"tb.de17a.com',"'tb.de17a.com",
 		],[
 			'/proxy/www.google-analytics.com','"'.$base.'www.google-analytics.com',"'".$base.'www.google-analytics.com',
 			'/proxy/www.googleadservices.com','"'.$base.'www.googleadservices.com',"'".$base.'www.googleadservices.com',
 			'/proxy/www.googletagmanager.com','"'.$base.'www.googletagmanager.com',"'".$base.'www.googletagmanager.com',
-			'/proxy/www.facebook.com','"'.$base.'www.facebook.com',"'".$base.'www.facebook.com',
 			'/proxy/connect.facebook.net','"'.$base.'connect.facebook.net',"'".$base.'connect.facebook.net',
+			//'/proxy/www.facebook.com','"'.$base.'www.facebook.com',"'".$base.'www.facebook.com',
 			//'/proxy/px.ads.linkedin.com','"'.$base.'px.ads.linkedin.com',"'".$base.'px.ads.linkedin.com',
 			//'/proxy/tb.de17a.com','"'.$base.'tb.de17a.com',"'".$base.'tb.de17a.com',
 		],$content);
