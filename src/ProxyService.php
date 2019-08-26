@@ -10,7 +10,7 @@ class ProxyService extends BaseService {
 
 		$opt = (isset($this->args[0][0])) ? $this->args[0][0] : [];
 
-		$opt['base'] = ($base = env('APP_BASE')) ? rtrim($base,'/') : '';
+		$opt['base'] = ($base = env('APP_BASE') ?? env('APP_CANONICAL') ?? env('APP_URL')) ? rtrim(preg_replace('/https?\:\/\//','',$base),'/') : '';
 		$opt['storage'] = storage_path('cache').'/proxy';
 		$opt['file'] = $opt['file'] ?? NULL;
 		$opt['file'] = trim($opt['file'],'/');
@@ -54,10 +54,21 @@ class ProxyService extends BaseService {
 	// ---
 
 	public function filter($content,$opt) {
+		$base = $opt['base'].'/proxy/';
 		$content = str_replace([
-			'https://www.google-analytics.com/analytics.js'
+			'https://www.google-analytics.com','"www.google-analytics.com',"'www.google-analytics.com",
+			'https://www.googleadservices.com','"www.googleadservices.com',"'www.googleadservices.com",
+			'https://www.googletagmanager.com','"www.googletagmanager.com',"'www.googletagmanager.com",
+			'https://connect.facebook.net','"connect.facebook.net',"'connect.facebook.net",
+			//'https://px.ads.linkedin.com','"px.ads.linkedin.com',"'px.ads.linkedin.com",
+			//'https://tb.de17a.com','"tb.de17a.com',"'tb.de17a.com",
 		],[
-			$opt['base'].'/proxy/www.google-analytics.com/analytics.js'
+			'/proxy/www.google-analytics.com','"'.$base.'www.google-analytics.com',"'".$base.'www.google-analytics.com',
+			'/proxy/www.googleadservices.com','"'.$base.'www.googleadservices.com',"'".$base.'www.googleadservices.com',
+			'/proxy/www.googletagmanager.com','"'.$base.'www.googletagmanager.com',"'".$base.'www.googletagmanager.com',
+			'/proxy/connect.facebook.net','"'.$base.'connect.facebook.net',"'".$base.'connect.facebook.net',
+			//'/proxy/px.ads.linkedin.com','"'.$base.'px.ads.linkedin.com',"'".$base.'px.ads.linkedin.com',
+			//'/proxy/tb.de17a.com','"'.$base.'tb.de17a.com',"'".$base.'tb.de17a.com',
 		],$content);
 		return $content;
 	}
