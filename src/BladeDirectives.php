@@ -31,6 +31,7 @@ class BladeDirectives {
 	public static function style($name,$vars=[],$link=FALSE) {
 		if (in_array($name,self::$styles)) return "<!--style:{$name}-->";
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
+		$render = (isset($vars['render'])) ? (boolean) $vars['render'] : TRUE;
 		if (isset($vars['link'])) $link = (boolean) $vars['link'];
 		if (empty($css = $vars['style'] ?? "")) {
 			$source = self::getSource($name,$vars);
@@ -49,7 +50,7 @@ class BladeDirectives {
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			@file_put_contents($file,$css);
 			@chmod($file,0755);
-			$style = "<link href=\"{$path}\" rel=\"stylesheet\" type=\"text/css\" {$attr}>";
+			$style = ($render) ? "<link href=\"{$path}\" rel=\"stylesheet\" type=\"text/css\" {$attr}>" : "";
 		} else {
 			$style = "<style>{$css}</style>";
 		}
@@ -62,6 +63,7 @@ class BladeDirectives {
 	public static function script($name,$vars=[],$link=FALSE) {
 		if (in_array($name,self::$scripts)) return "<!--script:{$name}-->";
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
+		$render = (isset($vars['render'])) ? (boolean) $vars['render'] : TRUE;
 		if (isset($vars['link'])) $link = (boolean) $vars['link'];
 		if (empty($js = $vars['script'] ?? "")) {
 			$source = self::getSource($name,$vars);
@@ -80,7 +82,7 @@ class BladeDirectives {
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			@file_put_contents($file,$js);
 			@chmod($file,0755);
-			$script = "<script src=\"{$path}\" type=\"text/javascript\" {$attr}></script>";
+			$script = ($render) ? "<script src=\"{$path}\" type=\"text/javascript\" {$attr}></script>" : "";
 		} else {
 			$script = "<script>{$js}</script>";
 		}
