@@ -196,7 +196,7 @@ if (!function_exists('_pixsum')) {
 			if (isset($opts[3])) {
 				if ($opt['type'] == 'icon') $opt['color'] = $opts[3];
 			}
-			if (preg_match('/\:(img)/',$input) || preg_match('/(img)\:/',$opt2)) {
+			if ((is_string($input) && preg_match('/\:(img)/',$input)) || (is_string($opt2) && preg_match('/(img)\:/',$opt2))) {
 				$opt['tag'] = 'img';
 				$opt['imgservice'] = (is_string($opt2)) ? str_replace('img:','',$opt2) : NULL;
 			}
