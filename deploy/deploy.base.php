@@ -208,6 +208,10 @@ task('reset', function () {
 	runLocally("rm -rf public/images/*");
 	runLocally("rm -rf public/scripts/*");
 	runLocally("rm -rf public/styles/*");
+	runLocally("mkdir -p public/scripts/components");
+	runLocally("mkdir -p public/styles/components");
+	runLocally("chmod -R 777 public/scripts");
+	runLocally("chmod -R 777 public/styles");
 	runLocally("chmod -R 777 storage");
 	writeLine("Local reset done!");
 });
@@ -216,12 +220,17 @@ task('reset', function () {
 
 task('build', function () {
 	writeLine("Build prepare");
+	runLocally("mkdir -p public/scripts/components || true");
+	runLocally("mkdir -p public/styles/components || true");
 	runLocally("rm -rf storage/cache/* || true");
 	runLocally("rm -rf storage/service/* || true");
 	runLocally("rm -rf storage/clockwork/* || true");
 	runLocally("rm -rf storage/logs/* || true");
 	runLocally("rm -rf public/scripts/* || true");
 	runLocally("rm -rf public/styles/* || true");
+	runLocally("chmod -R 777 public/scripts || true");
+	runLocally("chmod -R 777 public/styles || true");
+	runLocally("chmod -R 777 storage || true");
 	writeLine("Building...");
 	writeRunLocally("npm run production");
 	runLocally("rm -rf public/fonts/.fonts-here.txt || true");
