@@ -173,6 +173,7 @@ if (!function_exists('_imagickResize')) {
 			if (preg_match('/bottom/',$crop_align)) $crop_y = floor($resize_h - $crop_h);
 			$imagick->cropImage($target_w, $crop_h, 0, $crop_y);
 		}
+		$imagick->setImagePage(0, 0, 0, 0); // Reset canvas
 		// ---
 		return $imagick;
 	}
