@@ -12,6 +12,7 @@ ABetter Toolkit is a package of new and modified directives for faster developme
 ## Requirements
 
 * PHP 7.2+
+* Imagick 3+
 * MySQL 5.7+
 * Composer 1.6+
 * Laravel 5.8+
