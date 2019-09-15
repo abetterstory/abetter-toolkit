@@ -22,8 +22,8 @@ if (!function_exists('_image')) {
 if (!function_exists('_imageCache')) {
 
 	function _imageCache($file,$opt=NULL,$querystring=NULL) {
-		$name = $file; if ($querystring) $file .= $querystring;
 		$base = basename($file);
+		$name = $file; if ($querystring) $file .= $querystring;
 		$type = _imageType($file);
 		$ext = '.'.$type;
 		$remote = (preg_match('/https?\:\/\//',$file)) ? ltrim($file,'/') : FALSE;
