@@ -23,10 +23,13 @@ if (!function_exists('_imageCache')) {
 
 	function _imageCache($file,$opt=NULL,$querystring=NULL) {
 		$name = $file; if ($querystring) $file .= $querystring;
+		$base = basename($file);
 		$type = _imageType($file);
 		$ext = '.'.$type;
 		$remote = (preg_match('/https?\:\/\//',$file)) ? ltrim($file,'/') : FALSE;
+		$remote = str_replace($base,urlencode($base),$remote);
 		$file = preg_replace('/https?\:\/\//',"",trim($file,'/'));
+		$file = str_replace($base,urlencode($base),$file);
 		$cache = _slugify($name).(($querystring)?'_'.md5($querystring):'').$ext;
 		$cache = str_replace([$ext.$ext,'.jpeg.jpg','.png.jpg'],[$ext,'.jpg','.jpg'],$cache); // Cleanup double extension
 		$storage = storage_path('cache').'/image';
