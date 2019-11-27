@@ -9,6 +9,7 @@ class Component {
 	protected $vars;
 	protected $scope;
 	protected $slot;
+	protected $model;
 	protected $namespace;
 	protected $dev;
 
@@ -21,6 +22,7 @@ class Component {
 		$this->vars = (object) $__vars;
 		$this->scope = (object) $defined_vars;
 		$this->slot = trim($this->scope->slot ?? "");
+		$this->model = $this->scope->model ?? "";
 		$this->namespace = get_called_class();
 		$this->init();
 		$this->build();
@@ -89,7 +91,7 @@ class Component {
 	public function getFunction($function,$return=NULL,$options=[]) {
 		if (empty($function)) return $this->getEmpty($return);
 		$options = (empty($options) && is_array($return)) ? $return : $options;
-		$model = '\\Components\\'.preg_replace('/component$/i','',$this->namespace).'Model';
+		$model = '\\Components\\'.($this->model ?? (preg_replace('/component$/i','',$this->namespace).'Model'));
 		$data = NULL;
 		if (method_exists($this,$function)) $data = $this->{$function}($options);
 		if ($data === NULL && class_exists($model) && method_exists($model,$function) && ($Model = new $model())) $data = $Model->{$function}($options);
