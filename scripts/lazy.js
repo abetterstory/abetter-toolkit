@@ -53,7 +53,7 @@
 			var u = s[0];
 			o[w] = u;
 		});
-		console.log('parseBreakpoints',o);
+		//console.log('parseBreakpoints',o);
 	}
 
 	// ---
@@ -63,7 +63,7 @@
 			if (!self.isvisible($e)) return;
 			if (!$e.breakpoints) $e.breakpoints = self.parseBreakpoints($e);
 
-			console.log('visible',$e.breakpoints);
+			//console.log('visible',$e.breakpoints);
 
 		});
 	},true);
@@ -88,7 +88,7 @@
 
 	// ---
 
-	console.log('lazy.js v1.0.0',self);
+	//console.log('lazy.js v1.0.0',self);
 
 	//
 
