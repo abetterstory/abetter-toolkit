@@ -16,6 +16,9 @@ set('application', getenv('APP_NAME'));
 set('allow_anonymous_stats', false);
 set('keep_releases', 1);
 
+// Default
+set('default_stage', 'local');
+
 // Repository
 set('repository', getenv('DP_REPOSITORY'));
 set('branch', getenv('DP_BRANCH'));
