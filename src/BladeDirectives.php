@@ -159,6 +159,8 @@ class BladeDirectives {
 		if (is_file($file)) return $file;
 		if (is_file($file.'.php')) return $file.'.php';
 		if (is_file($file.'.class.php')) return $file.'.class.php';
+		if (is_file($file.'Component.php')) return $file.'Component.php';
+		if (is_file($file.'Model.php')) return $file.'Model.php';
 		return $file;
 	}
 
