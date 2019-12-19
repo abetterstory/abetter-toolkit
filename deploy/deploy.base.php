@@ -236,6 +236,8 @@ task('reset', function () {
 	runLocally("chmod -R 777 public/videos");
 	runLocally("chmod -R 777 public/scripts");
 	runLocally("chmod -R 777 public/styles");
+	runLocally("rm -rf public/wp");
+	runLocally("ln -s ../vendor/abetter/wordpress/core public/wp");
 	writeLine("Local reset done!");
 });
 
