@@ -91,7 +91,7 @@ class Component {
 	public function getFunction($function,$return=NULL,$options=[]) {
 		if (empty($function)) return $this->getEmpty($return);
 		$options = (empty($options) && is_array($return)) ? $return : $options;
-		$model = '\\Components\\'.($this->model ?? (preg_replace('/component$/i','',$this->namespace).'Model'));
+		$model = '\\Components\\'.($this->model?:(preg_replace('/component$/i','',$this->namespace).'Model'));
 		$data = NULL;
 		if (method_exists($this,$function)) $data = $this->{$function}($options);
 		if ($data === NULL && class_exists($model) && method_exists($model,$function) && ($Model = new $model())) $data = $Model->{$function}($options);
