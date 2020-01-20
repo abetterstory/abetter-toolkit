@@ -207,7 +207,7 @@ class BladeDirectives {
 
 	public static function vars($parent,$merge=NULL) {
 		$vars = get_defined_vars();
-		$parent = array_except($parent, array('__env', '__data', '__path', 'obLevel', 'app', 'errors', 'view', 'template'));
+		$parent = _array_except($parent, array('__env', '__data', '__path', 'obLevel', 'app', 'errors', 'view', 'template'));
 		if (!empty($parent)) foreach ($parent AS $key => $val) $vars[$key] = $val;
 		if ($merge) $vars = array_merge($vars,$merge);
 		return $vars;

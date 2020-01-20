@@ -1,11 +1,11 @@
 <?php
 
-// Legacy Laravel 5 -> 6
+// Legacy Laravel 6 -> 5
 
-if (class_exists('Arr') && !function_exists('array_except')) {
+if (!function_exists('_array_except')) {
 
-	function array_except($array,$except) {
-		return Arr::except($array,$except);
+	function _array_except($array,$except) {
+		return (class_exists('Arr')) ? Arr::except($array,$except) : array_except($array,$except);
 	}
 
 }
