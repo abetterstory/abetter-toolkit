@@ -17,7 +17,7 @@ class SandboxMiddleware {
 		}
 
 		if (!in_array(strtolower(env('APP_ENV')),['production','stage'])) {
-			app()->register('PhpConsole\Laravel\ServiceProvider');
+			app()->register('ABetter\Toolkit\PhpConsoleServiceProvider');
 		}
 
 		return $next($request);
