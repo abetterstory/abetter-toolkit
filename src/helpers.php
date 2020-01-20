@@ -1,5 +1,6 @@
 <?php
 
+require_once 'helpers/legacy.php';
 require_once 'helpers/dev.php';
 require_once 'helpers/echo.php';
 require_once 'helpers/url.php';
