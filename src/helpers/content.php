@@ -4,6 +4,7 @@ if (!function_exists('_excerpt')) {
 
 	function _excerpt($str="",$max=150,$suffix="…",$breakspace=TRUE,$striphead=TRUE) {
 		if ($striphead) $str = preg_replace('/<h[123456][^>]*?>.*?<\/h[123456]>/si',' ',$str);
+		$str = _cleanup($str);
 		$str = str_replace('<',' <',$str);
 		$str = str_replace('&nbsp;',' ',$str);
 		$str = preg_replace('/ +/'," ",trim(strip_tags($str)));
@@ -11,6 +12,18 @@ if (!function_exists('_excerpt')) {
 		$e = trim(mb_substr($str,0,$max-3),".");
 		$e = ($breakspace && ($b = mb_substr($e,0,mb_strrpos($e," ")))) ? $b : $e;
 		return $e.$suffix;
+	}
+
+}
+
+if (!function_exists('_cleanup')) {
+
+	function _cleanup($str="") {
+		if (!preg_match('/@(end|block|classname|slot|component|dateline|byline)/',$str)) return $str;
+		$str = preg_replace('/@(component|slot|block|classname|svg|lipsum)\([^\)]+\)/'," ",$str);
+		$str = preg_replace('/@(endcomponent|endslot|endblock|dateline|byline)/'," ",$str);
+		$str = preg_replace('/\s+/'," ",$str);
+		return trim($str);
 	}
 
 }
