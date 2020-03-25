@@ -335,6 +335,50 @@ task('deploy', function () {
 	writeLine("Deploy done!");
 });
 
+task('deploy:nova', function () {
+	$stage = get('stage');
+	$confirm = "Are you sure you want to deploy with rsync to %s?";
+	if (in_array($stage,['production','stage'])) {
+		$ask = str_replace('%s',ucwords($stage),$confirm);
+		if (!askConfirmation($ask)) return false;
+	}
+	cd("{{ deploy_path }}");
+	writeRun("pwd","Deploy prepare destination");
+	// ---
+	$dirs = ['app','nova','bootstrap','config','database','resources','routes','storage','tests','vendor','public','artisan','composer.json','composer.lock','server.php'];
+	foreach ($dirs AS $dir) {
+		$dest = dirname($dir);
+		writeRunLocally("rsync -vr --exclude='*.key' --exclude=cache --exclude=clockwork --links --quiet ./{$dir} {{ server }}:{{ deploy_path }}/{$dest}","rsync: {$dir}");
+	}
+	// ---
+	writeRun("chmod -R 777 public/scripts || true");
+	writeRun("chmod -R 777 public/styles || true");
+	writeRun("rm -rf public/scripts/components/* || true");
+	writeRun("rm -rf public/styles/components/* || true");
+	writeRun("mkdir -p public/scripts/components || true");
+	writeRun("mkdir -p public/styles/components || true");
+	writeRun("chmod -R 777 public/scripts/components || true");
+	writeRun("chmod -R 777 public/styles/components || true");
+	// ---
+	writeLine("Updating composer/laravel");
+	writeRun("mkdir -p bootstrap/cache");
+	writeRun("chmod -R 777 bootstrap/cache || true");
+	writeRun("composer install -n --no-dev");
+	writeRun("php artisan cache:clear");
+	writeRun("php artisan route:clear");
+	writeRun("php artisan view:clear");
+	writeRun("php artisan config:clear");
+	writeRun("rm -rf storage/framework/sessions/*");
+	writeRun("mkdir -p storage");
+	writeRun("chmod -R 777 storage || true");
+	// ---
+	writeRun("php artisan passport:keys");
+	// ---
+	writeLine("Deploy done!");
+});
+
+// ---
+
 task('deploy:hot', function () {
 	$stage = get('stage');
 	$confirm = "Are you sure you want to hot-deploy with rsync to %s?";
