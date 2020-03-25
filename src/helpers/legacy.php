@@ -9,3 +9,11 @@ if (!function_exists('_array_except')) {
 	}
 
 }
+
+if (!function_exists('_array_last')) {
+
+	function _array_last($array,$except) {
+		return (class_exists('Arr')) ? Arr::last($array) : array_last($array);
+	}
+
+}

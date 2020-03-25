@@ -180,7 +180,7 @@ class BladeServiceProvider extends ServiceProvider {
 
 	public function componentExists($path) {
 		if (empty($path)) return FALSE;
-		if (!\View::exists($path)) $path .= '.'.array_last(explode('.',$path)); // Test if folder
+		if (!\View::exists($path)) $path .= '.'._array_last(explode('.',$path)); // Test if folder
 		if (!\View::exists($path)) return FALSE;
 		return $path;
 	}
