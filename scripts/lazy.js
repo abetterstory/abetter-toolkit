@@ -1,4 +1,4 @@
-/* lazy.js v1.0.0 */
+/* lazy.js v1.0.1 */
 
 (function(){
 
@@ -17,7 +17,7 @@
 	}
 
 	self.onscrollcall = function() {
-		var cb = self.onscrollcallbacks;
+		var cb = self.onscrollcallbacks; if (!cb) return;
 		for (var i = 0; i < cb.length; i++) {
 			if (typeof cb[i] === 'function') cb[i].call();
 		}
@@ -71,7 +71,7 @@
 	// ---
 
 	window.addEventListener('scroll',function(){
-		if (!self.onscrollcallbacks.length) return;
+		if (!self.onscrollcallbacks || !self.onscrollcallbacks.length) return;
 		if (self.onscrolldelay) window.clearTimeout(self.onscrolldelay);
 		self.onscrolldelay = window.setTimeout(function(){
 			self.onscrollcall();
@@ -79,7 +79,7 @@
 	});
 
 	window.addEventListener('resize',function(){
-		if (!self.onscrollcallbacks.length) return;
+		if (!self.onscrollcallbacks || !self.onscrollcallbacks.length) return;
 		if (self.onscrolldelay) window.clearTimeout(self.onscrolldelay);
 		self.onscrolldelay = window.setTimeout(function(){
 			self.onscrollcall();
