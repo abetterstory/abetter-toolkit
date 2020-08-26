@@ -175,7 +175,9 @@ class BladeServiceProvider extends ServiceProvider {
 	// ---
 
 	public function componentTest($path,$missing='components.missing.missing') {
-		return ($view = $this->componentExists($path)) ? $view : $missing;
+		$view = $this->componentExists($path);
+		if (!$view) $view = $this->componentExists('components.'.$path);
+		return ($view) ? $view : $missing;
 	}
 
 	public function componentExists($path) {
