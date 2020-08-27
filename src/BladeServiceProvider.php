@@ -170,6 +170,32 @@ class BladeServiceProvider extends ServiceProvider {
 			return "<?php echo _wp_render_field('{$name}'); ?>";
         });
 
+		// Shortcuts
+		Blade::directive('notempty', function($expression){
+            return "<?php if(!empty($expression)): ?>";
+        });
+		Blade::directive('ifnotempty', function($expression){
+            return "<?php if(!empty($expression)): ?>";
+        });
+		Blade::directive('ifne', function($expression){
+            return "<?php if(!empty($expression)): ?>";
+        });
+		Blade::directive('ifx', function($expression){
+            return "<?php if(!empty($expression)): ?>";
+        });
+        Blade::directive('endnotempty', function($expression){
+            return '<?php endif; ?>';
+        });
+		Blade::directive('endifnotempty', function($expression){
+            return '<?php endif; ?>';
+        });
+		Blade::directive('endifne', function($expression){
+            return '<?php endif; ?>';
+        });
+		Blade::directive('endifx', function($expression){
+            return '<?php endif; ?>';
+        });
+
     }
 
 	// ---
