@@ -2,7 +2,8 @@
 
 namespace ABetter\Toolkit;
 
-use Leafo\ScssPhp\Compiler;
+//use Leafo\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\Compiler;
 use Patchwork\JSqueeze;
 use JSMin\JSMin;
 
@@ -38,7 +39,7 @@ class BladeDirectives {
 			$source = self::parseStyleIncludes($source,$vars);
 			$paths = [dirname(self::getSourceFile($name,$vars)),resource_path('styles'),resource_path('css')];
 			$scss = new Compiler();
-			$scss->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
+			$scss->setOutputStyle(\ScssPhp\ScssPhp\OutputStyle::COMPRESSED);
 			$scss->setImportPaths($paths);
 			$css = $scss->compile($source);
 		}

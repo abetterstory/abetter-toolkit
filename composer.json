@@ -13,10 +13,10 @@
 		"itsgoingd/clockwork": "^4.0",
 		"deployer/deployer": "^6.7",
 		"fzaninotto/faker": "^1.9",
-		"leafo/scssphp": "^0.8",
 		"mrclay/jsmin-php": "^2.4",
 		"patchwork/jsqueeze": "^2.0",
-		"php-console/php-console": "^3.1"
+		"php-console/php-console": "^3.1",
+		"scssphp/scssphp": "^1.4"
 	},
 	"autoload": {
 		"psr-4": {
