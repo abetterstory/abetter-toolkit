@@ -48,6 +48,7 @@ class BladeDirectives {
 			$name = str_replace('~','',$name);
 			$path = '/styles/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
 			$file = public_path().$path;
+			$file = str_replace(['/../','/../../'],['/','/'],$file);
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			@file_put_contents($file,$css);
 			@chmod($file,0755);
@@ -80,6 +81,7 @@ class BladeDirectives {
 			$name = str_replace('~','',$name);
 			$path = '/scripts/components/'.$name;
 			$file = public_path().$path;
+			$file = str_replace(['/../','/../../'],['/','/'],$file);
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
 			@file_put_contents($file,$js);
 			@chmod($file,0755);
