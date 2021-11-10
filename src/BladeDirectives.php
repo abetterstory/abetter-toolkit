@@ -33,7 +33,7 @@ class BladeDirectives {
 		if (in_array($name,self::$styles)) return "<!--style:{$name}-->";
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		$render = (isset($vars['render'])) ? (boolean) $vars['render'] : TRUE;
-		if (isset($vars['link'])) $link = (boolean) $vars['link'];
+		//if (isset($vars['link'])) $link = (boolean) $vars['link']; // Naming conflict
 		if (empty($css = $vars['style'] ?? "")) {
 			$source = self::getSource($name,$vars);
 			$source = self::parseStyleIncludes($source,$vars);
@@ -47,6 +47,7 @@ class BladeDirectives {
 			$attr = "";
 			$name = str_replace('~','',$name);
 			$path = '/styles/components/'.pathinfo($name,PATHINFO_FILENAME).'.css';
+			$path = str_replace(['/../','/../../'],['/','/'],$path);
 			$file = public_path().$path;
 			$file = str_replace(['/../','/../../'],['/','/'],$file);
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
@@ -66,7 +67,7 @@ class BladeDirectives {
 		if (in_array($name,self::$scripts)) return "<!--script:{$name}-->";
 		$link = (env('APP_ENV') == 'sandbox') ? TRUE : $link;
 		$render = (isset($vars['render'])) ? (boolean) $vars['render'] : TRUE;
-		if (isset($vars['link'])) $link = (boolean) $vars['link'];
+		//if (isset($vars['link'])) $link = (boolean) $vars['link']; // Naming conflict
 		if (empty($js = $vars['script'] ?? "")) {
 			$source = self::getSource($name,$vars);
 			$source = self::parseScriptIncludes($source,$vars);
@@ -80,6 +81,7 @@ class BladeDirectives {
 			if (!empty($vars['async'])) $attr .= " async";
 			$name = str_replace('~','',$name);
 			$path = '/scripts/components/'.$name;
+			$path = str_replace(['/../','/../../'],['/','/'],$path);
 			$file = public_path().$path;
 			$file = str_replace(['/../','/../../'],['/','/'],$file);
 			if (!is_dir(dirname($file))) mkdir(dirname($file),0777,TRUE);
